@@ -1,2 +1,2 @@
-generate
+generate:
 	tuist generate
