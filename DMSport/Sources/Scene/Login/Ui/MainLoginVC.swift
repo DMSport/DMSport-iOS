@@ -12,23 +12,10 @@ import RxSwift
 import Then
 import RxRelay
 
-class MainLoginViewController: TestMomViewController {
+class MainLoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("안녕!")
-        view.backgroundColor = .systemBackground
-        emailTextField.layer.cornerRadius = 20
-        emailTextField.layer.borderWidth = 0.5
-        emailTextField.layer.borderColor = UIColor.black.cgColor
-        passwordTextField.layer.cornerRadius = 20
-        passwordTextField.layer.borderWidth = 0.5
-        passwordTextField.layer.borderColor = UIColor.black.cgColor
-        emailTextField.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 16.0, height: 0.0))
-        passwordTextField.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 16.0, height: 0.0))
-        emailTextField.leftViewMode = .always
-        passwordTextField.leftViewMode = .always
-        passwordTextField.isSecureTextEntry = true
         
         let image = UIImage(named: "DMSSignButton")
         signupButton.setBackgroundImage(image, for: UIControl.State.normal)
