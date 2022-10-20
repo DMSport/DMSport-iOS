@@ -21,7 +21,6 @@ class BaseSignView {
         $0.textColor = UIColor(named: "Primary")
         $0.font = .systemFont(ofSize: 58.0, weight: .bold)
         $0.text = "로그인"
-        
     }
     
     internal lazy var logoText = UILabel().then {
@@ -60,13 +59,20 @@ class BaseSignView {
         $0.frame = CGRect(x: 10, y: 100, width: 100, height: 100)
     }
     
+    internal lazy var errorMassgeText = UILabel().then {
+        $0.text = "에러다에러야!"
+        $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
+//        $0.isHidden = true
+    }
+    
     func updateWith(_ controller: UIViewController) {
         [
             firstText,
             logoText,
             firstTextField,
             secondTextField,
-            mainButton
+            mainButton,
+            errorMassgeText
         ].forEach { controller.view.addSubview($0) }
         
         firstText.snp.makeConstraints {
@@ -94,10 +100,15 @@ class BaseSignView {
         }
 
         mainButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(25)
+            $0.bottom.equalToSuperview().inset(50)
             $0.centerX.equalTo(controller.view)
             $0.height.equalTo(secondTextField.snp.height)
             $0.width.equalTo(secondTextField.snp.width)
+        }
+        
+        errorMassgeText.snp.makeConstraints {
+            $0.top.equalTo(secondTextField.snp.bottom).offset(5)
+            $0.leading.equalTo(secondTextField.snp.leading).inset(10)
         }
     }
 }

@@ -13,6 +13,8 @@ import RxCocoa
 
 class LoginView: BaseSignView {
     
+    let loginVM = LoginViewModel()
+    
     internal lazy var forgetPassword = UIButton().then {
         $0.setTitle("비밀번호를 잊으셨나요?", for: .normal)
         $0.setTitleColor(UIColor(named: "Primary2"), for: .normal)
@@ -24,12 +26,17 @@ class LoginView: BaseSignView {
         $0.setBackgroundImage(image, for: UIControl.State.normal)
     }
     
+    internal lazy var loginButton = UIButton().then {
+        let image = UIImage(named: "DMSLoginButton")
+        $0.setBackgroundImage(image, for: UIControl.State.normal)
+    }
+    
     override func updateWith(_ controller: UIViewController) {
         super.updateWith(controller)
         let image = UIImage(named: "DMSSignButton")
         mainButton.setBackgroundImage(image, for: UIControl.State.normal)
         
-        [ forgetPassword, eyeImageButton]
+        [ forgetPassword, eyeImageButton, loginButton]
             .forEach {
                 controller.view.addSubview($0)
         }
@@ -46,6 +53,13 @@ class LoginView: BaseSignView {
             $0.trailing.equalTo(secondTextField.snp.trailing).inset(20)
             $0.width.equalTo(28)
             $0.height.equalTo(13)
+        }
+        
+        loginButton.snp.makeConstraints {
+            $0.top.equalTo(mainButton.snp.bottom).inset(110)
+            $0.leading.equalTo(mainButton.snp.leading)
+            $0.height.equalTo(50)
+            $0.width.equalTo(355)
         }
     }
 }

@@ -41,13 +41,6 @@ class SignupView: BaseSignView {
         $0.setBackgroundImage(image, for: UIControl.State.normal)
     }
     
-    internal lazy var errorMassgeText = UILabel().then {
-        $0.text = "에러다에러야!"
-        $0.backgroundColor = .red
-        $0.font = .systemFont(ofSize: 12.0, weight: .semibold)
-//        $0.isHidden = true
-    }
-    
     override func updateWith(_ controller: UIViewController) {
         super.updateWith(controller)
         let image = UIImage(named: "nButton")
