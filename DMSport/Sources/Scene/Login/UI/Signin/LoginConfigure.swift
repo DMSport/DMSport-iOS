@@ -31,13 +31,11 @@ extension LoginView {
     
     
     @objc func signupButtonTap(_ sender: UIButton!,_ controller: UIViewController){
-        print("☺️ 회원가입 드가자")
         let signupVC = SignUpViewController()
         signupVC.modalPresentationStyle = .fullScreen
         controller.present(signupVC, animated: true)
     }
     
     @objc func nextButtonTap(){
-        print("🥸 비밀번호를 잊어버렸어요")
     }
 }
