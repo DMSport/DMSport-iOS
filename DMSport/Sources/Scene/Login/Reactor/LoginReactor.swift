@@ -1,7 +1,16 @@
-//
-//  LoginReactor.swift
-//  DMSport-iOS
-//
-//  Created by 박준하 on 2022/10/18.
-//  Copyright © 2022 com.DMS. All rights reserved.
-//
+import Foundation
+import ReactorKit
+
+class LoginVCReactor: Reactor {
+    private let disposeBag: DisposeBag = .init()
+    let initialState: State
+    enum Action {
+    }
+    enum Mutation {
+    }
+    struct State {
+    }
+    init() {
+        initialState = State()
+    }
+}
