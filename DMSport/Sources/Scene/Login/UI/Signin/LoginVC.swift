@@ -37,12 +37,9 @@ class LoginViewController: UIViewController {
                 if(self.toggleButton) {
                     view.eyeImageButton.setBackgroundImage(self.imageClose, for: UIControl.State.normal)
                     view.secondTextField.isSecureTextEntry = true
-                    print("🙈눈이 감겼다🙈")
                 } else {
                     view.eyeImageButton.setBackgroundImage(self.imageOpen, for: UIControl.State.normal)
                     view.secondTextField.isSecureTextEntry = false
-                    print("🐵눈이 떠졌다🐵")
-
                 }
                 self.toggleButton = !self.toggleButton
             })
