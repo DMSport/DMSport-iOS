@@ -25,7 +25,6 @@ extension SignupView {
             return .under
         }
         if(secondTextField.text == rewriteTextField.text) {
-            print("🍎")
             return .normal
         }
         return .error
