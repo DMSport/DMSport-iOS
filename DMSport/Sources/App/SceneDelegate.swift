@@ -9,11 +9,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-                window = UIWindow(frame: UIScreen.main.bounds)
-                window?.windowScene = windowScene
-                window?.rootViewController = LoginViewController()
-                window?.makeKeyAndVisible()
+      guard let scene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: scene)
+        let mainViewController = TabBarVC()
+        let naviMainViewController = mainViewController
+        window?.rootViewController = naviMainViewController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
