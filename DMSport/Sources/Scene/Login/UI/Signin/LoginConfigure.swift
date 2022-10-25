@@ -1,11 +1,3 @@
-//
-//  LoginConfigure.swift
-//  DMSport-iOS
-//
-//  Created by 박준하 on 2022/10/19.
-//  Copyright © 2022 com.DMS. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import RxSwift
@@ -35,19 +27,6 @@ extension LoginView {
                 self.secondTextField.layer.borderColor = error ? UIColor.blue.cgColor : UIColor.red.cgColor
             })
             .disposed(by: disposeBag)
-        
-//        [
-//            firstTextField.rx.text.orEmpty.map(checkEmail(_:)),
-//            secondTextField.rx.text.orEmpty.map(checkPassword(_:))
-//        ].forEach {
-//            $0.subscribe(onNext: { errorMassge in
-//                self.ErrorMassages.isHidden = false
-//                self.errorImage.isHidden = false
-//                self.ErrorMassages.textColor = errorMassge == .chek ? .blue : .red
-//                self.firstTextField.layer.borderColor = errorMassge == .chek ? UIColor.blue.cgColor : UIColor.red.cgColor
-//            })
-//            .disposed(by: disposeBag)
-//        }
     }
     
     

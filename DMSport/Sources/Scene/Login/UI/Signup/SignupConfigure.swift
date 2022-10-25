@@ -1,11 +1,3 @@
-//
-//  SignupConfigure.swift
-//  DMSport-iOS
-//
-//  Created by 박준하 on 2022/10/19.
-//  Copyright © 2022 com.DMS. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import RxSwift
@@ -37,8 +29,6 @@ extension SignupView {
             return .normal
         }
         return .error
-
-//        return .sign
     }
     
     func SignupButtonTap(_ checkPasswordTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {

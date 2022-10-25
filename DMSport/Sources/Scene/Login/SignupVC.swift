@@ -1,10 +1,3 @@
-//
-//  MainSignupVC.swift
-//  
-//
-//  Created by 박준하 on 2022/10/17.
-//
-
 import UIKit
 import SnapKit
 import RxSwift
