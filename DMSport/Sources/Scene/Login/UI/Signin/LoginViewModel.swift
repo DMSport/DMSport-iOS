@@ -15,35 +15,35 @@ class LoginViewModel {
     var email = BehaviorRelay<String>(value: "")
     var password = BehaviorRelay<String>(value: "")
     var errorMsg = BehaviorRelay<String>(value: "")
+    var errorMsg2 = BehaviorRelay<String>(value: "")
     
-    func validation() -> Bool {
-        
+    let emailRegex = NSPredicate(format:"SELF MATCHES %@", "^^[a-zA-Z0-9]+@dsm.hs.kr$$")
+    let passwordRegex = NSPredicate(format:"SELF MATCHES %@", "^^(.+){8,21}$$")
+    
+    func validationEmail() -> Bool {
         if email.value.isEmpty {
-            errorMsg.accept("Please enter email")
+            errorMsg.accept("이메일을 입력해 주세요")
             return false
-        } else if !(validateEmail()) {
-            errorMsg.accept("Please enter valid email")
-            return false
-        } else if password.value.isEmpty {
-            errorMsg.accept("Please enter password")
+        } else if !emailRegex.evaluate(with: email.value) {
+            errorMsg.accept("올바른 이메일을 입력해 주세요")
             return false
         }
+        
+        errorMsg.accept("사용 가능한 이메일입니다")
         
         return true
     }
     
-    func validateEmail() -> Bool {
+    func validationPassword() -> Bool {
+        if password.value.isEmpty {
+            errorMsg2.accept("비밀번호를 입력해 주세요")
+            return false
+        } else if !passwordRegex.evaluate(with: password.value) {
+            errorMsg2.accept("올바른 비밀번호를 입력해 주세요")
+            return false
+        }
+        errorMsg2.accept("사용 가능한 비밀번호입니다")
         
-        let emailRegEx = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$"
-        
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluate(with: email.value)
+        return true
     }
-    
-    func callLoginAPI() {
-        
-        let loginModel = LoginModel(email: email.value, password: password.value)
-        print(loginModel.email, loginModel.password)
-    }
-    
 }

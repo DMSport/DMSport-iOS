@@ -22,13 +22,19 @@ class LoginView: BaseSignView {
     
     internal lazy var eyeImageButton = UIButton().then {
         let image = UIImage(named: "CloseEye")
-        $0.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+        $0.frame = CGRect(x: 0, y: 0, width: 28, height: 13)
         $0.setBackgroundImage(image, for: UIControl.State.normal)
     }
-    
+
     internal lazy var loginButton = UIButton().then {
         let image = UIImage(named: "DMSLoginButton")
         $0.setBackgroundImage(image, for: UIControl.State.normal)
+    }
+    
+    internal lazy var ErrorMassages = UILabel().then {
+        $0.text = "에러다에러야!"
+        $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
+        $0.isHidden = true
     }
     
     override func updateWith(_ controller: UIViewController) {
@@ -36,7 +42,7 @@ class LoginView: BaseSignView {
         let image = UIImage(named: "DMSSignButton")
         mainButton.setBackgroundImage(image, for: UIControl.State.normal)
         
-        [ forgetPassword, eyeImageButton, loginButton]
+        [ forgetPassword, eyeImageButton, loginButton, ErrorMassages]
             .forEach {
                 controller.view.addSubview($0)
         }
@@ -60,6 +66,11 @@ class LoginView: BaseSignView {
             $0.leading.equalTo(mainButton.snp.leading)
             $0.height.equalTo(50)
             $0.width.equalTo(355)
+        }
+        
+        ErrorMassages.snp.makeConstraints {
+            $0.top.equalTo(firstTextField.snp.bottom).offset(5)
+            $0.leading.equalTo(firstTextField.snp.leading).inset(10)
         }
     }
 }

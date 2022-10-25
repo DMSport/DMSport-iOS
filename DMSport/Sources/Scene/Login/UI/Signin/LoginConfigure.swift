@@ -8,66 +8,48 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
 import RxRelay
 
 extension LoginView {
-    
-    enum IdRange {
-        case over
-        case under
-        case sign
-        case normal
-    }
-    
-    private func checkPassword(_ password: String) -> IdRange {
-        
-        if(password.count > 20) {
-            let index = password.index(password.startIndex, offsetBy: 20)
-            secondTextField.text = String(password[..<index])
-            
-            return .over
-        }
-        if(password.count < 8) {
-            return .under
-        }
-        
-//        return .sign
-        return .normal
-    }
-
     func LoginButtonTap(_ controller: UIViewController) {
-        secondTextField.rx.text.orEmpty
-            .map(checkPassword(_:))
-            .subscribe(onNext: { errorMassge in
-                switch errorMassge{
-                    
-                case .over:
-                    self.errorMassgeText.isHidden = false
-                    self.errorMassgeText.textColor = .red
-                    self.errorMassgeText.text = "최소 8글자~ 최대 20글자"
-                    
-                case .under:
-                    self.errorMassgeText.isHidden = false
-                    
-                    self.errorMassgeText.textColor = .red
-                    self.errorMassgeText.text = "최소 8글자~ 최대 20글자"
-                    
-                case .sign:
-                    self.errorMassgeText.isHidden = false
-                    self.errorMassgeText.textColor = .blue
-                    self.errorMassgeText.text = "대소문자, 숫자, 특수문자"
-                    
-                case .normal:
-                    self.errorMassgeText.isHidden = false
-                    self.errorMassgeText.textColor = .blue
-                    self.errorMassgeText.text = "사용가능 합니다"
-//                    let GmailCertificationVC = GmailCertificationViewController()
-//                    GmailCertificationVC.modalPresentationStyle = .fullScreen
-//                    controller.present(GmailCertificationVC, animated: true)
-                }
+        self.errorImage.isHidden = false
+        self.ErrorMassages.isHidden = false
+        self.errorMassgeText.isHidden = false
+        
+        firstTextField.rx.text
+            .orEmpty
+            .map{ _ in self.loginVM.validationEmail() }
+            .subscribe(onNext: { error in
+                self.ErrorMassages.textColor = error ? .blue : .red
+                self.firstTextField.layer.borderColor = error ? UIColor.blue.cgColor : UIColor.red.cgColor
             })
             .disposed(by: disposeBag)
+        
+        secondTextField.rx.text
+            .orEmpty
+            .map{ _ in self.loginVM.validationPassword() }
+            .subscribe(onNext: { error in
+                self.errorMassgeText.textColor = error ? .blue : .red
+                self.secondTextField.layer.borderColor = error ? UIColor.blue.cgColor : UIColor.red.cgColor
+            })
+            .disposed(by: disposeBag)
+        
+//        [
+//            firstTextField.rx.text.orEmpty.map(checkEmail(_:)),
+//            secondTextField.rx.text.orEmpty.map(checkPassword(_:))
+//        ].forEach {
+//            $0.subscribe(onNext: { errorMassge in
+//                self.ErrorMassages.isHidden = false
+//                self.errorImage.isHidden = false
+//                self.ErrorMassages.textColor = errorMassge == .chek ? .blue : .red
+//                self.firstTextField.layer.borderColor = errorMassge == .chek ? UIColor.blue.cgColor : UIColor.red.cgColor
+//            })
+//            .disposed(by: disposeBag)
+//        }
     }
+    
     
     @objc func signupButtonTap(_ sender: UIButton!,_ controller: UIViewController){
         print("☺️ 회원가입 드가자")
@@ -79,20 +61,4 @@ extension LoginView {
     @objc func nextButtonTap(){
         print("🥸 비밀번호를 잊어버렸어요")
     }
-    
-    
-    //viewModal로 보내기
-//    
-//    let emailObservar = BehaviorRelay<String>(value: "")
-//    let passwordObservar = BehaviorRelay<String>(value: "")
-    
-    //    var isValid: Observable<Bool> {
-    //        return Observable.combineLatest(emailObservar, passwordObservar)
-    //            .map { email, password in
-    //                print("📬email: \(email), 🔒password: \(password)")
-    //                return !email.isEmpty && email.contains("@") && email.contains(".") && !password.isEmpty && password.count > 0
-    //            }
-    //    }
-    
-    //------------
 }

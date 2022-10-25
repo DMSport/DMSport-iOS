@@ -14,7 +14,7 @@ import SnapKit
 
 class SignupView: BaseSignView {
     
-    private lazy var rewriteTextField = UITextField().then {
+    internal lazy var rewriteTextField = UITextField().then {
         $0.borderStyle = UITextField.BorderStyle.none
         $0.keyboardType = UIKeyboardType.emailAddress
         $0.returnKeyType = UIReturnKeyType.done
@@ -41,6 +41,21 @@ class SignupView: BaseSignView {
         $0.setBackgroundImage(image, for: UIControl.State.normal)
     }
     
+    internal lazy var reErrorMassage = UILabel().then {
+        $0.text = "에러다에러야!"
+        $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
+        $0.isHidden = true
+    }
+    
+    internal lazy var reErrorImage = UIImageView().then {
+        let imageName = "errorImage"
+        let image = UIImage(named: imageName)
+        let imageView = UIImageView(image: image!)
+        $0.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        $0.backgroundColor = .red
+        $0.isHidden = true
+    }
+    
     override func updateWith(_ controller: UIViewController) {
         super.updateWith(controller)
         let image = UIImage(named: "nButton")
@@ -55,7 +70,10 @@ class SignupView: BaseSignView {
         [
             rewriteTextField,
             reEyeImageButton,
-            eyeImageButton
+            eyeImageButton,
+            reErrorMassage,
+            reErrorImage
+            
         ].forEach { controller.view.addSubview($0) }
        
        rewriteTextField.snp.makeConstraints {
@@ -78,5 +96,17 @@ class SignupView: BaseSignView {
            $0.width.equalTo(28)
            $0.height.equalTo(13)
        }
+        
+        reErrorMassage.snp.makeConstraints {
+            $0.top.equalTo(rewriteTextField.snp.bottom).offset(5)
+            $0.leading.equalTo(rewriteTextField.snp.leading).inset(10)
+        }
+        
+        reErrorImage.snp.makeConstraints {
+            $0.top.equalTo(secondTextField.snp.bottom).offset(45)
+            $0.trailing.equalToSuperview().inset(80)
+            $0.width.equalTo(25)
+            $0.height.equalTo(25)
+        }
     }
 }

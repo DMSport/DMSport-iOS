@@ -53,6 +53,8 @@ class BaseSignView {
         $0.layer.borderColor = UIColor.black.cgColor
         $0.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 16.0, height: 0.0))
         $0.leftViewMode = .always
+        $0.textContentType = .password
+        $0.isSecureTextEntry = true
     }
     
     public lazy var mainButton = UIButton().then {
@@ -62,7 +64,16 @@ class BaseSignView {
     internal lazy var errorMassgeText = UILabel().then {
         $0.text = "에러다에러야!"
         $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
-//        $0.isHidden = true
+        $0.isHidden = true
+    }
+    
+    internal lazy var errorImage = UIImageView().then {
+        let imageName = "errorImage"
+        let image = UIImage(named: imageName)
+        let imageView = UIImageView(image: image!)
+        $0.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+        $0.backgroundColor = .red
+        $0.isHidden = true
     }
     
     func updateWith(_ controller: UIViewController) {
@@ -72,7 +83,8 @@ class BaseSignView {
             firstTextField,
             secondTextField,
             mainButton,
-            errorMassgeText
+            errorMassgeText,
+            errorImage
         ].forEach { controller.view.addSubview($0) }
         
         firstText.snp.makeConstraints {
@@ -109,6 +121,13 @@ class BaseSignView {
         errorMassgeText.snp.makeConstraints {
             $0.top.equalTo(secondTextField.snp.bottom).offset(5)
             $0.leading.equalTo(secondTextField.snp.leading).inset(10)
+        }
+        
+        errorImage.snp.makeConstraints {
+            $0.top.equalTo(secondTextField.snp.bottom).inset(38)
+            $0.trailing.equalToSuperview().inset(80)
+            $0.width.equalTo(25)
+            $0.height.equalTo(25)
         }
     }
 }

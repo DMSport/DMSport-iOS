@@ -144,7 +144,4 @@ extension GmailCertificationViewController {
         loginVC.modalPresentationStyle = .fullScreen
         present(loginVC, animated: true)
     }
-    
-
-    
 }

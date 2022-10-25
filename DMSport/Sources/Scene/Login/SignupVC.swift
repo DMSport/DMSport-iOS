@@ -19,11 +19,11 @@ class SignUpViewController: UIViewController {
         
         let view = SignupView()
         view.mainButton.rx.tap
-            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                view.SignupButtonTap(self!)
-                print("💣🐙🪄")
-            })
+            .bind { [weak self] in
+                view.SignupButtonTap(view.secondTextField,view.errorMassgeText, view.errorImage, self!)
+                view.SignupButtonTap(view.rewriteTextField,view.reErrorMassage, view.reErrorImage, self!)
+                print("🥭 gotoGmailCertificationVC 🥭")
+            }
             .disposed(by: view.disposeBag)
         view.updateWith(self)
     }
