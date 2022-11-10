@@ -3,9 +3,12 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import Then
+import RxMoya
+import Moya
 import RxRelay
 
 class LoginViewController: UIViewController {
+    let provider = MoyaProvider<MyAPI>()
     let imageClose = UIImage(named: "CloseEye")
     let imageOpen = UIImage(named: "OpenEye")
     var toggleButton = false
@@ -44,6 +47,32 @@ class LoginViewController: UIViewController {
                 self.toggleButton = !self.toggleButton
             })
             .disposed(by: view.disposeBag)
+        
+        view.loginButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .subscribe(onNext: {
+                if(view.firstTextField.text! == nil || view.firstTextField.text!.isEmpty) {
+                    print("이메일이 없서")
+                    print(view.firstTextField.text!)
+                    return
+                }
+                if(view.secondTextField.text! == nil || view.secondTextField.text!.isEmpty) {
+                    print("인증번호가 없서")
+                    print(view.secondTextField.text!)
+                    return
+                }
+           
+                self.provider.rx.request(.postSignIn(PostLoginRequest(email: view.firstTextField.text!, password: view.secondTextField.text!))).subscribe { response in
+                    switch response {
+                    case .success(let response):
+                        print(response.statusCode)
+                        print("🌈 이메일: \(view.firstTextField.text!)", "인증번호: \(view.secondTextField.text!)")
+                        break
+                    case .failure(let error):
+                        print("에러: \(error)")
+                    }
+                }.disposed(by: view.disposeBag)
+            })
         
         view.firstTextField
             .rx.text
