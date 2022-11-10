@@ -3,11 +3,15 @@ import UIKit
 import SnapKit
 import RxSwift
 import Then
+import Moya
 import RxRelay
+import RxMoya
 
 class GmailCertificationViewController: UIViewController {
-    
+    let provider = MoyaProvider<MyAPI>()
     let disposeBag = DisposeBag()
+    var password = ""
+    var id = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +33,82 @@ class GmailCertificationViewController: UIViewController {
         checkEmailTextField.leftViewMode = .always
         certificationButton.layer.cornerRadius = 20
         setupLayout()
+        
+        let view = SignupView()
+        
+        okButton.rx.tap
+            .bind {
+                if(self.emailTextField.text! == nil || self.emailTextField.text!.isEmpty) {
+                    print("이메일이 없서")
+                    print(self.emailTextField.text!)
+                    return
+                }
+                if(self.checkEmailTextField.text! == nil || self.checkEmailTextField.text!.isEmpty) {
+                    print("인증번호가 없서")
+                    print(self.checkEmailTextField.text!)
+                    return
+                }
+                self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!))).subscribe { response in
+                    switch response {
+                    case .success(let response):
+                        print(response.statusCode)
+                        print("이메일: \(self.emailTextField.text!)", "인증번호: \(self.checkEmailTextField.text!)")
+                        print("✨")
+                        break
+                    case .failure(let error):
+                        print("ㅗ \(error)")
+                    }
+                }.disposed(by: view.disposeBag)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    if(self.id == nil || self.id.isEmpty) {
+                        print("이름 없서")
+                        print(self.id)
+                        return
+                    }
+                    if(self.password == nil || self.password.isEmpty) {
+                        print("비밀번호 없서")
+                        print(self.password)
+                        return
+                    }
+                    if(self.emailTextField.text == nil || self.emailTextField.text!.isEmpty) {
+                        print("이메일이 없어")
+                    }
+                    self.provider.rx.request(.postSignUp(PostSignRequest(email: self.emailTextField.text!, password: self.password, name: self.id))).subscribe { response in
+                        switch response {
+                        case .success(let response):
+                            print(response.statusCode)
+                            print("이메일: \(self.emailTextField.text!)", "password: \(self.password), name: \(self.id)")
+                            let loginVC = LoginViewController()
+                            loginVC.modalPresentationStyle = .fullScreen
+                            self.present(loginVC, animated: true)
+                            print("😆")
+                            break
+                        case .failure(let error):
+                            print("ㅗ \(error)")
+                        }
+                    }.disposed(by: view.disposeBag)
+                }
+                //                print("🐊:: LoginButton!")
+            }
+        
+        certificationButton.rx.tap
+            .bind {
+                if(self.emailTextField.text == nil || self.emailTextField.text!.isEmpty) {
+                    print("이메일이 없어")
+                }
+                self.provider.rx.request(.postSignupSend(PostSignupSendRequest(email: self.emailTextField.text!))).subscribe { response in
+                    switch response {
+                    case .success(let response):
+                        print(response.statusCode)
+                        print("이메일: \(self.emailTextField.text!)", "password: \(self.password), name: \(self.id)")
+                        print("ㅗ")
+                    case .failure(let error):
+                        print("ㅗ \(error)")
+                    }
+                }.disposed(by: self.disposeBag)
+                
+            }
     }
     
     private lazy var fristText = UILabel().then {
@@ -61,7 +141,6 @@ class GmailCertificationViewController: UIViewController {
     
     private lazy var certificationButton = UIButton().then {
         $0.setTitle("인증", for: .normal)
-        $0.addTarget(self, action:#selector(certificationButtonTap), for: .touchUpInside)
         $0.backgroundColor = UIColor(named: "Primary")
     }
     
@@ -69,7 +148,6 @@ class GmailCertificationViewController: UIViewController {
         let image = UIImage(named: "okButton")
         $0.frame = CGRect(x: 10, y: 100, width: 100, height: 100)
         $0.setBackgroundImage(image, for: UIControl.State.normal)
-        $0.addTarget(self, action:#selector(okButtonTap), for: .touchUpInside)
     }
     
 }
@@ -126,15 +204,15 @@ extension GmailCertificationViewController {
         }
     }
     
-    @objc func certificationButtonTap(_ sender: UIButton!){
+    func certificationButtonTap(){
         print("🚀 인증을 보냅니다")
     }
     
-    @objc func okButtonTap(_ sender: UIButton!){
-        print("👑 성공")
-        
-        let loginVC = LoginViewController()
-        loginVC.modalPresentationStyle = .fullScreen
-        present(loginVC, animated: true)
-    }
+//    func okButtonTap(){
+//        print("👑 성공")
+//
+//        let loginVC = LoginViewController()
+//        loginVC.modalPresentationStyle = .fullScreen
+//        present(loginVC, animated: true)
+//    }
 }
