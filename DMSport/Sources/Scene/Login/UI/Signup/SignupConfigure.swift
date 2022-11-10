@@ -30,7 +30,7 @@ extension SignupView {
         return .error
     }
     
-    func SignupButtonTap(_ checkPasswordTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {
+    func SignupButtonTap(_ checkPasswordTextField: UITextField,_ idTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {
         checkPasswordTextField.rx.text.orEmpty
             .map(checkPassword(_:))
             .subscribe(onNext: { errorMassge in
@@ -65,6 +65,11 @@ extension SignupView {
                     checkPasswordTextField.layer.borderColor = UIColor(named: "Primary2")?.cgColor
                     let GmailCertificationVC = GmailCertificationViewController()
                     GmailCertificationVC.modalPresentationStyle = .fullScreen
+                    GmailCertificationVC.password = checkPasswordTextField.text!
+                    GmailCertificationVC.id = idTextField.text!
+                    print("이름: \(GmailCertificationVC.id)")
+                    print("비번: \(GmailCertificationVC.password)")
+                    
                     controller.present(GmailCertificationVC, animated: true)
                     
                 case .error:

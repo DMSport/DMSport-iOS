@@ -1,11 +1,13 @@
 import UIKit
+import Moya
 import SnapKit
 import RxSwift
 import RxCocoa
 import Then
 
 class SignUpViewController: UIViewController {
-    
+    let provider = MoyaProvider<MyAPI>()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -17,8 +19,9 @@ class SignUpViewController: UIViewController {
         let view = SignupView()
         view.mainButton.rx.tap
             .bind { [weak self] in
-                view.SignupButtonTap(view.secondTextField,view.errorMassgeText, view.errorImage, self!)
-                view.SignupButtonTap(view.rewriteTextField,view.reErrorMassage, view.reErrorImage, self!)
+                view.SignupButtonTap(view.secondTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
+                view.SignupButtonTap(view.rewriteTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
+                print("🐊:: LoginButton!")
                 print("🥭 gotoGmailCertificationVC 🥭")
             }
             .disposed(by: view.disposeBag)
