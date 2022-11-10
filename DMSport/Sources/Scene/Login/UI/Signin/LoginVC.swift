@@ -3,17 +3,20 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import Then
+import RxMoya
+import Moya
 import RxRelay
 
 class LoginViewController: UIViewController {
     let imageClose = UIImage(named: "CloseEye")
     let imageOpen = UIImage(named: "OpenEye")
     var toggleButton = false
+    let provider = MoyaProvider<MyAPI>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setupNavigationController()
         
         let view = LoginView()
         view.forgetPassword.rx.tap
@@ -69,16 +72,46 @@ class LoginViewController: UIViewController {
             .bind(to: view.errorMassgeText.rx.text)
             .disposed(by: view.disposeBag)
         
-        view.loginButton
-            .rx.tap
-            .do(onNext :{[unowned self] in
-                self.view.endEditing(true)
-            })
-            .subscribe(onNext: {
-                view.LoginButtonTap(self)
-            })
-            .disposed(by: view.disposeBag)
-        
+        view.loginButton.rx.tap
+            .bind {
+                if(view.firstTextField.text! == nil || view.firstTextField.text!.isEmpty) {
+                    print("이메일이 없서")
+                    print(view.firstTextField.text!)
+                    return
+                }
+                if(view.secondTextField.text! == nil || view.secondTextField.text!.isEmpty) {
+                    print("인증번호가 없서")
+                    print(view.secondTextField.text!)
+                    return
+                }
+                self.provider.rx.request(.postSignIn(PostLoginRequest(email: view.firstTextField.text!, password: view.secondTextField.text!))).subscribe { response in
+                    switch response {
+                    case .success(let response):
+                        print(response.statusCode)
+                        print("이메일: \(view.firstTextField.text!), 비밀번호: \(view.secondTextField.text!)")
+                        let pageVC = MainPageViewController()
+                        pageVC.modalPresentationStyle = .fullScreen
+                        self.present(pageVC, animated: true)
+                        
+                    case .failure(let error):
+                        print("\(error)")
+                        print("ㅗㅗㅗ")
+                    }
+                }.disposed(by: view.disposeBag)
+            }
+    }
+    
+    func setupNavigationController() {
+
+        let bar: UINavigationBar! = self.navigationController?.navigationBar
+
+        bar.backgroundColor = .clear
+        bar.setBackgroundImage(UIImage(), for: .default)
+        bar.shadowImage = UIImage()
+        bar.isTranslucent = true
+        let bellNavigetionItem = UIBarButtonItem(image: UIImage(systemName: "bell"), style: .plain, target: nil, action: nil)
+
+        navigationItem.rightBarButtonItem = bellNavigetionItem
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
