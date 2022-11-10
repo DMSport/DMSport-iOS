@@ -5,9 +5,9 @@ extension MyAPI {
   func getPath() -> String {
     switch self {
     case .postSignUp:
-        return "/api/auth/sign-up"
+        return "/users"
     case .postSignIn:
-        return "/api/auth/sign-in"
+        return "/users/auth"
         
     case .postSignupSend:
         return "/users/mail/signup"
