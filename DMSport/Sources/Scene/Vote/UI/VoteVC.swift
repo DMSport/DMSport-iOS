@@ -1,13 +1,13 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import ReactorKit
 import SnapKit
 import Then
+import Combine
 
-class VoteVC: BaseVC<VoteVCReactor> {
-     let labelData = ["축구", "농구", "배구", "배드민턴"]
-     let imageData = ["Soccerball", "Basketball", "Volleyball", "Badminton"]
+class VoteVC: BaseVC {
+    let labelData = ["축구", "농구", "배구", "배드민턴"]
+    let imageData = ["Soccerball", "Basketball", "Volleyball", "Badminton"]
     
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.baseColor.color
@@ -24,19 +24,9 @@ class VoteVC: BaseVC<VoteVCReactor> {
     private let sportsGuideLabel = UILabel().then {
         $0.text = "종목"
         $0.textColor = DMSportIOSAsset.Color.hintColor.color
-        $0.font = .systemFont(ofSize: 20, weight: .bold)
+        $0.font = .systemFont(ofSize: 22, weight: .bold)
     }
-    private let switchGuideLabel = UILabel().then {
-        $0.text = "빈자리 자동 참여"
-        $0.textColor = DMSportIOSAsset.Color.hintColor.color
-        $0.font = .systemFont(ofSize: 14, weight: .bold)
-    }
-    private let autoSwitch = UISwitch().then {
-        $0.isOn = false
-        $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.75)
-        $0.onTintColor = DMSportColor.mainColor.color
-    }
-     let categoryCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
+    let categoryCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumLineSpacing = 8
@@ -50,12 +40,14 @@ class VoteVC: BaseVC<VoteVCReactor> {
     private let timeGuideLabel = UILabel().then {
         $0.text = "시간"
         $0.textColor = DMSportIOSAsset.Color.hintColor.color
-        $0.font = .systemFont(ofSize: 20, weight: .bold)
+        $0.font = .systemFont(ofSize: 22, weight: .bold)
     }
-    private let timeVoteTableView =  UITableView().then {
+    private let timeVoteTableView =  ContentWrappingTableView().then {
         $0.register(TimeVoteCell.self, forCellReuseIdentifier: "TimeVoteCell")
-        $0.rowHeight = 138
+        $0.rowHeight = 142
         $0.showsVerticalScrollIndicator = false
+        $0.separatorStyle = .none
+        $0.backgroundColor = DMSportColor.baseColor.color
     }
     private let updateTimeLabel = UILabel().then {
         $0.text = "2022/09/28 10:34 업데이트"
@@ -69,6 +61,12 @@ class VoteVC: BaseVC<VoteVCReactor> {
         categoryCollectionView.dataSource = self
         categoryCollectionView.reloadData()
     }
+    func setUpTableView() {
+        timeVoteTableView.isScrollEnabled = false
+        timeVoteTableView.delegate = self
+        timeVoteTableView.dataSource = self
+        timeVoteTableView.reloadData()
+    }
     
     override func addView() {
         [
@@ -80,8 +78,6 @@ class VoteVC: BaseVC<VoteVCReactor> {
             }
         [
             sportsGuideLabel,
-            switchGuideLabel,
-            autoSwitch,
             categoryCollectionView,
             timeGuideLabel,
             timeVoteTableView,
@@ -94,6 +90,7 @@ class VoteVC: BaseVC<VoteVCReactor> {
     override func configureVC() {
         view.backgroundColor = DMSportColor.backgroundColor.color
         setUpCollectionView()
+        setUpTableView()
     }
     override func setLayout() {
         backView.snp.makeConstraints {
@@ -103,56 +100,34 @@ class VoteVC: BaseVC<VoteVCReactor> {
         noticeButton.snp.makeConstraints {
             $0.height.equalTo(46)
             $0.top.equalToSuperview().inset(108)
-//            $0.bottom.equalTo(backView.snp.top).offset(16)
+            //            $0.bottom.equalTo(backView.snp.top).offset(16)
             $0.left.right.equalToSuperview().inset(16)
         }
         sportsGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.left.equalToSuperview().inset(28)
-        }
-        switchGuideLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.height.equalTo(17)
-            $0.right.equalToSuperview().inset(72)
-        }
-        autoSwitch.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(13)
-            $0.right.equalToSuperview().inset(16)
-            $0.width.equalTo(48)
-//            $0.height.equalTo(24)
-//            $0.bottom.equalTo(categoryCollectionView.snp.top).offset(12)
+            $0.height.equalTo(24)
         }
         categoryCollectionView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(56)
+            $0.top.equalTo(sportsGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(4)
             $0.height.equalTo(160)
         }
         timeGuideLabel.snp.makeConstraints {
             $0.top.equalTo(categoryCollectionView.snp.bottom).offset(20)
             $0.left.equalToSuperview().inset(28)
+            $0.height.equalTo(24)
         }
         timeVoteTableView.snp.makeConstraints {
-//            $0.top.equalTo(timeGuideLabel.snp.bottom).offset(12)
+            $0.top.equalTo(timeGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(updateTimeLabel.snp.top).offset(40)
+//            $0.bottom.equalTo(updateTimeLabel.snp.top).offset(40)
         }
         updateTimeLabel.snp.makeConstraints {
+//            $0.height.equalTo(17)
+            $0.top.equalTo(timeVoteTableView.snp.bottom)
             $0.left.right.equalToSuperview().inset(99)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(31)
         }
-    }
-}
-
-extension VoteVC: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let voteCell = tableView.dequeueReusableCell(withIdentifier: "TimeVoteCell", for: indexPath) as! TimeVoteCell
-        voteCell.categoryLabel.text = "축구"
-        voteCell.leftMemebersLabel.text = "2/4명"
-        voteCell.lunchDinnerLabel.text = "점심시간"
-
-        return voteCell
     }
 }
