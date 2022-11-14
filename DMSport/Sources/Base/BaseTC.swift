@@ -1,8 +1,8 @@
 import UIKit
 
 class BaseTC: UITableViewCell {
-    typealias DMSportColor = DMSportIOSColors.Color
-
+    typealias DMSportColor = DMSportIOSAsset.Color
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.addView()

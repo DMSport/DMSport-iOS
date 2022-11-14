@@ -1,6 +1,7 @@
 import UIKit
 
 class BaseNC: UINavigationController {
+    typealias DMSportColor = DMSportIOSAsset.Color
 
     private var backButtonImage: UIImage? {
         return UIImage(systemName: "chevron.backward")!
@@ -27,7 +28,6 @@ class BaseNC: UINavigationController {
     func setNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         let appearance2 = UINavigationBarAppearance()
-//        navigationBar.tintColor = KimIlJeongAsset.Color.textColor.color
         appearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
         appearance2.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
 
