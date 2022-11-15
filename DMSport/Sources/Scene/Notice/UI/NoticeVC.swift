@@ -48,7 +48,7 @@ class NoticeVC: BaseVC {
     }
     let categoryTableView =  ContentWrappingTableView().then {
         $0.register(NoticeCell.self, forCellReuseIdentifier: "CategoryNotice")
-        $0.rowHeight = 140
+        $0.rowHeight = 145
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
