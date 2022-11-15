@@ -3,9 +3,12 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import Then
+import RxMoya
+import Moya
 import RxRelay
 
 class LoginViewController: UIViewController {
+    let provider = MoyaProvider<MyAPI>()
     let imageClose = UIImage(named: "CloseEye")
     let imageOpen = UIImage(named: "OpenEye")
     var toggleButton = false
@@ -14,6 +17,8 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        self.navigationItem.title = ""
+        self.navigationItem.backButtonTitle = ""
         
         let view = LoginView()
         view.forgetPassword.rx.tap
@@ -23,10 +28,16 @@ class LoginViewController: UIViewController {
             })
             .disposed(by: view.disposeBag)
         
+        view.forgetPassword.rx.tap
+            .bind {
+                let CertificationVC = GmailCertificationViewController()
+                CertificationVC.modalPresentationStyle = .fullScreen
+                self.present(CertificationVC, animated: true)
+            }.disposed(by: view.disposeBag)
+        
         view.mainButton.rx.tap
             .bind{
                 view.signupButtonTap(view.mainButton, self)
-                print("회원가입으로😘")
             }
             .disposed(by: view.disposeBag)
         view.updateWith(self)
@@ -44,6 +55,37 @@ class LoginViewController: UIViewController {
                 self.toggleButton = !self.toggleButton
             })
             .disposed(by: view.disposeBag)
+        
+        view.loginButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .subscribe(onNext: {
+                if(view.firstTextField.text! == nil || view.firstTextField.text!.isEmpty) {
+                    print("이메일이 없서")
+                    return
+                }
+                if(view.secondTextField.text! == nil || view.secondTextField.text!.isEmpty) {
+                    print("인증번호가 없서")
+                    return
+                }
+           
+                self.provider.rx.request(.postSignIn(PostLoginRequest(email: view.firstTextField.text!, password: view.secondTextField.text!))).subscribe { response in
+                    switch response {
+                    case .success(let response):
+                        print(response.statusCode)
+                        print(String(data: response.data, encoding: .utf8))
+                        if let userDate = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
+                            KeyChain.create(key: Token.accessToken, token: userDate.access_token)
+                            KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
+                        }
+                        let myPageVC = AdminPageViewController()
+                        myPageVC.modalPresentationStyle = .fullScreen
+                        self.present(myPageVC, animated: true)
+                        break
+                    case .failure(let error):
+                        print("에러: \(error)")
+                    }
+                }.disposed(by: view.disposeBag)
+            })
         
         view.firstTextField
             .rx.text
