@@ -38,7 +38,6 @@ class LoginViewController: UIViewController {
         view.mainButton.rx.tap
             .bind{
                 view.signupButtonTap(view.mainButton, self)
-                print("회원가입으로😘")
             }
             .disposed(by: view.disposeBag)
         view.updateWith(self)
@@ -62,12 +61,10 @@ class LoginViewController: UIViewController {
             .subscribe(onNext: {
                 if(view.firstTextField.text! == nil || view.firstTextField.text!.isEmpty) {
                     print("이메일이 없서")
-                    print(view.firstTextField.text!)
                     return
                 }
                 if(view.secondTextField.text! == nil || view.secondTextField.text!.isEmpty) {
                     print("인증번호가 없서")
-                    print(view.secondTextField.text!)
                     return
                 }
            
@@ -75,14 +72,11 @@ class LoginViewController: UIViewController {
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                       // JSONDecoder().decode(TokenModel.self, from: response.data)
                         print(String(data: response.data, encoding: .utf8))
                         if let userDate = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
                             KeyChain.create(key: Token.accessToken, token: userDate.access_token)
                             KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
-                            print("토큰 저장❤️")
                         }
-                        print("🌈 이메일: \(view.firstTextField.text!)", "비밀번호: \(view.secondTextField.text!)")
                         let myPageVC = AdminPageViewController()
                         myPageVC.modalPresentationStyle = .fullScreen
                         self.present(myPageVC, animated: true)

@@ -1,10 +1,3 @@
-//
-//  changePasswordVC.swift
-//  DMSport-iOS
-//
-//  Created by 박준하 on 2022/11/11.
-//  Copyright © 2022 com.DMS. All rights reserved.
-//
 import UIKit
 import RxMoya
 import Moya
@@ -62,7 +55,6 @@ class ChangePasswordViewController: UIViewController {
                 
                 if(view.secondTextField.text == nil || view.secondTextField.text!.isEmpty) {
                     print("새로운비번이 없서")
-                    print(view.secondTextField.text!)
                     return
                 }
                 
@@ -70,7 +62,6 @@ class ChangePasswordViewController: UIViewController {
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                        print("email: \(EmailSaver.saver.getSavedEmail()!), newPassword: \(view.secondTextField.text!)")
                         break
                     case .failure(let error):
                         print("error: \(error)")

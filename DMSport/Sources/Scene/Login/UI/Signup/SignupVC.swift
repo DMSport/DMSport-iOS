@@ -25,8 +25,6 @@ class SignUpViewController: UIViewController {
             .bind { [weak self] in
                 view.SignupButtonTap(view.secondTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
                 view.SignupButtonTap(view.rewriteTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
-                print("🐊:: LoginButton!")
-                print("🥭 gotoGmailCertificationVC 🥭")
             }
             .disposed(by: view.disposeBag)
         view.updateWith(self)

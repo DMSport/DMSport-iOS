@@ -1,11 +1,3 @@
-//
-//  withdrawalVC.swift
-//  DMSport-iOS
-//
-//  Created by 박준하 on 2022/11/15.
-//  Copyright © 2022 com.DMS. All rights reserved.
-//
-
 import UIKit
 import SnapKit
 import Then
@@ -131,7 +123,6 @@ final class WithdrawalViewController: UIViewController {
             .bind {
                 if(self.passwordTextField.text == nil || self.passwordTextField.text!.isEmpty) {
                     print("비밀번호가 없서")
-                    print(self.passwordTextField.text!)
                     return
                 }
                 self.provider.rx.request(.deleteMemberGoOut(DeletMemberGoOut(password: self.passwordTextField.text!))).subscribe { response in

@@ -176,10 +176,6 @@ extension ChangePasswordGmailViewController {
         }
     }
     
-    func certificationButtonTap(){
-        print("🚀 인증을 보냅니다")
-    }
-    
     func okButtonTap(){
         print("👑 성공")
 

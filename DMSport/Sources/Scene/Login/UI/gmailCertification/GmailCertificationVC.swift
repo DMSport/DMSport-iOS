@@ -40,35 +40,29 @@ class GmailCertificationViewController: UIViewController {
             .bind {
                 if(self.emailTextField.text! == nil || self.emailTextField.text!.isEmpty) {
                     print("이메일이 없서")
-                    print(self.emailTextField.text!)
                     return
                 }
                 if(self.checkEmailTextField.text! == nil || self.checkEmailTextField.text!.isEmpty) {
                     print("인증번호가 없서")
-                    print(self.checkEmailTextField.text!)
                     return
                 }
                 self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!))).subscribe { response in
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                        print("이메일: \(self.emailTextField.text!)", "인증번호: \(self.checkEmailTextField.text!)")
-                        print("♻️")
                         break
                     case .failure(let error):
-                        print("ㅗ \(error)")
+                        print("error: \(error)")
                     }
                 }.disposed(by: view.disposeBag)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     if(self.id.isEmpty) {
                         print("이름 없서")
-                        print(self.id)
                         return
                     }
                     if(self.password.isEmpty) {
                         print("비밀번호 없서")
-                        print(self.password)
                         return
                     }
                     if(self.emailTextField.text == nil || self.emailTextField.text!.isEmpty) {
@@ -78,20 +72,17 @@ class GmailCertificationViewController: UIViewController {
                         switch response {
                         case .success(let response):
                             print(response.statusCode)
-                            print("이메일: \(self.emailTextField.text!)", "password: \(self.password), name: \(self.id)")
                             EmailSaver.saver.updateEmail(self.emailTextField.text)
                             PasswordSaver.saver.updatePassword(self.password)
                             let loginVC = LoginViewController()
                             loginVC.modalPresentationStyle = .fullScreen
                             self.present(loginVC, animated: true)
-                            print("😆")
                             break
                         case .failure(let error):
-                            print("ㅗ \(error)")
+                            print("error: \(error)")
                         }
                     }.disposed(by: view.disposeBag)
                 }
-                //                print("🐊:: LoginButton!")
             }
         
         certificationButton.rx.tap
@@ -103,10 +94,9 @@ class GmailCertificationViewController: UIViewController {
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                        print("이메일: \(self.emailTextField.text!)", "password: \(self.password), name: \(self.id)")
-                        print("ㅗ")
+                        break
                     case .failure(let error):
-                        print("ㅗ \(error)")
+                        print("error: \(error)")
                     }
                 }.disposed(by: self.disposeBag)
                 
@@ -205,16 +195,4 @@ extension GmailCertificationViewController {
             $0.centerX.equalTo(view)
         }
     }
-    
-    func certificationButtonTap(){
-        print("🚀 인증을 보냅니다")
-    }
-    
-//    func okButtonTap(){
-//        print("👑 성공")
-//
-//        let loginVC = LoginViewController()
-//        loginVC.modalPresentationStyle = .fullScreen
-//        present(loginVC, animated: true)
-//    }
 }
