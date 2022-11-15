@@ -1,10 +1,3 @@
-//
-//  Header.swift
-//  remakeULIDDU
-//
-//  Created by 박준하 on 2022/08/13.
-//
-
 import Foundation
 import Alamofire
 import Security
