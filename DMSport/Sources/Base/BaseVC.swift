@@ -10,13 +10,13 @@ class BaseVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = DMSportColor.baseColor.color
-        addView()
-        setLayout()
         configureVC()
         bind()
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        addView()
+        setLayout()
     }
     
     func addView() {}
