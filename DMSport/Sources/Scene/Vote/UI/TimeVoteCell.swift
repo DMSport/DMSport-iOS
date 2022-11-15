@@ -95,7 +95,6 @@ class TimeVoteCell: BaseTC {
             $0.top.equalTo(leftMemebersLabel.snp.bottom).offset(5)
             $0.left.right.equalToSuperview().inset(16)
             $0.height.equalTo(8)
-//            $0.bottom.equalToSuperview().inset(56)
         }
         graphView.snp.makeConstraints {
             $0.top.equalTo(graphBase.snp.top)
@@ -107,7 +106,6 @@ class TimeVoteCell: BaseTC {
             $0.top.equalTo(graphBase.snp.bottom).offset(8)
             $0.right.equalToSuperview().inset(10)
             $0.width.equalTo(80)
-//            $0.height.equalTo(40)
             $0.bottom.equalToSuperview().inset(10)
         }
     }

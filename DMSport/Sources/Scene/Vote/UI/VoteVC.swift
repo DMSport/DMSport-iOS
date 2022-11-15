@@ -100,7 +100,6 @@ class VoteVC: BaseVC {
         noticeButton.snp.makeConstraints {
             $0.height.equalTo(46)
             $0.top.equalToSuperview().inset(108)
-            //            $0.bottom.equalTo(backView.snp.top).offset(16)
             $0.left.right.equalToSuperview().inset(16)
         }
         sportsGuideLabel.snp.makeConstraints {
@@ -121,10 +120,8 @@ class VoteVC: BaseVC {
         timeVoteTableView.snp.makeConstraints {
             $0.top.equalTo(timeGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
-//            $0.bottom.equalTo(updateTimeLabel.snp.top).offset(40)
         }
         updateTimeLabel.snp.makeConstraints {
-//            $0.height.equalTo(17)
             $0.top.equalTo(timeVoteTableView.snp.bottom)
             $0.left.right.equalToSuperview().inset(99)
             $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(31)
