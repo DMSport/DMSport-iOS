@@ -98,7 +98,6 @@ extension SignupView {
                     errorText.isHidden = false
                     errorText.textColor = .blue
                     errorText.text = "사용가능 합니다"
-                    print("🫐 인증번호 페이지로 가기 🫐")
                     checkPasswordTextField.layer.borderColor = UIColor(named: "Primary2")?.cgColor
                     let GmailCertificationVC = GmailCertificationViewController()
                     GmailCertificationVC.modalPresentationStyle = .fullScreen

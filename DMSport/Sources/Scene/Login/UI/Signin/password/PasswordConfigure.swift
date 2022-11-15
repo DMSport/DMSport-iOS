@@ -74,7 +74,6 @@ extension ChangePasswordView {
                     self.ErrorMassages.textColor = .blue
                     self.ErrorMassages.text = "사용가능 합니다"
                     self.errorImage.isHidden = true
-                    print("🫐 인증번호 페이지로 가기 🫐")
                     rePasswordTextField.layer.borderColor = UIColor.blue.cgColor
                     
                 case .error:
@@ -120,7 +119,6 @@ extension ChangePasswordView {
                     errorText.isHidden = false
                     errorText.textColor = .blue
                     errorText.text = "사용가능 합니다"
-                    print("🫐 인증번호 페이지로 가기 🫐")
                     checkPasswordTextField.layer.borderColor = UIColor.blue.cgColor
                     
                 case .error:

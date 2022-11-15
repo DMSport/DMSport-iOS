@@ -73,10 +73,9 @@ class ChangePasswordGmailViewController: UIViewController {
                                 EmailSaver.saver.updateEmail(self.emailTextField.text)
                                 self.changePasswordViewController.email = self.emailTextField.text!
                                 self.okButtonTap()
-                                print("✨")
                                 break
                             case .failure(let error):
-                                print("🪓 \(error)")
+                                print("error: \(error)")
                             }
                         }.disposed(by: view.disposeBag)
                     }
@@ -177,8 +176,6 @@ extension ChangePasswordGmailViewController {
     }
     
     func okButtonTap(){
-        print("👑 성공")
-
         let changePasswordVC = ChangePasswordViewController()
         changePasswordVC.modalPresentationStyle = .fullScreen
         present(changePasswordVC, animated: true)
