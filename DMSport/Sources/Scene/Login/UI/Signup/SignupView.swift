@@ -41,8 +41,8 @@ class SignupView: BaseSignView {
     }
     
     internal lazy var reErrorImage = UIImageView().then {
-        let imageName = "errorImage"
-        let image = UIImage(named: imageName)
+//        let imageName = "errorImage"
+        let image = UIImage(systemName: "x.circle")
         let imageView = UIImageView(image: image!)
         $0.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         $0.backgroundColor = .red
@@ -68,6 +68,9 @@ class SignupView: BaseSignView {
             reErrorImage
             
         ].forEach { controller.view.addSubview($0) }
+        
+        let width = controller.view.frame.width / 430.0
+//        let height = controller.view.frame.height / 932.0
        
        rewriteTextField.snp.makeConstraints {
            $0.top.equalTo(secondTextField.snp.bottom).offset(32)
@@ -78,14 +81,14 @@ class SignupView: BaseSignView {
        
        reEyeImageButton.snp.makeConstraints {
            $0.top.equalTo(firstTextField.snp.bottom).offset(52)
-           $0.trailing.equalToSuperview().inset(40)
+           $0.trailing.equalToSuperview().inset(50 * width)
            $0.width.equalTo(28)
            $0.height.equalTo(13)
        }
        
        eyeImageButton.snp.makeConstraints {
            $0.top.equalTo(secondTextField.snp.bottom).offset(52)
-           $0.trailing.equalToSuperview().inset(40)
+           $0.trailing.equalToSuperview().inset(50 * width)
            $0.width.equalTo(28)
            $0.height.equalTo(13)
        }
