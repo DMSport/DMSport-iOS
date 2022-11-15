@@ -17,6 +17,8 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        self.navigationItem.title = ""
+        self.navigationItem.backButtonTitle = ""
         
         let view = LoginView()
         view.forgetPassword.rx.tap
@@ -25,6 +27,13 @@ class LoginViewController: UIViewController {
                 view.nextButtonTap()
             })
             .disposed(by: view.disposeBag)
+        
+        view.forgetPassword.rx.tap
+            .bind {
+                let CertificationVC = GmailCertificationViewController()
+                CertificationVC.modalPresentationStyle = .fullScreen
+                self.present(CertificationVC, animated: true)
+            }.disposed(by: view.disposeBag)
         
         view.mainButton.rx.tap
             .bind{
@@ -66,7 +75,17 @@ class LoginViewController: UIViewController {
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                        print("🌈 이메일: \(view.firstTextField.text!)", "인증번호: \(view.secondTextField.text!)")
+                       // JSONDecoder().decode(TokenModel.self, from: response.data)
+                        print(String(data: response.data, encoding: .utf8))
+                        if let userDate = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
+                            KeyChain.create(key: Token.accessToken, token: userDate.access_token)
+                            KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
+                            print("토큰 저장❤️")
+                        }
+                        print("🌈 이메일: \(view.firstTextField.text!)", "비밀번호: \(view.secondTextField.text!)")
+                        let myPageVC = AdminPageViewController()
+                        myPageVC.modalPresentationStyle = .fullScreen
+                        self.present(myPageVC, animated: true)
                         break
                     case .failure(let error):
                         print("에러: \(error)")

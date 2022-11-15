@@ -32,7 +32,7 @@ extension LoginView {
     
     @objc func signupButtonTap(_ sender: UIButton!,_ controller: UIViewController){
         let signupVC = SignUpViewController()
-        signupVC.modalPresentationStyle = .fullScreen
+//        signupVC.modalPresentationStyle = .custom
         controller.present(signupVC, animated: true)
     }
     

@@ -12,11 +12,15 @@ class SignUpViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: nil, action: nil)
+        
         let imageClose = UIImage(named: "CloseEye")
         let imageOpen = UIImage(named: "OpenEye")
         var toggleButton = false
         
         let view = SignupView()
+        
+        view.repasswordCheak(view.rewriteTextField)
         view.mainButton.rx.tap
             .bind { [weak self] in
                 view.SignupButtonTap(view.secondTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)

@@ -37,10 +37,13 @@ struct PostFindPasswordMail: ModelType {
 }
 
 struct PutChangePassword: ModelType {
-    var email: String
-    var new_password: String
-}
+    let email, newPassword: String
 
+    enum CodingKeys: String, CodingKey {
+        case email
+        case newPassword = "new_password"
+    }
+}
 struct DeletLogout: ModelType {
     
 }

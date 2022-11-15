@@ -60,8 +60,8 @@ class BaseSignView {
     }
     
     internal lazy var errorImage = UIImageView().then {
-        let imageName = "errorImage"
-        let image = UIImage(named: imageName)
+//        let imageName = "errorImage"
+        let image = UIImage(systemName: "x.circle")
         let imageView = UIImageView(image: image!)
         $0.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
         $0.backgroundColor = .red
@@ -117,7 +117,7 @@ class BaseSignView {
         
         errorImage.snp.makeConstraints {
             $0.top.equalTo(secondTextField.snp.bottom).inset(38)
-            $0.trailing.equalToSuperview().inset(80)
+            $0.trailing.equalToSuperview().inset(90)
             $0.width.equalTo(25)
             $0.height.equalTo(25)
         }

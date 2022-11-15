@@ -1,9 +1,5 @@
-import Foundation
 import UIKit
-import RxSwift
-import RxCocoa
-
-extension SignupView {
+extension ChangePasswordView {
     enum IdRange {
         case over
         case under
@@ -16,7 +12,7 @@ extension SignupView {
         
         if(password.count > 20) {
             let index = password.index(password.startIndex, offsetBy: 20)
-            secondTextField.text = String(password[..<index])
+            firstTextField.text = String(password[..<index])
             
             return .over
         }
@@ -24,24 +20,24 @@ extension SignupView {
         if(password.count < 8) {
             return .under
         }
-        if(secondTextField.text == rewriteTextField.text) {
+        if(secondTextField.text == firstTextField.text) {
             return .normal
         }
         return .error
     }
     
-    private func reCheakPassword(_ rePassword: String) -> IdRange {
-        if(rePassword.count > 20) {
-            let index = rePassword.index(rePassword.startIndex, offsetBy: 20)
-            rewriteTextField.text = String(rePassword[..<index])
+    private func reCheakPassword(_ Password: String) -> IdRange {
+        if(Password.count > 20) {
+            let index = Password.index(Password.startIndex, offsetBy: 20)
+            secondTextField.text = String(Password[..<index])
             
             return .over
         }
         
-        if(rePassword.count < 8) {
+        if(Password.count < 8) {
             return .under
         }
-        if(secondTextField.text == rewriteTextField.text) {
+        if(secondTextField.text == firstTextField.text) {
             return .normal
         }
         return .error
@@ -53,21 +49,47 @@ extension SignupView {
             .subscribe(onNext: { errorMassge in
                 switch errorMassge {
                 case .over:
-                    print("너무 길어")
+                    self.ErrorMassages.isHidden = false
+                    self.ErrorMassages.textColor = .red
+                    self.ErrorMassages.text = "최소 8글자~ 최대 20글자"
+                    self.errorImage.isHidden = false
+                    rePasswordTextField.layer.borderColor = UIColor.red.cgColor
+                    
                 case .under:
-                    print("너무 짫아")
-                case .normal:
-                    print("오케이 통과")
+                    self.ErrorMassages.isHidden = false
+                    self.ErrorMassages.textColor = .red
+                    self.ErrorMassages.text = "최소 8글자~ 최대 20글자"
+                    self.errorImage.isHidden = false
+                    rePasswordTextField.layer.borderColor = UIColor.red.cgColor
+                    
                 case .sign:
-                    print("대소문자 사용가능")
+                    self.ErrorMassages.isHidden = false
+                    self.ErrorMassages.textColor = .blue
+                    self.ErrorMassages.text = "대소문자, 숫자, 특수문자"
+                    self.errorImage.isHidden = false
+                    rePasswordTextField.layer.borderColor = UIColor.red.cgColor
+                    
+                case .normal:
+                    self.ErrorMassages.isHidden = false
+                    self.ErrorMassages.textColor = .blue
+                    self.ErrorMassages.text = "사용가능 합니다"
+                    self.errorImage.isHidden = true
+                    print("🫐 인증번호 페이지로 가기 🫐")
+                    rePasswordTextField.layer.borderColor = UIColor.blue.cgColor
+                    
                 case .error:
-                    print("에러다 에러야")
+                    self.ErrorMassages.isHidden = false
+                    self.ErrorMassages.textColor = .red
+                    self.ErrorMassages.text = "비밀번호가 일치하지 않습니다"
+                    self.errorImage.isHidden = false
+                    rePasswordTextField.layer.borderColor = UIColor.red.cgColor
+                    
                 }
             }).disposed(by: disposeBag)
     }
     
     
-    func SignupButtonTap(_ checkPasswordTextField: UITextField,_ idTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {
+    func passwordTextFieldTap(_ checkPasswordTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {
         checkPasswordTextField.rx.text.orEmpty
             .map(checkPassword(_:))
             .subscribe(onNext: { errorMassge in
@@ -99,15 +121,7 @@ extension SignupView {
                     errorText.textColor = .blue
                     errorText.text = "사용가능 합니다"
                     print("🫐 인증번호 페이지로 가기 🫐")
-                    checkPasswordTextField.layer.borderColor = UIColor(named: "Primary2")?.cgColor
-                    let GmailCertificationVC = GmailCertificationViewController()
-                    GmailCertificationVC.modalPresentationStyle = .fullScreen
-                    GmailCertificationVC.password = checkPasswordTextField.text!
-                    GmailCertificationVC.id = idTextField.text!
-                    print("이름: \(GmailCertificationVC.id)")
-                    print("비번: \(GmailCertificationVC.password)")
-                    
-                    controller.present(GmailCertificationVC, animated: true)
+                    checkPasswordTextField.layer.borderColor = UIColor.blue.cgColor
                     
                 case .error:
                     errorText.isHidden = false
