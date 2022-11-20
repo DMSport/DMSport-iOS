@@ -19,15 +19,22 @@ class TabBarVC: UITabBarController {
     }
 
     func setUpTabBarItem() {
-        let voteVC = VoteVC(reactor: VoteVCReactor())
+        let voteVC = VoteVC()
         voteVC.tabBarItem = UITabBarItem(
             title: "",
             image: UIImage(named: "Vote_dark"),
             selectedImage: UIImage(named: "Vote_bright")
         )
+        let noticeVC = NoticeVC()
+        noticeVC.tabBarItem = UITabBarItem(
+            title: "",
+            image: UIImage(named: "Megaphone_dark"),
+            selectedImage: UIImage(named: "Megaphone_bright")
+        )
         
         viewControllers = [
-            voteVC
+            voteVC,
+            noticeVC
         ]
     }
 }
