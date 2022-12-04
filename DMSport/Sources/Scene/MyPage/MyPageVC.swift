@@ -9,13 +9,42 @@
 import UIKit
 import Then
 import SnapKit
+import RxSwift
 
 class MyPageViewController: UIViewController {
+    
+    let disposBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "BackgroundColor")
         
         setupView()
+        
+        passwordChageButton.rx.tap
+            .bind {
+                let chagePasswordVC = ChangePasswordViewController()
+                chagePasswordVC.modalPresentationStyle = .fullScreen
+                self.present(chagePasswordVC, animated: true)
+            }
+            .disposed(by: disposBag)
+        
+        logoutButton.rx.tap
+            .bind {
+                let loginVC = LoginViewController()
+                loginVC.modalPresentationStyle = .fullScreen
+                self.present(loginVC, animated: true)
+            }
+            .disposed(by: disposBag)
+        
+        withdrawalButton.rx.tap
+            .bind {
+                let withdrawalVC = WithdrawalViewController()
+                withdrawalVC.modalPresentationStyle = .fullScreen
+                self.present(withdrawalVC, animated: true)
+            }
+            .disposed(by: disposBag)
+        
     }
     
     private lazy var modalView = UIView().then {

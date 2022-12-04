@@ -77,7 +77,7 @@ class LoginViewController: UIViewController {
                             KeyChain.create(key: Token.accessToken, token: userDate.access_token)
                             KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
                         }
-                        let myPageVC = AdminPageViewController()
+                        let myPageVC = MyPageViewController()
                         myPageVC.modalPresentationStyle = .fullScreen
                         self.present(myPageVC, animated: true)
                         break
