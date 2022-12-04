@@ -6,6 +6,7 @@ import Then
 
 class NoticeCell: BaseTC {
     var id: Int = 0
+    
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
