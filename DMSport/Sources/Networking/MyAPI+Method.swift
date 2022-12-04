@@ -25,7 +25,7 @@ extension MyAPI {
     case .postNoticeRegistrationAdmin: return .post
     case .postNoticeRegistrationClub: return .post
     case .patchNoticeCorrection: return .patch
-    case .deletNotice: return .delete
+    case .deleteNotice: return .delete
     case .getNewlyNotice: return .get
     case .patchStopClub: return .patch
     case .patchChangeOfClub: return .patch

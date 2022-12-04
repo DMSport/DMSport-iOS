@@ -5,8 +5,8 @@ import SnapKit
 import Then
 
 class EntireNoticeVC: BaseVC {
-    var noticeList: [DummyItems] = []
-    let dummyList = Dummies()
+//    var noticeList: [DummyItems] = []
+//    let dummyList = Dummies()
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
@@ -27,16 +27,16 @@ class EntireNoticeVC: BaseVC {
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
     }
-    func setUpEntireTableView() {
-        entireNoticeTableView.delegate = self
-        entireNoticeTableView.dataSource = self
-        entireNoticeTableView.reloadData()
-    }
-    func addDummyData() {
-        noticeList = [
-            dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2
-        ]
-    }
+//    func setUpEntireTableView() {
+//        entireNoticeTableView.delegate = self
+//        entireNoticeTableView.dataSource = self
+//        entireNoticeTableView.reloadData()
+//    }
+//    func addDummyData() {
+//        noticeList = [
+//            dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2, dummyList.entireItem1, dummyList.entireItem2
+//        ]
+//    }
     override func addView() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -51,8 +51,8 @@ class EntireNoticeVC: BaseVC {
     override func configureVC() {
         view.backgroundColor = DMSportColor.baseColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
-        setUpEntireTableView()
-        addDummyData()
+//        setUpEntireTableVaiew()
+//        addDummyData()
     }
     override func setLayout() {
         scrollView.snp.makeConstraints {
@@ -62,11 +62,11 @@ class EntireNoticeVC: BaseVC {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            if noticeList.count * 133 > 800 {
-                $0.height.equalTo(200 + (noticeList.count) * 133)
-            } else {
-                $0.height.equalTo(900)
-            }
+//            if noticeList.count * 133 > 800 {
+//                $0.height.equalTo(200 + (noticeList.count) * 133)
+//            } else {
+//                $0.height.equalTo(900)
+//            }
         }
         entireGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(10)

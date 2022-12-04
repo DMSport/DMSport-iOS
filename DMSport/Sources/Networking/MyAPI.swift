@@ -27,8 +27,8 @@ enum MyAPI {
     case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
     case patchNoticeCorrection(PatchNoticeCorrection)
-    case deletNotice(DeletNotice)
-    case getNewlyNotice(GetNewlyNotice)
+    case deleteNotice(DeletNotice)
+    case getNewlyNotice
     
     //admin
     case patchStopClub(PatchStopClub)
@@ -57,4 +57,8 @@ extension Encodable {
             return [:]
         }
     }
+}
+
+extension Header {
+    case
 }
