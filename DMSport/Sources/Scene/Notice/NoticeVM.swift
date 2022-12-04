@@ -13,24 +13,20 @@ class NoticeVM {
     }
     
     struct Output {
-        let categoryRecentNotices: BehaviorRelay<[Admin]>
-        let entireRecentNotices: BehaviorRelay<[Admin]>
+        let allNotices: BehaviorRelay<[Notice]>
     }
-    
-    func transform(_ input: Input) -> Output {
-        let adminList = BehaviorRelay<[Admin]>(value: [])
-        let managerList = BehaviorRelay<[Admin]>(value: [])
+    func transfrom(_ input: Input) -> Output {
+        let allNotices = BehaviorRelay<[Notice]>(value: [])
         
-        self.mainProvider.rx.request(.getNewlyNotice)
+        self.mainProvider.rx.request(.getAllSearchNoticeList)
             .subscribe { res in
                 switch res {
                 case .success(let result):
                     debugPrint(result)
                     switch result.statusCode {
                     case 200:
-                        if let data = try? JSONDecoder().decode(GetNewlyNotice.self, from: result.data) {
-                            adminList.accept(data.admin)
-                            managerList.accept(data.manager)
+                        if let data = try? JSONDecoder().decode(GetAllSearchNoticeList.self, from: result.data) {
+                            allNotices.accept(data.notices)
                         } else {
                             debugPrint(res)
                         }
@@ -41,6 +37,7 @@ class NoticeVM {
                     print(error)
                 }
             }.disposed(by: disposeBag)
-        return Output(categoryRecentNotices: managerList, entireRecentNotices: adminList)
+        
+        return Output(allNotices: allNotices)
     }
 }

@@ -10,23 +10,9 @@ import RxRelay
 class NoticeVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getNotices = BehaviorRelay<Void>(value: ())
-    let viewModel = NoticeVM()
-    var entireNoticeList: [Admin] = []
-    var categoryNoticeList: [Admin] = []
+    let viewModel = RecentNoticeVM()
+    var count: Int = 0
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        DispatchQueue.main.async {
-//            let input = NoticeVM.Input(getNotices: self.getNotices.asDriver())
-//            let output = self.viewModel.getRecentNotices(input)
-//            self.entireNoticeList = output.0.self
-//            self.categoryNoticeList = output.1.self
-//
-//            print(self.entireNoticeList)
-//            print(self.categoryNoticeList)
-//        }
-//    }
-    
-//    let dummyList = Dummies()
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
@@ -81,7 +67,7 @@ class NoticeVC: BaseVC {
         categoryTableView.delegate = self
     }
     private func bindViewModels() {
-        let input = NoticeVM.Input(getData: getNotices.asDriver())
+        let input = RecentNoticeVM.Input(getData: getNotices.asDriver())
         let output = viewModel.transform(input)
         
         output.entireRecentNotices.bind(to: entireNoticeTableView.rx.items(
@@ -143,11 +129,7 @@ class NoticeVC: BaseVC {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            if entireNoticeList.count * 138 + categoryNoticeList.count * 138 > 700 {
-                $0.height.equalTo(700 + (entireNoticeList.count + categoryNoticeList.count) * 138)
-            } else {
-                $0.height.equalTo(800)
-            }
+            $0.height.equalTo(500 + 4 * 138)
         }
         backView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(89)

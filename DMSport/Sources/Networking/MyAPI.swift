@@ -22,7 +22,7 @@ enum MyAPI {
     case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
-    case getAllSearchNoticeList(GetAllSearchNoticeList)
+    case getAllSearchNoticeList
     case getNoticeDetilSearch(GetNoticeDetilSearch)
     case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)

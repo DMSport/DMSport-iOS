@@ -79,11 +79,8 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getAllSearchNoticeList(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .getAllSearchNoticeList:
+            return .requestPlain
         case .getNoticeDetilSearch(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),

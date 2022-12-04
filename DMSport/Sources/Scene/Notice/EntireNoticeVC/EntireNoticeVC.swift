@@ -5,8 +5,7 @@ import SnapKit
 import Then
 
 class EntireNoticeVC: BaseVC {
-//    var noticeList: [DummyItems] = []
-//    let dummyList = Dummies()
+    
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
