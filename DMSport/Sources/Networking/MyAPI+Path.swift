@@ -33,7 +33,7 @@ extension MyAPI {
         return "/clubs/vote"
     case .getVoteList:
         return "/clubs/vote/history"
-    case .getClubHopeWhether:
+    case .postClubHopeWhether:
         return "/clubs/schedule/hope"
     case .getAllSearchNoticeList:
         return "/notices"

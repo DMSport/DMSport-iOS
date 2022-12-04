@@ -19,13 +19,13 @@ extension MyAPI {
     case .postVoteAndrevoke: return .post
     case .getToDayVoteSearch: return .get
     case .getVoteList: return .get
-    case .getClubHopeWhether: return .get
+    case .postClubHopeWhether: return .post
     case .getAllSearchNoticeList: return .get
     case .getNoticeDetilSearch: return .get
     case .postNoticeRegistrationAdmin: return .post
     case .postNoticeRegistrationClub: return .post
     case .patchNoticeCorrection: return .patch
-    case .deletNotice: return .delete
+    case .deleteNotice: return .delete
     case .getNewlyNotice: return .get
     case .patchStopClub: return .patch
     case .patchChangeOfClub: return .patch

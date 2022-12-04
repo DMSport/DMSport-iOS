@@ -74,7 +74,7 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getClubHopeWhether(let body):
+        case .postClubHopeWhether(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
@@ -104,16 +104,13 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .deletNotice(let body):
+        case .deleteNotice(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getNewlyNotice(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .getNewlyNotice:
+            return .requestPlain
         case .patchStopClub(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
