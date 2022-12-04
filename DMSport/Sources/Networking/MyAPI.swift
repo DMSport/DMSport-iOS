@@ -23,7 +23,7 @@ enum MyAPI {
     
     //notices
     case getAllSearchNoticeList
-    case getNoticeDetilSearch(GetNoticeDetilSearch)
+    case getNoticeDetilSearch(_noticeID: Int)
     case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
     case patchNoticeCorrection(PatchNoticeCorrection)

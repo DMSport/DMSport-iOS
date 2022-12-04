@@ -81,11 +81,8 @@ extension MyAPI {
             )
         case .getAllSearchNoticeList:
             return .requestPlain
-        case .getNoticeDetilSearch(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .getNoticeDetilSearch:
+            return .requestPlain
         case .postNoticeRegistrationAdmin(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),

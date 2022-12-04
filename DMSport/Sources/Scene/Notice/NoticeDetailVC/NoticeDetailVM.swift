@@ -4,33 +4,31 @@ import RxCocoa
 import Moya
 import RxMoya
 
-class RecentNoticeVM {
+class NoticeDetailVM {
     private let disposeBag = DisposeBag()
     let mainProvider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
     
     struct Input {
-        let getData: Driver<Void>
+        let noticeID: Int
+        let getDetail: Driver<Void>
     }
     
     struct Output {
-        let categoryRecentNotices: BehaviorRelay<[Admin]>
-        let entireRecentNotices: BehaviorRelay<[Admin]>
+        let seeNotice: PublishRelay<GetNoticeDetilSearch?>
     }
     
-    func transform(_ input: Input) -> Output {
-        let adminList = BehaviorRelay<[Admin]>(value: [])
-        let managerList = BehaviorRelay<[Admin]>(value: [])
+    func transfrom(_ input: Input) -> Output {
+        let seeDetail = PublishRelay<GetNoticeDetilSearch?>()
         
-        self.mainProvider.rx.request(.getNewlyNotice)
+        self.mainProvider.rx.request(.getNoticeDetilSearch(_noticeID: input.noticeID))
             .subscribe { res in
                 switch res {
                 case .success(let result):
                     debugPrint(result)
                     switch result.statusCode {
                     case 200:
-                        if let data = try? JSONDecoder().decode(GetNewlyNotice.self, from: result.data) {
-                            adminList.accept(data.admin)
-                            managerList.accept(data.manager)
+                        if let data = try? JSONDecoder().decode(GetNoticeDetilSearch.self, from: result.data) {
+                            seeDetail.accept(data)
                         } else {
                             debugPrint(res)
                         }
@@ -41,6 +39,7 @@ class RecentNoticeVM {
                     print(error)
                 }
             }.disposed(by: disposeBag)
-        return Output(categoryRecentNotices: managerList, entireRecentNotices: adminList)
+        
+        return Output(seeNotice: seeDetail)
     }
 }

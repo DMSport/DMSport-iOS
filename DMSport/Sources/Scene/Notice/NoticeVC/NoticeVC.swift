@@ -10,8 +10,7 @@ import RxRelay
 class NoticeVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getNotices = BehaviorRelay<Void>(value: ())
-    let viewModel = RecentNoticeVM()
-    var count: Int = 0
+    let viewModel = NoticeVM()
     
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
@@ -58,33 +57,29 @@ class NoticeVC: BaseVC {
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
     }
-    func setUpEntireTableView() {
+    func setUpTableView() {
         entireNoticeTableView.isScrollEnabled = false
-        entireNoticeTableView.delegate = self
-    }
-    func setUpCategoryTableView() {
         categoryTableView.isScrollEnabled = false
-        categoryTableView.delegate = self
     }
     private func bindViewModels() {
-        let input = RecentNoticeVM.Input(getData: getNotices.asDriver())
+        let input = NoticeVM.Input(getData: getNotices.asDriver())
         let output = viewModel.transform(input)
         
         output.entireRecentNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
-                print(items)
                 cell.noticeTitle.text =  items.title
                 cell.noticeContent.text = items.contentPreview
                 cell.noticeDetails.text = items.createdAt
+                cell.selectionStyle = .none
             }.disposed(by: disposeBag)
         output.categoryRecentNotices.bind(to: categoryTableView.rx.items(
             cellIdentifier: "CategoryNotice",
             cellType: NoticeCell.self)) { row, items, cell in
-                print(items)
                 cell.noticeTitle.text = items.title
                 cell.noticeContent.text = items.contentPreview
                 cell.noticeDetails.text = items.createdAt + " / " + items.type
+                cell.selectionStyle = .none
             }.disposed(by: disposeBag)
     }
     override func addView() {
@@ -110,8 +105,7 @@ class NoticeVC: BaseVC {
         view.backgroundColor = DMSportColor.backgroundColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
         bindViewModels()
-        setUpEntireTableView()
-        setUpCategoryTableView()
+        setUpTableView()
         entireNextButton.rx.tap
             .subscribe(onNext: {
                 self.navigationController?.pushViewController(EntireNoticeVC(), animated: true)
@@ -129,7 +123,11 @@ class NoticeVC: BaseVC {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            $0.height.equalTo(500 + 4 * 138)
+            if view.frame.height > 900 {
+                $0.height.equalTo(300 + 4 * 138)
+            } else {
+                $0.height.equalTo(800)
+            }
         }
         backView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(89)
