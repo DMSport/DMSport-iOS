@@ -74,7 +74,7 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getClubHopeWhether(let body):
+        case .postClubHopeWhether(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default

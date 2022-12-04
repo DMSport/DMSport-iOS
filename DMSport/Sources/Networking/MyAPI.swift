@@ -19,7 +19,7 @@ enum MyAPI {
     case postVoteAndrevoke(PostVoteAndRevoke)
     case getToDayVoteSearch(GetToDayVoteSearch)
     case getVoteList(GetVoteList)
-    case getClubHopeWhether(GetClubHopeWhether)
+    case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
     case getAllSearchNoticeList(GetAllSearchNoticeList)
@@ -43,7 +43,17 @@ extension MyAPI: Moya.TargetType {
     var method: Moya.Method { self.getMethod() }
     var sampleData: Data { Data() }
     var task: Task { self.getTask() }
-    var headers: [String : String]? { ["Content-Type": "application/json"] }
+//    var headers: [String : String]? { ["Content-Type": "application/json"] }
+    var headers: [String : String]? {
+        switch self {
+        case .patchChangePassword, .deleteLogout, .deleteMemberGoOut, .getSearchMyInformation, .postVoteAndrevoke, .getToDayVoteSearch, .getVoteList, .postClubHopeWhether, .getAllSearchNoticeList, .getNoticeDetilSearch, .postNoticeRegistrationAdmin, .postNoticeRegistrationClub, .patchNoticeCorrection, .deleteNotice, .getNewlyNotice, .patchStopClub, .patchChangeOfClub, .getUserSearchList:
+            return Header.accesstoken.header()
+        case .putRefreshToken:
+            return Header.refreshToken.header()
+        case .postSignIn, .postSignUp, .postSignupSend, .postMailAuthentication, .postFindPasswordMail, .putChangePassword:
+            return Header.tokenIsEmpty.header()
+        }
+    }
 }
 
 extension Encodable {
@@ -57,8 +67,4 @@ extension Encodable {
             return [:]
         }
     }
-}
-
-extension Header {
-    case
 }

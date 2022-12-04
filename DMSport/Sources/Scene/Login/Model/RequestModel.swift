@@ -118,7 +118,7 @@ struct VoteList: Codable {
     }
 }
 
-struct GetClubHopeWhether: ModelType {
+struct PostClubHopeWhether: ModelType {
     
 }
 
