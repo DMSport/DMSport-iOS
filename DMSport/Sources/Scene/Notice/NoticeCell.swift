@@ -5,8 +5,6 @@ import SnapKit
 import Then
 
 class NoticeCell: BaseTC {
-    var id: Int = 0
-    
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
@@ -29,9 +27,11 @@ class NoticeCell: BaseTC {
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 16, weight: .semibold)
         $0.textAlignment = .justified
+        $0.isEditable = false
+        $0.isSelectable = false
     }
     override func addView() {
-        addSubview(backView)
+        contentView.addSubview(backView)
         [
             noticeTitle,
             noticeDetails,

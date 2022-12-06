@@ -29,7 +29,7 @@ extension MyAPI {
         return "/users/my"
     case .postVoteAndrevoke:
         return "/clubs/vote/" //{vote-id}
-    case .getToDayVoteSearch:
+    case .getToDayVoteSearch(_):
         return "/clubs/vote"
     case .getVoteList:
         return "/clubs/vote/history"

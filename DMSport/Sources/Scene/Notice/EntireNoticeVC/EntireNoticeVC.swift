@@ -52,7 +52,6 @@ class EntireNoticeVC: BaseVC {
                     cell.noticeTitle.text = items.title
                     cell.noticeDetails.text = items.createdAt
                     cell.noticeContent.text = items.contentPreview
-                    cell.id = items.id
                     self.entireNoticeCount += 1
                     cell.selectionStyle = .none
                 } else {

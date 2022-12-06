@@ -1,10 +1,10 @@
-import UIKit
+import Foundation
+
 import RxSwift
 import RxCocoa
 import Moya
-import RxMoya
 
-class AllNoticeVM {
+class CategoryNoticeVM {
     private let disposeBag = DisposeBag()
     let mainProvider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
     
@@ -30,7 +30,7 @@ class AllNoticeVM {
                     switch result.statusCode {
                     case 200:
                         if let data = try? JSONDecoder().decode(GetAllSearchNoticeList.self, from: result.data) {
-                            allNotices.accept(data.notices.filter { $0.type == "ALL" })
+                            allNotices.accept(data.notices.filter { $0.type != "ALL" })
                         } else {
                             debugPrint(res)
                         }
@@ -42,7 +42,8 @@ class AllNoticeVM {
                 }
             }.disposed(by: disposeBag)
         
-        input.loadDetail.asObservable().subscribe(onNext: { index in
+        input.loadDetail.asObservable()
+            .subscribe(onNext: { index in
             let value = allNotices.value
             detailIndex.accept(value[index.row].id)
         }).disposed(by: disposeBag)
