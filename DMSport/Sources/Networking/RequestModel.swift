@@ -63,16 +63,16 @@ struct PostVoteAndRevoke: ModelType {
 }
 
 struct GetToDayVoteSearch: Codable {
-    let isBan: Bool
-    let banPeriod: String
+    let ban: Bool
+    let banPeriod: String?
     let maxPeople: Int
     let vote: [Vote]
 
     enum CodingKeys: String, CodingKey {
-        case isBan = "is_ban"
+        case ban
         case banPeriod = "ban_period"
         case maxPeople = "max_people"
-        case vote
+        case vote = "vote_list"
     }
 }
 
@@ -81,12 +81,23 @@ struct Vote: Codable {
     let voteID: Int
     let time: String
     let voteCount: Int
+    let maxPeople: Int
+    let alreadyVoted: Bool
+    let users: [User]
 
     enum CodingKeys: String, CodingKey {
         case voteID = "vote_id"
         case time
         case voteCount = "vote_count"
+        case maxPeople = "max_people"
+        case alreadyVoted = "is_complete"
+        case users = "vote_user"
     }
+}
+
+struct User: Codable {
+    let name: String
+    let team: Int?
 }
 
 struct GetVoteList: Codable {

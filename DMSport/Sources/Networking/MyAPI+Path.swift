@@ -29,7 +29,7 @@ extension MyAPI {
         return "/users/my"
     case .postVoteAndrevoke:
         return "/clubs/vote/" //{vote-id}
-    case .getToDayVoteSearch:
+    case .getToDayVoteSearch(_):
         return "/clubs/vote"
     case .getVoteList:
         return "/clubs/vote/history"
@@ -37,8 +37,8 @@ extension MyAPI {
         return "/clubs/schedule/hope"
     case .getAllSearchNoticeList:
         return "/notices"
-    case .getNoticeDetilSearch:
-        return "/notices/" //{notice-id}
+    case .getNoticeDetilSearch(let id):
+        return "/notices/\(id)" //{notice-id}
     case .postNoticeRegistrationAdmin:
         return "/notices/admin?type=" //{NOTICE_TYPE}
     case .postNoticeRegistrationClub:

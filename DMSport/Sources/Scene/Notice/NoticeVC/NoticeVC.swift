@@ -11,22 +11,7 @@ class NoticeVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getNotices = BehaviorRelay<Void>(value: ())
     let viewModel = NoticeVM()
-    var entireNoticeList: [Admin] = []
-    var categoryNoticeList: [Admin] = []
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        DispatchQueue.main.async {
-//            let input = NoticeVM.Input(getNotices: self.getNotices.asDriver())
-//            let output = self.viewModel.getRecentNotices(input)
-//            self.entireNoticeList = output.0.self
-//            self.categoryNoticeList = output.1.self
-//
-//            print(self.entireNoticeList)
-//            print(self.categoryNoticeList)
-//        }
-//    }
-    
-//    let dummyList = Dummies()
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
@@ -72,13 +57,9 @@ class NoticeVC: BaseVC {
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
     }
-    func setUpEntireTableView() {
+    func setUpTableView() {
         entireNoticeTableView.isScrollEnabled = false
-        entireNoticeTableView.delegate = self
-    }
-    func setUpCategoryTableView() {
         categoryTableView.isScrollEnabled = false
-        categoryTableView.delegate = self
     }
     private func bindViewModels() {
         let input = NoticeVM.Input(getData: getNotices.asDriver())
@@ -87,18 +68,18 @@ class NoticeVC: BaseVC {
         output.entireRecentNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
-                print(items)
                 cell.noticeTitle.text =  items.title
                 cell.noticeContent.text = items.contentPreview
                 cell.noticeDetails.text = items.createdAt
+                cell.selectionStyle = .none
             }.disposed(by: disposeBag)
         output.categoryRecentNotices.bind(to: categoryTableView.rx.items(
             cellIdentifier: "CategoryNotice",
             cellType: NoticeCell.self)) { row, items, cell in
-                print(items)
                 cell.noticeTitle.text = items.title
                 cell.noticeContent.text = items.contentPreview
                 cell.noticeDetails.text = items.createdAt + " / " + items.type
+                cell.selectionStyle = .none
             }.disposed(by: disposeBag)
     }
     override func addView() {
@@ -124,8 +105,7 @@ class NoticeVC: BaseVC {
         view.backgroundColor = DMSportColor.backgroundColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
         bindViewModels()
-        setUpEntireTableView()
-        setUpCategoryTableView()
+        setUpTableView()
         entireNextButton.rx.tap
             .subscribe(onNext: {
                 self.navigationController?.pushViewController(EntireNoticeVC(), animated: true)
@@ -143,8 +123,8 @@ class NoticeVC: BaseVC {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            if entireNoticeList.count * 138 + categoryNoticeList.count * 138 > 700 {
-                $0.height.equalTo(700 + (entireNoticeList.count + categoryNoticeList.count) * 138)
+            if view.frame.height > 900 {
+                $0.height.equalTo(300 + 4 * 138)
             } else {
                 $0.height.equalTo(800)
             }

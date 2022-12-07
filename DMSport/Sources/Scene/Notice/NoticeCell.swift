@@ -17,7 +17,7 @@ class NoticeCell: BaseTC {
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 12, weight: .semibold)
     }
-    private let ellipsisButton = UIButton().then {
+    let ellipsisButton = UIButton().then {
         $0.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = DMSportColor.hintColor.color
@@ -27,9 +27,11 @@ class NoticeCell: BaseTC {
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 16, weight: .semibold)
         $0.textAlignment = .justified
+        $0.isEditable = false
+        $0.isSelectable = false
     }
     override func addView() {
-        addSubview(backView)
+        contentView.addSubview(backView)
         [
             noticeTitle,
             noticeDetails,

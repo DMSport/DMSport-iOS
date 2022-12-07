@@ -3,10 +3,16 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Then
+import Moya
+import RxMoya
 
 class CategoryNoticeVC: BaseVC {
-//    var noticeList: [DummyItems] = []
-//    let dummyList = Dummies()
+    private let mainProvider = MoyaProvider<MyAPI>()
+    private let getNotices = BehaviorRelay<Void>(value: ())
+    let viewModel = CategoryNoticeVM()
+    var categoryNoticeCount: Int = 0
+    var noticeID = Int()
+    
     private let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
@@ -27,18 +33,44 @@ class CategoryNoticeVC: BaseVC {
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
     }
-//    func setUpEntireTableView() {
-//        categoryNoticeTableView.delegate = self
-//        categoryNoticeTableView.dataSource = self
-//        categoryNoticeTableView.reloadData()
-//    }
-//    func addDummyData() {
-//        noticeList = [
-//            dummyList.categoryItem1, dummyList.categoryItem2, dummyList.categoryItem1, dummyList.categoryItem2, dummyList.categoryItem1, dummyList.categoryItem2, dummyList.categoryItem1, dummyList.categoryItem2, dummyList.categoryItem1, dummyList.categoryItem2
-//        ]
-//    }
+    private let newNoticeButton = UIButton().then {
+        $0.tintColor = DMSportColor.whiteColor.color
+        $0.setImage(UIImage(named: "NewPost"), for: .normal)
+        $0.backgroundColor = DMSportColor.mainColor.color
+        $0.layer.cornerRadius = 26
+    }
+    private func bindViewModels() {
+        let input = CategoryNoticeVM.Input(getNotices: getNotices.asDriver(), loadDetail: categoryNoticeTableView.rx.itemSelected.asSignal())
+        let output = viewModel.transfrom(input)
+        
+        output.allNotices.bind(to: categoryNoticeTableView.rx.items(
+            cellIdentifier: "CategoryNotice",
+            cellType: NoticeCell.self)) { row, items, cell in
+                if items.type != "ALL" {
+                    cell.noticeTitle.text = items.title
+                    cell.noticeDetails.text = items.createdAt + " / " + items.type
+                    cell.noticeContent.text = items.contentPreview
+                    self.categoryNoticeCount += 1
+                    cell.selectionStyle = .none
+                } else {
+                    print(items.type)
+                    cell.selectionStyle = .none
+                }
+            }.disposed(by: disposeBag)
+        output.detailIndex.asObservable()
+            .subscribe(onNext: { id in
+                let next = NoticeDetailVC()
+                next.id = id
+                self.navigationController?.pushViewController(next, animated: true)
+            }).disposed(by: disposeBag)
+    }
     override func addView() {
-        view.addSubview(scrollView)
+        [
+            scrollView,
+            newNoticeButton
+        ] .forEach {
+            view.addSubview($0)
+        }
         scrollView.addSubview(contentView)
         [
             entireGuideLabel,
@@ -51,8 +83,14 @@ class CategoryNoticeVC: BaseVC {
     override func configureVC() {
         view.backgroundColor = DMSportColor.baseColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
-//        setUpEntireTableView()
-//        addDummyData()
+        bindViewModels()
+        newNoticeButton.rx.tap
+            .subscribe(onNext: {
+                let newNotice = NewNoticeAlertVC()
+                newNotice.modalPresentationStyle = .overFullScreen
+                newNotice.modalTransitionStyle = .crossDissolve
+                self.present(newNotice, animated: true)
+            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         scrollView.snp.makeConstraints {
@@ -62,11 +100,11 @@ class CategoryNoticeVC: BaseVC {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-//            if noticeList.count * 133 > 800 {
-//                $0.height.equalTo(200 + (noticeList.count) * 133)
-//            } else {
-//                $0.height.equalTo(900)
-//            }
+            if categoryNoticeCount * 133 > 800 {
+                $0.height.equalTo(200 + categoryNoticeCount * 133)
+            } else {
+                $0.height.equalTo(900)
+            }
         }
         entireGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(10)
@@ -76,6 +114,11 @@ class CategoryNoticeVC: BaseVC {
         categoryNoticeTableView.snp.makeConstraints {
             $0.top.equalTo(entireGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
+        }
+        newNoticeButton.snp.makeConstraints {
+            $0.width.height.equalTo(52)
+            $0.right.equalTo(view.safeAreaLayoutGuide).inset(24)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
     }
 }

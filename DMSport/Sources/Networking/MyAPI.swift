@@ -17,13 +17,13 @@ enum MyAPI {
     
     //clubs
     case postVoteAndrevoke(PostVoteAndRevoke)
-    case getToDayVoteSearch(GetToDayVoteSearch)
+    case getToDayVoteSearch(_type: String)
     case getVoteList(GetVoteList)
     case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
-    case getAllSearchNoticeList(GetAllSearchNoticeList)
-    case getNoticeDetilSearch(GetNoticeDetilSearch)
+    case getAllSearchNoticeList
+    case getNoticeDetilSearch(_noticeID: Int)
     case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
     case patchNoticeCorrection(PatchNoticeCorrection)
@@ -42,6 +42,7 @@ extension MyAPI: Moya.TargetType {
     var path: String { self.getPath() }
     var method: Moya.Method { self.getMethod() }
     var sampleData: Data { Data() }
+    var validationType: ValidationType { .successCodes }
     var task: Task { self.getTask() }
 //    var headers: [String : String]? { ["Content-Type": "application/json"] }
     var headers: [String : String]? {

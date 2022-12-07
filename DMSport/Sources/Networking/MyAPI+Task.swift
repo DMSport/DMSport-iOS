@@ -64,11 +64,13 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getToDayVoteSearch(let body):
+        case .getToDayVoteSearch(let type):
             return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+                parameters:
+                    [
+                        "type" : type
+                    ],
+                encoding: URLEncoding.queryString)
         case .getVoteList(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
@@ -79,16 +81,10 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getAllSearchNoticeList(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
-        case .getNoticeDetilSearch(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .getAllSearchNoticeList:
+            return .requestPlain
+        case .getNoticeDetilSearch:
+            return .requestPlain
         case .postNoticeRegistrationAdmin(let body):
             return .requestParameters(
                 parameters: body.toDictionary(),
