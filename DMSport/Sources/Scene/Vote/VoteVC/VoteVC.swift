@@ -7,10 +7,14 @@ import Moya
 import RxMoya
 
 class VoteVC: BaseVC {
+    let type = ["BADMINTON", "SOCCER", "BASKETBALL", "VOLLEYBALL"]
     let labelData = ["배드민턴", "축구", "농구", "배구"]
     let imageData = ["Badminton", "SoccerBall", "BasketBall", "VolleyBall"]
     
-    let mainProvider = MoyaProvider<MyAPI>()
+    private let mainProvider = MoyaProvider<MyAPI>()
+    private let getVotes = BehaviorRelay<Void>(value: ())
+    let viewModel = TodayVoteVM()
+    let typeRelay = PublishRelay<String>()
     
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.baseColor.color
@@ -66,11 +70,31 @@ class VoteVC: BaseVC {
     }
     func setUpTableView() {
         timeVoteTableView.isScrollEnabled = false
-        timeVoteTableView.delegate = self
-        timeVoteTableView.dataSource = self
-        timeVoteTableView.reloadData()
     }
-    
+    private func bindViewModels() {
+        let input = TodayVoteVM.Input(
+            getVotes: getVotes.asDriver(),
+            type: typeRelay.asDriver(onErrorJustReturn: ""),
+            loadDetail: categoryCollectionView.rx.itemSelected.asSignal()
+        )
+        let output = viewModel.transfrom(input)
+
+        output.todayVotes.bind(to: timeVoteTableView.rx.items(
+            cellIdentifier: "TimeVoteCell",
+            cellType: TimeVoteCell.self)) { row, items, cell in
+                cell.categoryLabel.text = "\(self.type[row])"
+                cell.id = items.voteID
+                cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
+                switch items.time {
+                case "LUNCH":
+                    cell.lunchDinnerLabel.text = "점심시간"
+                case "DINNER":
+                    cell.lunchDinnerLabel.text = "저녁시간"
+                default:
+                    break
+                }
+            }.disposed(by: disposeBag)
+    }
     override func addView() {
         [
             backView,
@@ -108,6 +132,7 @@ class VoteVC: BaseVC {
     override func configureVC() {
         getAccessToken()
         view.backgroundColor = DMSportColor.backgroundColor.color
+        bindViewModels()
         setUpCollectionView()
         setUpTableView()
     }

@@ -5,8 +5,9 @@ import RxCocoa
 import Then
 
 class TimeVoteCell: BaseTC {
-    var applied: Bool = false
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
+    var applied = Bool()
+    var id = Int()
     
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color

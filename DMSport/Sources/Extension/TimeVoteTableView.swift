@@ -10,8 +10,7 @@ extension VoteVC: UITableViewDataSource, UITableViewDelegate {
         voteCell.categoryLabel.text = "\(labelData[indexPath.row])"
         voteCell.leftMemebersLabel.text = "2/4명"
         voteCell.lunchDinnerLabel.text = "점심시간"
-        
+
         return voteCell
     }
 }
-

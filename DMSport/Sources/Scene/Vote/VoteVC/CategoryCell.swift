@@ -3,6 +3,7 @@ import Then
 import SnapKit
 
 class CategoryCell: BaseCC {
+    var type: String = ""
     let categoryLabel = UILabel().then {
         $0.textColor = DMSportColor.blackColor.color
         $0.font = UIFont.systemFont(ofSize: 20, weight: .bold)
