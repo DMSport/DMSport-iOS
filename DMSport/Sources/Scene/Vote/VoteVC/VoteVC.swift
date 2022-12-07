@@ -15,6 +15,8 @@ class VoteVC: BaseVC {
     private let getVotes = BehaviorRelay<Void>(value: ())
     let viewModel = TodayVoteVM()
     let typeRelay = PublishRelay<String>()
+    let isBan = PublishRelay<Bool>()
+    let banPeriod = PublishRelay<String>()
     
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.baseColor.color
@@ -78,12 +80,49 @@ class VoteVC: BaseVC {
             loadDetail: categoryCollectionView.rx.itemSelected.asSignal()
         )
         let output = viewModel.transfrom(input)
-
+        
+        
+        output.voteObject.asObservable()
+            .subscribe(onNext: {
+                self.isBan.accept($0.ban)
+            }).disposed(by: disposeBag)
+        
         output.todayVotes.bind(to: timeVoteTableView.rx.items(
             cellIdentifier: "TimeVoteCell",
             cellType: TimeVoteCell.self)) { row, items, cell in
-                cell.categoryLabel.text = "\(self.type[row])"
-                cell.id = items.voteID
+                output.categoryName.asObservable()
+                    .map {
+                        switch $0 {
+                        case "BADMINTON":
+                            return "배드민턴"
+                        case "SOCCER":
+                            tapCell()
+                            return "축구"
+                        case "BASKETBALL":
+                            tapCell()
+                            return "농구"
+                        case "VOLLEYBALL":
+                            tapCell()
+                            return "배구"
+                        default:
+                            return ""
+                        }
+                    }.subscribe(onNext: {
+                        cell.categoryLabel.text = $0
+                    }).disposed(by: self.disposeBag)
+                
+                self.isBan.asObservable()
+                    .subscribe(onNext: { bool in
+                    if bool {
+                        cell.backView.backgroundColor = DMSportColor.disabledColor.color
+                        self.timeVoteTableView.allowsSelection = false
+                    } else {
+                        cell.backView.backgroundColor = DMSportColor.whiteColor.color
+                    }
+                }).disposed(by: self.disposeBag)
+                
+                cell.applied.accept(items.alreadyVoted)
+                cell.id.accept(items.voteID)
                 cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
                 switch items.time {
                 case "LUNCH":
@@ -93,6 +132,16 @@ class VoteVC: BaseVC {
                 default:
                     break
                 }
+                cell.graphWidth = cell.graphView.frame.width * CGFloat((items.voteCount / items.maxPeople))
+                
+                func tapCell() {
+                    cell.applyButton.rx.tap
+                        .subscribe(onNext: {
+                            self.navigationController?.pushViewController(PositionVoteVC(), animated: true)
+                        }).disposed(by: cell.disposeBag)
+                }
+                
+                cell.selectionStyle = .none
             }.disposed(by: disposeBag)
     }
     override func addView() {

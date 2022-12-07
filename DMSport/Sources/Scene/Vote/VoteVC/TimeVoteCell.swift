@@ -5,11 +5,12 @@ import RxCocoa
 import Then
 
 class TimeVoteCell: BaseTC {
-    private let disposeBag = DisposeBag()
-    var applied = Bool()
-    var id = Int()
+    let disposeBag = DisposeBag()
+    var applied = PublishRelay<Bool>()
+    let id = PublishRelay<Int>()
+    var graphWidth = CGFloat()
     
-    private let backView = UIView().then {
+    let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
     }
@@ -42,9 +43,16 @@ class TimeVoteCell: BaseTC {
         $0.setTitleColor(DMSportColor.whiteColor.color, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
     }
-    
+    let votedUserButton = UIButton().then {
+        $0.backgroundColor = DMSportColor.mainColor.color
+        $0.setTitle("신청자 목록 보기", for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        $0.setTitleColor(DMSportColor.whiteColor.color, for: .normal)
+        $0.layer.cornerRadius = 10
+    }
     override func addView() {
         addSubview(backView)
+        contentView.addSubview(applyButton)
         graphBase.addSubview(graphView)
         [
             categoryLabel,
@@ -52,24 +60,21 @@ class TimeVoteCell: BaseTC {
             leftMemebersLabel,
             graphBase,
             graphView,
-            applyButton
+            votedUserButton
         ] .forEach {
             backView.addSubview($0)
         }
     }
     override func configureVC() {
-        self.applyButton.rx.tap
-            .subscribe(onNext: {
-                if self.applied {
-                    self.applyButton.backgroundColor = DMSportColor.mainColor.color
-                    self.applyButton.setTitle("신청", for: .normal)
-                }
-                else {
-                    self.applyButton.backgroundColor = DMSportColor.disabledColor.color
-                    self.applyButton.setTitle("완료", for: .normal)
-                }
-                self.applied = !self.applied
-            }).disposed(by: disposeBag)
+        self.applied.asObservable().subscribe(onNext:  { bool in
+            if bool == false {
+                self.applyButton.backgroundColor = DMSportColor.mainColor.color
+                self.applyButton.setTitle("신청", for: .normal)
+            } else {
+                self.applyButton.backgroundColor = DMSportColor.disabledColor.color
+                self.applyButton.setTitle("완료", for: .normal)
+            }
+        }).disposed(by: self.disposeBag)
         self.backgroundColor = .clear
     }
     override func setLayout() {
@@ -101,13 +106,19 @@ class TimeVoteCell: BaseTC {
             $0.top.equalTo(graphBase.snp.top)
             $0.left.equalTo(graphBase.snp.left)
             $0.bottom.equalTo(graphBase.snp.bottom)
-            $0.width.equalTo(158)
+            $0.width.equalTo(graphWidth)
+        }
+        votedUserButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(14)
+            $0.left.equalToSuperview().inset(18)
+            $0.width.equalTo(115)
+            $0.height.equalTo(21)
         }
         applyButton.snp.makeConstraints {
-            $0.top.equalTo(graphBase.snp.bottom).offset(8)
+            $0.top.equalToSuperview().inset(83)
             $0.right.equalToSuperview().inset(10)
             $0.width.equalTo(80)
-            $0.bottom.equalToSuperview().inset(10)
+            $0.height.equalTo(40)
         }
     }
 }

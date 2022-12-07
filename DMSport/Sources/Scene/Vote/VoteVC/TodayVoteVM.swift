@@ -15,15 +15,17 @@ class TodayVoteVM {
     }
     
     struct Output {
-        //        let voteObject: PublishRelay<GetToDayVoteSearch>
+        let voteObject: PublishRelay<GetToDayVoteSearch>
         let todayVotes: BehaviorRelay<[Vote]>
         let detailIndex: Signal<Int>
+        let categoryName: PublishRelay<String>
     }
     
     func transfrom(_ input: Input) -> Output {
         let voteObject = PublishRelay<GetToDayVoteSearch>()
         let todayVotes = BehaviorRelay<[Vote]>(value: [])
         let detailIndex = PublishRelay<Int>()
+        let categoryName = PublishRelay<String>()
         
         input.type.asObservable()
             .flatMapLatest { type -> Single<GetToDayVoteSearch> in
@@ -32,6 +34,7 @@ class TodayVoteVM {
                     .map {
                         voteObject.accept($0)
                         todayVotes.accept($0.vote)
+                        categoryName.accept(type)
                         return $0
                     }
                     .catch { error in
@@ -39,23 +42,17 @@ class TodayVoteVM {
                     }
             }.subscribe {
                 print($0)
-//                voteObject.accept($0)
-//                todayVotes.accept($0.vote)
             }
             .disposed(by: disposeBag)
         
         
-        //        voteObject.asObservable()
-        //            .subscribe(onNext: { data in
-        //                let data =
-        //            })
-        //
         input.loadDetail.asObservable()
-            .subscribe(onNext: { index in
-                let value = todayVotes.value
-                detailIndex.accept(value[index.row].voteID)
+            .subscribe(onNext: {
+                detailIndex.accept($0.row)
+//                let value = todayVotes.value
+//                detailIndex.accept(value[index.row].voteID)
             }).disposed(by: disposeBag)
         
-        return Output(todayVotes: todayVotes, detailIndex: detailIndex.asSignal())
+        return Output(voteObject: voteObject, todayVotes: todayVotes, detailIndex: detailIndex.asSignal(), categoryName: categoryName)
     }
 }
