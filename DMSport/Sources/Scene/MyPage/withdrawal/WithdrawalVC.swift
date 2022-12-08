@@ -15,13 +15,13 @@ final class WithdrawalViewController: UIViewController {
     var toggleButton = false
     
     private lazy var withdrawalLabel = UILabel().then {
-        $0.textColor = UIColor(named: "Primary")
-        $0.font = .systemFont(ofSize: 58.0, weight: .bold)
+        $0.textColor = DMSportIOSAsset.Color.mainColor.color
+        $0.font = .systemFont(ofSize: 48.0, weight: .bold)
         $0.text = "회원 탈퇴"
     }
     
     private lazy var logoText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary2")
+        $0.textColor = DMSportIOSAsset.Color.subtitleColor.color
         $0.font = .systemFont(ofSize: 35.0, weight: .bold)
         $0.text = "DMSport."
     }
@@ -135,7 +135,7 @@ final class WithdrawalViewController: UIViewController {
                         print(error)
                     }
                 }.disposed(by: self.disposeBag)
-            }
+            }.disposed(by: disposeBag)
         
         eyeImageButton.rx.tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)

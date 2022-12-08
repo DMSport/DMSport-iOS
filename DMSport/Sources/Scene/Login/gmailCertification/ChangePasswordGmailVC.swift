@@ -37,12 +37,13 @@ class ChangePasswordGmailViewController: UIViewController {
         
         certificationButton.rx.tap
             .bind {
-                if(self.emailTextField.text! == nil || self.emailTextField.text!.isEmpty) {
+                if(self.emailTextField.text! == "" || self.emailTextField.text!.isEmpty) {
                     print("이메일이 없서")
                     print(self.emailTextField.text!)
                     return
                 }
-                self.provider.rx.request(.postFindPasswordMail(PostFindPasswordMail(email: self.emailTextField.text!))).subscribe { response in
+                self.provider.rx.request(.postFindPasswordMail(PostFindPasswordMail(email: self.emailTextField.text!)))
+                    .subscribe { response in
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
@@ -51,7 +52,7 @@ class ChangePasswordGmailViewController: UIViewController {
                     case .failure(let error):
                         print("에러: \(error)")
                     }
-                }
+                    }.disposed(by: self.disposeBag)
                 
                 self.okButton.rx.tap
                     .bind {
@@ -78,8 +79,8 @@ class ChangePasswordGmailViewController: UIViewController {
                                 print("error: \(error)")
                             }
                         }.disposed(by: view.disposeBag)
-                    }
-            }
+                    }.disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
     }
     
     private lazy var fristText = UILabel().then {
@@ -89,7 +90,7 @@ class ChangePasswordGmailViewController: UIViewController {
     }
     
     private lazy var logoText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary2")
+        $0.textColor = DMSportIOSAsset.Color.subtitleColor.color
         $0.font = .systemFont(ofSize: 35.0, weight: .bold)
         $0.text = "DMSport."
     }

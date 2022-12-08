@@ -58,7 +58,8 @@ class ChangePasswordViewController: UIViewController {
                     return
                 }
                 
-                self.provider.rx.request(.putChangePassword(PutChangePassword(email: EmailSaver.saver.getSavedEmail()!, newPassword: view.secondTextField.text!))).subscribe { response in
+                self.provider.rx.request(.putChangePassword(PutChangePassword(email: EmailSaver.saver.getSavedEmail() ?? "", newPassword: view.secondTextField.text!)))
+                    .subscribe { response in
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
@@ -66,8 +67,7 @@ class ChangePasswordViewController: UIViewController {
                     case .failure(let error):
                         print("error: \(error)")
                     }
-                }
-            })
-            .disposed(by: view.disposeBag)
+                    }.disposed(by: view.disposeBag)
+            }).disposed(by: view.disposeBag)
     }
 }

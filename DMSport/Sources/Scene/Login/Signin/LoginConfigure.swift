@@ -23,8 +23,8 @@ extension LoginView {
             .orEmpty
             .map{ _ in self.loginVM.validationPassword() }
             .subscribe(onNext: { error in
-                self.errorMassgeText.textColor = error ? .blue : .red
-                self.secondTextField.layer.borderColor = error ? UIColor.blue.cgColor : UIColor.red.cgColor
+                self.errorMassgeText.textColor = error ? DMSportIOSAsset.Color.subtitleColor.color : .red
+                self.secondTextField.layer.borderColor = error ? DMSportIOSAsset.Color.subtitleColor.color.cgColor : DMSportIOSAsset.Color.errorColor.color.cgColor
             })
             .disposed(by: disposeBag)
     }

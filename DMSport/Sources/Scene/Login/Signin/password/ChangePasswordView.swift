@@ -16,7 +16,7 @@ class ChangePasswordView: BaseSignView {
     
     internal lazy var ErrorMassages = UILabel().then {
         $0.text = "에러다에러야!"
-        $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
+        $0.font = .systemFont(ofSize: 12.0, weight: .regular)
         $0.isHidden = true
     }
     

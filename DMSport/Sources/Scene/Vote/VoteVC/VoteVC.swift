@@ -161,23 +161,7 @@ class VoteVC: BaseVC {
                 backView.addSubview($0)
             }
     }
-    func getAccessToken() {
-        self.mainProvider.rx.request(.postSignIn(PostLoginRequest(email: "admin@dsm.hs.kr", password: "admin123")))
-            .subscribe({ response in
-                switch response {
-                case .success(let response):
-                    debugPrint(response)
-                    if let userData = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
-                        KeyChain.create(key: Token.accessToken, token: userData.access_token)
-                        KeyChain.create(key: Token.refreshToken, token: userData.refresh_token)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }).disposed(by: disposeBag)
-    }
     override func configureVC() {
-        getAccessToken()
         view.backgroundColor = DMSportColor.backgroundColor.color
         bindViewModels()
         setUpCollectionView()

@@ -8,11 +8,16 @@ class TabBarVC: UITabBarController {
     typealias DMSportImage = DMSportIOSAsset.Assets
     
     override func viewWillAppear(_ animated: Bool) {
+        if Token.accessToken == "" {
+            let loginVC = BaseNC(rootViewController: LoginViewController())
+            loginVC.modalPresentationStyle = .fullScreen
+            self.present(loginVC, animated: true)
+        }
         super.viewWillAppear(animated)
         setUpTabBarLayout()
         setUpTabBarItem()
     }
-
+    
     func setUpTabBarLayout() {
         let tabBar: UITabBar = self.tabBar
         tabBar.backgroundColor = DMSportColor.whiteColor.color
@@ -21,7 +26,7 @@ class TabBarVC: UITabBarController {
         self.hidesBottomBarWhenPushed = true
         self.tabBar.layer.cornerRadius = 20
     }
-
+    
     func setUpTabBarItem() {
         let voteVC = VoteVC()
         voteVC.tabBarItem = UITabBarItem(

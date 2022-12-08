@@ -84,7 +84,7 @@ class MyPageViewController: UIViewController {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 20.0
         $0.setTitle("로그아웃", for: .normal)
-        $0.setTitleColor(UIColor(named: "HighlightColor"), for: .normal)
+        $0.setTitleColor(DMSportIOSAsset.Color.highlightColor.color, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16.0, weight: .bold)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 260.0)
     }
@@ -93,7 +93,7 @@ class MyPageViewController: UIViewController {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 20.0
         $0.setTitle("회원 탈퇴", for: .normal)
-        $0.setTitleColor(UIColor(named: "HighlightColor"), for: .normal)
+        $0.setTitleColor(DMSportIOSAsset.Color.highlightColor.color, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16.0, weight: .bold)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 260.0)
     }

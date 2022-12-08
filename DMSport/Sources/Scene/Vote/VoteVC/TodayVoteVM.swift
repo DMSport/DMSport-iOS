@@ -49,8 +49,6 @@ class TodayVoteVM {
         input.loadDetail.asObservable()
             .subscribe(onNext: {
                 detailIndex.accept($0.row)
-//                let value = todayVotes.value
-//                detailIndex.accept(value[index.row].voteID)
             }).disposed(by: disposeBag)
         
         return Output(voteObject: voteObject, todayVotes: todayVotes, detailIndex: detailIndex.asSignal(), categoryName: categoryName)

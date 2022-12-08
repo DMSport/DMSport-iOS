@@ -37,11 +37,11 @@ class GmailCertificationViewController: UIViewController {
         
         okButton.rx.tap
             .bind {
-                if(self.emailTextField.text! == nil || self.emailTextField.text!.isEmpty) {
+                if(self.emailTextField.text! == "" || self.emailTextField.text!.isEmpty) {
                     print("이메일이 없서")
                     return
                 }
-                if(self.checkEmailTextField.text! == nil || self.checkEmailTextField.text!.isEmpty) {
+                if(self.checkEmailTextField.text! == "" || self.checkEmailTextField.text!.isEmpty) {
                     print("인증번호가 없서")
                     return
                 }
@@ -82,7 +82,7 @@ class GmailCertificationViewController: UIViewController {
                         }
                     }.disposed(by: view.disposeBag)
                 }
-            }
+            }.disposed(by: disposeBag)
         
         certificationButton.rx.tap
             .bind {
@@ -98,8 +98,7 @@ class GmailCertificationViewController: UIViewController {
                         print("error: \(error)")
                     }
                 }.disposed(by: self.disposeBag)
-                
-            }
+            }.disposed(by: disposeBag)
     }
     
     private lazy var fristText = UILabel().then {
@@ -109,7 +108,7 @@ class GmailCertificationViewController: UIViewController {
     }
     
     private lazy var logoText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary2")
+        $0.textColor = DMSportIOSAsset.Color.subtitleColor.color
         $0.font = .systemFont(ofSize: 35.0, weight: .bold)
         $0.text = "DMSport."
     }
