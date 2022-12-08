@@ -16,7 +16,7 @@ enum MyAPI {
     case getSearchMyInformation(GetSearchMyInFormation)
     
     //clubs
-    case postVoteAndrevoke(PostVoteAndRevoke)
+    case postVoteAndrevoke(_voteID: Int)
     case getToDayVoteSearch(_type: String)
     case getVoteList(GetVoteList)
     case postClubHopeWhether(PostClubHopeWhether)

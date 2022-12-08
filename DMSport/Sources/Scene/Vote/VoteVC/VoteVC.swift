@@ -81,7 +81,6 @@ class VoteVC: BaseVC {
         )
         let output = viewModel.transfrom(input)
         
-        
         output.voteObject.asObservable()
             .subscribe(onNext: {
                 self.isBan.accept($0.ban)
@@ -96,13 +95,10 @@ class VoteVC: BaseVC {
                         case "BADMINTON":
                             return "배드민턴"
                         case "SOCCER":
-                            tapCell()
                             return "축구"
                         case "BASKETBALL":
-                            tapCell()
                             return "농구"
                         case "VOLLEYBALL":
-                            tapCell()
                             return "배구"
                         default:
                             return ""
@@ -113,16 +109,16 @@ class VoteVC: BaseVC {
                 
                 self.isBan.asObservable()
                     .subscribe(onNext: { bool in
-                    if bool {
-                        cell.backView.backgroundColor = DMSportColor.disabledColor.color
-                        self.timeVoteTableView.allowsSelection = false
-                    } else {
-                        cell.backView.backgroundColor = DMSportColor.whiteColor.color
-                    }
-                }).disposed(by: self.disposeBag)
+                        if bool {
+                            cell.backView.backgroundColor = DMSportColor.disabledColor.color
+                            self.timeVoteTableView.allowsSelection = false
+                        } else {
+                            cell.backView.backgroundColor = DMSportColor.whiteColor.color
+                        }
+                    }).disposed(by: self.disposeBag)
                 
                 cell.applied.accept(items.alreadyVoted)
-                cell.id.accept(items.voteID)
+                cell.id  = items.voteID
                 cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
                 switch items.time {
                 case "LUNCH":
@@ -132,14 +128,17 @@ class VoteVC: BaseVC {
                 default:
                     break
                 }
-                cell.graphWidth = cell.graphView.frame.width * CGFloat((items.voteCount / items.maxPeople))
+                cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
                 
-                func tapCell() {
-                    cell.applyButton.rx.tap
-                        .subscribe(onNext: {
-                            self.navigationController?.pushViewController(PositionVoteVC(), animated: true)
-                        }).disposed(by: cell.disposeBag)
-                }
+                cell.applyButton.rx.tap
+                    .subscribe(onNext: {
+                        let next = PositionVoteVC()
+                        next.voteID = cell.id
+                        print("what + \(next.voteID)")
+                        next.categoryName = cell.categoryLabel.text ?? ""
+                        self.navigationController?.pushViewController(next, animated: true)
+                    }).disposed(by: cell.disposeBag)
+                
                 
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)

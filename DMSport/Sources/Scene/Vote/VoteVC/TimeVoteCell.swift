@@ -7,7 +7,7 @@ import Then
 class TimeVoteCell: BaseTC {
     let disposeBag = DisposeBag()
     var applied = PublishRelay<Bool>()
-    let id = PublishRelay<Int>()
+    var id = Int()
     var graphWidth = CGFloat()
     
     let backView = UIView().then {

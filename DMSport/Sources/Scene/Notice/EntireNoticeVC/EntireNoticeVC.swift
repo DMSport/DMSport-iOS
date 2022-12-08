@@ -61,10 +61,15 @@ class EntireNoticeVC: BaseVC {
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()
             .subscribe(onNext: { id in
-                let nextVC = NoticeDetailVC()
-                nextVC.id = id
-                self.navigationController?.pushViewController(nextVC, animated: true)
+                self.noticeID = id
             }).disposed(by: disposeBag)
+        entireNoticeTableView.rx.itemSelected
+            .subscribe(onNext: { _ in
+                let next = NoticeDetailVC()
+                next.id = self.noticeID
+                self.navigationController?.pushViewController(next, animated: true)
+            }).disposed(by: disposeBag)
+        
     }
     override func addView() {
         [

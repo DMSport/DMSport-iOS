@@ -59,8 +59,13 @@ class CategoryNoticeVC: BaseVC {
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()
             .subscribe(onNext: { id in
+                self.noticeID = id
+            }).disposed(by: disposeBag)
+        
+        categoryNoticeTableView.rx.itemSelected
+            .subscribe(onNext: { _ in
                 let next = NoticeDetailVC()
-                next.id = id
+                next.id = self.noticeID
                 self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
     }

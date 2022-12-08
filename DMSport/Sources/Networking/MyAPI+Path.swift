@@ -27,8 +27,8 @@ extension MyAPI {
         return "/users"
     case .getSearchMyInformation:
         return "/users/my"
-    case .postVoteAndrevoke:
-        return "/clubs/vote/" //{vote-id}
+    case .postVoteAndrevoke(let id):
+        return "/clubs/vote/\(id)" //{vote-id}
     case .getToDayVoteSearch(_):
         return "/clubs/vote"
     case .getVoteList:

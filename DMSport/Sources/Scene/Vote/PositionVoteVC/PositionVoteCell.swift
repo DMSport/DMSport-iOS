@@ -3,6 +3,8 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Then
+import Moya
+import RxMoya
 
 class PositionVoteCell: BaseTC {
     private let backView = UIView().then {
@@ -21,13 +23,13 @@ class PositionVoteCell: BaseTC {
         $0.layer.cornerRadius = 20
     }
     override func addView() {
-        contentView.addSubview(backView)
         [
-            positionLabel,
+            backView,
             applyButton
         ] .forEach {
-            backView.addSubview($0)
+            contentView.addSubview($0)
         }
+        backView.addSubview(positionLabel)
     }
     override func configureVC() {
         backgroundColor = DMSportColor.baseColor.color
@@ -43,7 +45,7 @@ class PositionVoteCell: BaseTC {
             $0.left.equalToSuperview().inset(20)
         }
         applyButton.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.equalToSuperview().inset(8)
             $0.right.equalToSuperview().inset(10)
             $0.width.equalTo(80)
             $0.height.equalTo(40)

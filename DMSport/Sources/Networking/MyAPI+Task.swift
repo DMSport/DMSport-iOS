@@ -59,11 +59,8 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .postVoteAndrevoke(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .postVoteAndrevoke:
+            return .requestPlain
         case .getToDayVoteSearch(let type):
             return .requestParameters(
                 parameters:

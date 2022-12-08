@@ -7,7 +7,10 @@ import Moya
 import RxMoya
 
 class PositionVoteVC: BaseVC {
+    private let mainProvider = MoyaProvider<MyAPI>()
+    private let viewModel = PositionVoteVM()
     var categoryName = String()
+    var voteID = Int()
     
     private let guideLabel = UILabel().then {
         $0.text = "포지션 선택"
@@ -34,7 +37,8 @@ class PositionVoteVC: BaseVC {
         view.backgroundColor = DMSportColor.baseColor.color
         voteTableView.delegate = self
         voteTableView.dataSource = self
-        print(categoryName)
+//        let voteCell = PositionVoteCell()
+//        voteCell.voteID.accept(voteID)
     }
     override func setLayout() {
         guideLabel.snp.makeConstraints {
@@ -53,11 +57,11 @@ class PositionVoteVC: BaseVC {
 extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch categoryName.self {
-        case "SOCCER":
+        case "축구":
             return 11
-        case "BASKETBALL":
+        case "농구":
             return 5
-        case "VOLLEYBALL":
+        case "배구":
             return 4
         default:
             print("default")
@@ -67,28 +71,67 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch categoryName.self {
-        case "SOCCER":
+        case "축구":
             let positionList: [String] = [ "C.F", "S.F", "L.W", "C.M", "R.W", "A.M", "D.M", "L.S.T", "R.S.T", "S.W", "G.K" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                
+                let input = PositionVoteVM.Input(
+                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    voteID: voteID)
+                let output = viewModel.transfrom(input)
+                
+                output.voteResult.asObservable()
+                    .subscribe(onNext: { bool in
+                        if bool {
+                            print(bool)
+                        }
+                    }).disposed(by: disposeBag)
+                
                 cell.selectionStyle = .none
                 return cell
             } else {
                 return UITableViewCell()
             }
-        case "BASKETBALL":
+        case "농구":
             let positionList: [String] = [ "P.G", "S.G", "S.F", "P.F", "C" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                
+                let input = PositionVoteVM.Input(
+                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    voteID: voteID)
+                let output = viewModel.transfrom(input)
+                
+                output.voteResult.asObservable()
+                    .subscribe(onNext: { bool in
+                        if bool {
+                            print(bool)
+                        }
+                    }).disposed(by: disposeBag)
+                
                 cell.selectionStyle = .none
                 return cell
             } else {
                 return UITableViewCell()
             }
-        case "VOLLEYBALL":
+        case "배구":
             let positionList: [String] = [ "Right", "Left", "Center", "Libero" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                
+                let input = PositionVoteVM.Input(
+                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    voteID: voteID)
+                let output = viewModel.transfrom(input)
+                
+                output.voteResult.asObservable()
+                    .subscribe(onNext: { bool in
+                        if bool {
+                            print(bool)
+                        }
+                    }).disposed(by: disposeBag)
+                
                 cell.selectionStyle = .none
                 return cell
             } else {
