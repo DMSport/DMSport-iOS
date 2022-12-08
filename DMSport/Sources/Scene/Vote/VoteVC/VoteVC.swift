@@ -130,14 +130,13 @@ class VoteVC: BaseVC {
                 }
                 cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
                 
-                cell.applyButton.rx.tap
-                    .subscribe(onNext: {
+//                cell.applyButton.rx.tap
+//                    .subscribe(onNext: {
                         let next = PositionVoteVC()
                         next.voteID = cell.id
-                        print("what + \(next.voteID)")
                         next.categoryName = cell.categoryLabel.text ?? ""
-                        self.navigationController?.pushViewController(next, animated: true)
-                    }).disposed(by: cell.disposeBag)
+//                        self.navigationController?.pushViewController(next, animated: true)
+//                    }).disposed(by: cell.disposeBag)
                 
                 
                 cell.selectionStyle = .none
