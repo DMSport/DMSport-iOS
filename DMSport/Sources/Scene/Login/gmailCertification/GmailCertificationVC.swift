@@ -45,7 +45,8 @@ class GmailCertificationViewController: UIViewController {
                     print("인증번호가 없서")
                     return
                 }
-                self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!))).subscribe { response in
+                self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!)))
+                    .subscribe { response in
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
@@ -102,7 +103,7 @@ class GmailCertificationViewController: UIViewController {
     }
     
     private lazy var fristText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary")
+        $0.textColor = DMSportIOSAsset.Color.mainColor.color
         $0.font = .systemFont(ofSize: 58.0, weight: .bold)
         $0.text = "인증하기"
     }
@@ -131,7 +132,7 @@ class GmailCertificationViewController: UIViewController {
     
     private lazy var certificationButton = UIButton().then {
         $0.setTitle("인증", for: .normal)
-        $0.backgroundColor = UIColor(named: "Primary")
+        $0.backgroundColor = DMSportIOSAsset.Color.mainColor.color
     }
     
     private lazy var okButton = UIButton().then {
@@ -168,8 +169,8 @@ extension GmailCertificationViewController {
         emailTextField.snp.makeConstraints {
             $0.top.equalTo(logoText.snp.bottom).offset(42)
             $0.leading.equalTo(checkEmailTextField.snp.leading)
+            $0.trailing.equalToSuperview().inset(112)
             $0.height.equalTo(50)
-            $0.width.equalTo(260)
         }
 
         checkEmailTextField.snp.makeConstraints {

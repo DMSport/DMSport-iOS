@@ -52,19 +52,54 @@ class NewNoticeAlertVC: BaseVC {
         $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         $0.layer.cornerRadius = 20
     }
-    private func postNewNotice() {
-        let input = NewNoticeAlertVM.Input(newTitle: noticeTitleTextField.text!, newContent: noticeContentTextView.text!, buttonDidTap: completeButton.rx.tap.asSignal())
-        let output = viewModel.transform(input)
-        output.result.subscribe(onNext: { bool in
-            if bool == true {
-                self.dismiss(animated: true)
-            }
-        }).disposed(by: disposeBag)
+    let menuButton = UIButton().then {
+        $0.setTitle("종목", for: .normal)
+        $0.setTitleColor(DMSportColor.hintColor.color, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        $0.setImage(UIImage(named: "Menu"), for: .normal)
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.imageEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
+    }
+//    private func postNewNotice() {
+//        let input = NewNoticeAlertVM.Input(
+//            newTitle: noticeTitleTextField.rx.text.orEmpty.asDriver(onErrorJustReturn: ""),
+//            newContent: noticeContentTextView.rx.text.orEmpty.asDriver(onErrorJustReturn: ""),
+//            category: menuButton.menu?.children.,
+//            buttonDidTap: completeButton.rx.tap.asSignal())
+//        let output = viewModel.transform(input)
+//        output.result.subscribe(onNext: { bool in
+//            if bool == true {
+//                self.dismiss(animated: true)
+//            }
+//        }).disposed(by: disposeBag)
+//    }
+    
+    private func setButtonMenu() {
+        print("menu")
+        
+        let all = UIAction(title: "전체", handler: { _ in print("전체") })
+        let badminton = UIAction(title: "배드민턴", handler: { _ in print("배드민턴") })
+        let soccer = UIAction(title: "축구", handler: { _ in print("축구") })
+        let basketball = UIAction(title: "농구", handler: { _ in print("농구") })
+        let volleyball = UIAction(title: "배구", handler: { _ in print("배구") })
+        
+        menuButton.menu = UIMenu(
+            identifier: nil,
+            options: .displayInline,
+            children:
+                [
+                    all,
+                    badminton,
+                    soccer,
+                    basketball,
+                    volleyball
+                ])
     }
     override func addView() {
         view.addSubview(popupView)
         [
             alertTitle,
+            menuButton,
             noticeTitleTextField,
             alertContent,
             noticeContentTextView,
@@ -76,14 +111,15 @@ class NewNoticeAlertVC: BaseVC {
     }
     override func configureVC() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
+        setButtonMenu()
         cancelButton.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
-        completeButton.rx.tap
-            .subscribe(onNext: {
-                self.postNewNotice()
-            }).disposed(by: disposeBag)
+//        completeButton.rx.tap
+//            .subscribe(onNext: {
+//                self.postNewNotice()
+//            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         popupView.snp.makeConstraints {
@@ -95,6 +131,11 @@ class NewNoticeAlertVC: BaseVC {
             $0.top.equalToSuperview().inset(20)
             $0.left.equalToSuperview().inset(22.46)
             $0.height.equalTo(24)
+        }
+        menuButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(20)
+            $0.right.equalToSuperview().inset(30)
+            $0.height.equalTo(17)
         }
         noticeTitleTextField.snp.makeConstraints {
             $0.top.equalTo(alertTitle.snp.bottom).offset(12)

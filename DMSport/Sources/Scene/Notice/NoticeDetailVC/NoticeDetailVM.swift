@@ -20,7 +20,7 @@ class NoticeDetailVM {
     func transfrom(_ input: Input) -> Output {
         let seeDetail = PublishRelay<GetNoticeDetilSearch?>()
         
-        self.mainProvider.rx.request(.getNoticeDetilSearch(_noticeID: input.noticeID))
+        self.mainProvider.rx.request(.getNoticeDetilSearch(input.noticeID))
             .subscribe { res in
                 switch res {
                 case .success(let result):

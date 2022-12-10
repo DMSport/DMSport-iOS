@@ -82,10 +82,13 @@ extension MyAPI {
             return .requestPlain
         case .getNoticeDetilSearch:
             return .requestPlain
-        case .postNoticeRegistrationAdmin(let body):
+        case .postNoticeRegistrationAdmin(_, _, let type):
             return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
+                parameters:
+                    [
+                        "type" : type
+                    ],
+                encoding: URLEncoding.queryString
             )
         case .postNoticeRegistrationClub(let body):
             return .requestParameters(

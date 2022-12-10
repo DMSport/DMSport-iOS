@@ -68,6 +68,11 @@ class NoticeVC: BaseVC {
         output.entireRecentNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
+//                let formatter = DateFormatter()
+//                formatter.dateFormat = "yyyy-MM-dd HH:mm  yyyy-MM-ddTHH:mm:32.5167"
+//                let convertDate = formatter.date(from: items.createdAt)
+//                let dateResult = formatter.string(from: convertDate ?? "2022-12-09 10:12")
+                
                 cell.noticeTitle.text =  items.title
                 cell.noticeContent.text = items.contentPreview
                 cell.noticeDetails.text = items.createdAt

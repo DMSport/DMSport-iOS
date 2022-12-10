@@ -39,8 +39,8 @@ extension MyAPI {
         return "/notices"
     case .getNoticeDetilSearch(let id):
         return "/notices/\(id)" //{notice-id}
-    case .postNoticeRegistrationAdmin:
-        return "/notices/admin?type=" //{NOTICE_TYPE}
+    case .postNoticeRegistrationAdmin(_, _, _):
+        return "/notices/admin" //{NOTICE_TYPE}
     case .postNoticeRegistrationClub:
         return "/notices/club"
     case .patchNoticeCorrection:

@@ -11,7 +11,7 @@ class TabBarVC: UITabBarController {
         if Token.accessToken == "" {
             let loginVC = BaseNC(rootViewController: LoginViewController())
             loginVC.modalPresentationStyle = .fullScreen
-            self.present(loginVC, animated: true)
+            self.present(loginVC, animated: false)
         }
         super.viewWillAppear(animated)
         setUpTabBarLayout()

@@ -16,15 +16,15 @@ enum MyAPI {
     case getSearchMyInformation(GetSearchMyInFormation)
     
     //clubs
-    case postVoteAndrevoke(_voteID: Int)
-    case getToDayVoteSearch(_type: String)
+    case postVoteAndrevoke(_ voteID: Int)
+    case getToDayVoteSearch(_ type: String)
     case getVoteList(GetVoteList)
     case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
     case getAllSearchNoticeList
-    case getNoticeDetilSearch(_noticeID: Int)
-    case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
+    case getNoticeDetilSearch(_ noticeID: Int)
+    case postNoticeRegistrationAdmin(_ title: String, _ content: String, _ type: String)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
     case patchNoticeCorrection(PatchNoticeCorrection)
     case deleteNotice(DeletNotice)

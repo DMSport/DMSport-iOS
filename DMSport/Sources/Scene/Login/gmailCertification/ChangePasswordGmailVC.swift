@@ -84,8 +84,8 @@ class ChangePasswordGmailViewController: UIViewController {
     }
     
     private lazy var fristText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary")
-        $0.font = .systemFont(ofSize: 58.0, weight: .bold)
+        $0.textColor = DMSportIOSAsset.Color.mainColor.color
+        $0.font = .systemFont(ofSize: 48.0, weight: .bold)
         $0.text = "인증하기"
     }
     
