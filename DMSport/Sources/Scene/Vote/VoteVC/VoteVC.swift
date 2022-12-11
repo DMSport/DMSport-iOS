@@ -130,14 +130,41 @@ class VoteVC: BaseVC {
                 }
                 cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
                 
-//                cell.applyButton.rx.tap
-//                    .subscribe(onNext: {
-                        let next = PositionVoteVC()
-                        next.voteID = cell.id
-                        next.categoryName = cell.categoryLabel.text ?? ""
-//                        self.navigationController?.pushViewController(next, animated: true)
-//                    }).disposed(by: cell.disposeBag)
+                if cell.categoryLabel.text == "배드민턴" {
+                    cell.applyButton.rx.tap
+                        .subscribe(onNext: {
+                            print("its badminton")
+                            let applyViewModel = PositionVoteVM()
+                            let input = PositionVoteVM.Input(
+                                buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                                voteID: cell.id)
+                            let output = applyViewModel.transfrom(input)
+                            
+                            output.voteResult.asObservable()
+                                .subscribe(onNext: { bool in
+                                    if bool {
+                                        print(bool)
+                                    }
+                                }).disposed(by: self.disposeBag)
+                        }).disposed(by: self.disposeBag)
+                } else {
+                    print("its not badminton")
+                    cell.applyButton.rx.tap
+                        .subscribe(onNext: {
+                            let next = PositionVoteVC()
+                            next.voteID = cell.id
+                            next.categoryName = cell.categoryLabel.text ?? ""
+                            self.navigationController?.pushViewController(next, animated: true)
+                        }).disposed(by: cell.disposeBag)
+                }
                 
+                cell.votedUserButton.rx.tap
+                    .subscribe(onNext: {
+                        let userList = VotedUserAlertVC()
+                        userList.modalPresentationStyle = .overFullScreen
+                        userList.modalTransitionStyle = .crossDissolve
+                        self.present(userList, animated: true)
+                    }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)

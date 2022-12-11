@@ -69,7 +69,6 @@ class EntireNoticeVC: BaseVC {
                 next.id = self.noticeID
                 self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
-        
     }
     override func addView() {
         [

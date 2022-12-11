@@ -48,11 +48,17 @@ class TimeVoteCell: BaseTC {
         $0.setTitle("신청자 목록 보기", for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
         $0.setTitleColor(DMSportColor.whiteColor.color, for: .normal)
-        $0.layer.cornerRadius = 10
+        $0.layer.cornerRadius = 12
     }
     override func addView() {
         addSubview(backView)
-        contentView.addSubview(applyButton)
+        [
+            votedUserButton,
+            applyButton
+        ] .forEach {
+            contentView.addSubview($0)
+        }
+//        contentView.addSubview(applyButton)
         graphBase.addSubview(graphView)
         [
             categoryLabel,
@@ -109,10 +115,11 @@ class TimeVoteCell: BaseTC {
             $0.width.equalTo(graphWidth)
         }
         votedUserButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(14)
+//            $0.bottom.equalToSuperview().inset(14)
+            $0.top.equalToSuperview().inset(95)
             $0.left.equalToSuperview().inset(18)
             $0.width.equalTo(115)
-            $0.height.equalTo(21)
+            $0.height.equalTo(23)
         }
         applyButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(83)

@@ -37,8 +37,6 @@ class PositionVoteVC: BaseVC {
         view.backgroundColor = DMSportColor.baseColor.color
         voteTableView.delegate = self
         voteTableView.dataSource = self
-//        let voteCell = PositionVoteCell()
-//        voteCell.voteID.accept(voteID)
     }
     override func setLayout() {
         guideLabel.snp.makeConstraints {

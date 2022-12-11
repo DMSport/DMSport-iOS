@@ -6,7 +6,7 @@ import RxCocoa
 import Moya
 import RxMoya
 
-class NewNoticeAlertVC: BaseVC {
+class VotedUserAlertVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let postNotices = BehaviorRelay<Void>(value: ())
     let viewModel = NewNoticeAlertVM()
@@ -52,7 +52,7 @@ class NewNoticeAlertVC: BaseVC {
         $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         $0.layer.cornerRadius = 20
     }
-    let menuButton = UIButton(type: .system).then {
+    let menuButton = UIButton().then {
         $0.setTitle("종목", for: .normal)
         $0.setTitleColor(DMSportColor.hintColor.color, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
@@ -60,30 +60,28 @@ class NewNoticeAlertVC: BaseVC {
         $0.semanticContentAttribute = .forceRightToLeft
         $0.imageEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
     }
-    
-    
-    private func postNewNotice() {
-        let input = NewNoticeAlertVM.Input(
-            newTitle: noticeTitleTextField.text ?? "",
-            newContent: noticeContentTextView.text,
-            category: menuButton.currentTitle.self!,
-            buttonDidTap: completeButton.rx.tap.asDriver())
-        let output = viewModel.transform(input)
-        output.result.subscribe(onNext: { bool in
-            if bool == true {
-                self.dismiss(animated: true)
-            }
-        }).disposed(by: disposeBag)
-    }
+//    private func postNewNotice() {
+//        let input = NewNoticeAlertVM.Input(
+//            newTitle: noticeTitleTextField.rx.text.orEmpty.asDriver(onErrorJustReturn: ""),
+//            newContent: noticeContentTextView.rx.text.orEmpty.asDriver(onErrorJustReturn: ""),
+//            category: menuButton.menu?.children.,
+//            buttonDidTap: completeButton.rx.tap.asSignal())
+//        let output = viewModel.transform(input)
+//        output.result.subscribe(onNext: { bool in
+//            if bool == true {
+//                self.dismiss(animated: true)
+//            }
+//        }).disposed(by: disposeBag)
+//    }
     
     private func setButtonMenu() {
         print("menu")
         
-        let all = UIAction(title: "전체", state: .on, handler: { _ in print("전체") })
-        let badminton = UIAction(title: "배드민턴", state: .on, handler: { _ in print("배드민턴") })
-        let soccer = UIAction(title: "축구", state: .on, handler: { _ in print("축구") })
-        let basketball = UIAction(title: "농구", state: .on, handler: { _ in print("농구") })
-        let volleyball = UIAction(title: "배구", state: .on, handler: { _ in print("배구") })
+        let all = UIAction(title: "전체", handler: { _ in print("전체") })
+        let badminton = UIAction(title: "배드민턴", handler: { _ in print("배드민턴") })
+        let soccer = UIAction(title: "축구", handler: { _ in print("축구") })
+        let basketball = UIAction(title: "농구", handler: { _ in print("농구") })
+        let volleyball = UIAction(title: "배구", handler: { _ in print("배구") })
         
         menuButton.menu = UIMenu(
             identifier: nil,
@@ -96,12 +94,6 @@ class NewNoticeAlertVC: BaseVC {
                     basketball,
                     volleyball
                 ])
-        menuButton.showsMenuAsPrimaryAction = true
-        if #available(iOS 15.0, *) {
-            menuButton.changesSelectionAsPrimaryAction = true
-        } else {
-            // Fallback on earlier versions
-        }
     }
     override func addView() {
         view.addSubview(popupView)
@@ -124,10 +116,10 @@ class NewNoticeAlertVC: BaseVC {
             .subscribe(onNext: {
                 self.dismiss(animated: true)
             }).disposed(by: disposeBag)
-        completeButton.rx.tap
-            .subscribe(onNext: {
-                self.postNewNotice()
-            }).disposed(by: disposeBag)
+//        completeButton.rx.tap
+//            .subscribe(onNext: {
+//                self.postNewNotice()
+//            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         popupView.snp.makeConstraints {

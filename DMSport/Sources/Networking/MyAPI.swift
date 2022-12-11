@@ -1,5 +1,6 @@
 import Foundation
 import Moya
+import RxMoya
 
 enum MyAPI {
     //users
@@ -16,15 +17,15 @@ enum MyAPI {
     case getSearchMyInformation(GetSearchMyInFormation)
     
     //clubs
-    case postVoteAndrevoke(_ voteID: Int)
-    case getToDayVoteSearch(_ type: String)
+    case postVoteAndrevoke(_voteID: Int)
+    case getToDayVoteSearch(_type: String)
     case getVoteList(GetVoteList)
     case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
     case getAllSearchNoticeList
     case getNoticeDetilSearch(_ noticeID: Int)
-    case postNoticeRegistrationAdmin(_ title: String, _ content: String, _ type: String)
+    case postNoticeRegistrationAdmin(_title: String, _content: String, _type: String)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
     case patchNoticeCorrection(PatchNoticeCorrection)
     case deleteNotice(DeletNotice)

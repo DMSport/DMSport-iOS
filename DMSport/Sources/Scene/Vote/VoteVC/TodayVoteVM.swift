@@ -29,7 +29,7 @@ class TodayVoteVM {
         
         input.type.asObservable()
             .flatMapLatest { type -> Single<GetToDayVoteSearch> in
-                self.mainProvider.rx.request(.getToDayVoteSearch("\(type)"))
+                self.mainProvider.rx.request(.getToDayVoteSearch(_type: "\(type)"))
                     .map(GetToDayVoteSearch.self)
                     .map {
                         voteObject.accept($0)

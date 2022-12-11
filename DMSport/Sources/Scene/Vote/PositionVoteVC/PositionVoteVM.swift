@@ -20,7 +20,7 @@ class PositionVoteVM {
     func transfrom(_ input: Input) -> Output {
         let voteResult = PublishRelay<Bool>()
         
-        self.mainProvider.rx.request(.postVoteAndrevoke(input.voteID))
+        self.mainProvider.rx.request(.postVoteAndrevoke(_voteID: input.voteID))
             .subscribe { res in
                 switch res {
                 case .success(let result):
