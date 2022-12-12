@@ -25,6 +25,17 @@ class NoticeEditAlertVC: BaseVC {
         $0.textColor = .red
         $0.font = .systemFont(ofSize: 10, weight: .regular)
     }
+    private let deleteButton = UIButton().then {
+        $0.setTitle("삭제", for: .normal)
+        $0.setTitleColor(DMSportColor.highlightColor.color, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        let state = UIImage.SymbolConfiguration(pointSize: 14, weight: .regular, scale: .default)
+        let trashImage = UIImage(systemName: "trash", withConfiguration: state)
+        $0.setImage(trashImage, for: .normal)
+        $0.tintColor = DMSportColor.highlightColor.color
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.imageEdgeInsets = .init(top: -0.5, left: 5, bottom: 0, right: 0)
+    }
     let noticeTitleTextField = UITextField().then {
         $0.backgroundColor = .white
         $0.textColor = DMSportColor.hintColor.color
@@ -57,49 +68,62 @@ class NoticeEditAlertVC: BaseVC {
         $0.layer.cornerRadius = 20
     }
     
-//    private func postNewNotice() {
-//        let input = NewNoticeAlertVM.Input(
-//            newTitle: noticeTitleTextField.text ?? "",
-//            newContent: noticeContentTextView.text,
-//            category: menuButton.currentTitle.self!,
-//            buttonDidTap: completeButton.rx.tap.asDriver())
-//        let output = viewModel.transform(input)
-//        output.result.subscribe(onNext: { bool in
-//            if bool == true {
-//                self.dismiss(animated: true)
-//            }
-//        }).disposed(by: disposeBag)
-//    }
-    
+    private func deleteDidTap() {
+        let deleteViewModel = NoticeDeleteVM()
+        let input = NoticeDeleteVM.Input(
+            noticeID: Int("\(noticeIDLabel.text!)")!,
+            buttonDidTap: deleteButton.rx.tap.asSignal())
+        let output = deleteViewModel.transform(input)
+        output.result
+            .subscribe(onNext: { bool in
+            if bool {
+                print(bool)
+            }
+        }).disposed(by: disposeBag)
+    }
+    private func editDidTap() {
+        let patchViewModel = NoticePatchVM()
+        let input = NoticePatchVM.Input(
+            newTitle: noticeTitleTextField.text ?? "",
+            newContent: noticeContentTextView.text,
+            noticeID: Int("\(noticeIDLabel.text!)")!,
+            buttonDidTap: completeButton.rx.tap.asSignal())
+        let output = patchViewModel.transform(input)
+        output.result
+            .subscribe(onNext: { bool in
+            if bool {
+                print(bool)
+            }
+        }).disposed(by: disposeBag)
+    }
     override func addView() {
         view.addSubview(popupView)
         [
             alertTitle,
             noticeIDLabel,
+            deleteButton,
             noticeTitleTextField,
             alertContent,
             noticeContentTextView,
             completeButton,
             cancelButton
-        ] .forEach {
+        ].forEach {
             popupView.addSubview($0)
         }
     }
     override func configureVC() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
+        self.deleteDidTap()
+        self.editDidTap()
         cancelButton.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
-            }).disposed(by: disposeBag)
-        completeButton.rx.tap
-            .subscribe(onNext: {
-//                self.postNewNotice()
             }).disposed(by: disposeBag)
     }
     override func setLayout() {
         popupView.snp.makeConstraints {
             $0.left.right.equalToSuperview().inset(16)
-            $0.height.equalTo(368)
+            $0.height.equalTo(370)
             $0.center.equalToSuperview()
         }
         alertTitle.snp.makeConstraints {
@@ -111,6 +135,11 @@ class NoticeEditAlertVC: BaseVC {
             $0.top.equalToSuperview()
             $0.height.equalTo(18)
             $0.left.equalTo(alertTitle.snp.right).offset(20)
+        }
+        deleteButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(20)
+            $0.right.equalToSuperview().inset(25)
+            $0.height.equalTo(18)
         }
         noticeTitleTextField.snp.makeConstraints {
             $0.top.equalTo(alertTitle.snp.bottom).offset(12)
@@ -130,14 +159,14 @@ class NoticeEditAlertVC: BaseVC {
         completeButton.snp.makeConstraints {
             $0.width.equalTo(73.44)
             $0.height.equalTo(40)
-            $0.right.equalToSuperview().inset(7.34)
-            $0.bottom.equalToSuperview().inset(8)
+            $0.right.equalToSuperview().inset(10)
+            $0.bottom.equalToSuperview().inset(10)
         }
         cancelButton.snp.makeConstraints {
             $0.width.equalTo(73.44)
             $0.height.equalTo(40)
-            $0.right.equalTo(completeButton.snp.left).offset(9)
-            $0.bottom.equalToSuperview().inset(8)
+            $0.right.equalTo(completeButton.snp.left).offset(0)
+            $0.bottom.equalToSuperview().inset(10)
         }
     }
 }

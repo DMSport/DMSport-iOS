@@ -27,7 +27,7 @@ enum MyAPI {
     case getNoticeDetilSearch(_ noticeID: Int)
     case postNoticeRegistrationAdmin(_title: String, _content: String, _type: String)
     case postNoticeRegistrationClub(PostNoticeRegistrationClub)
-    case patchNoticeCorrection(PatchNoticeCorrection)
+    case patchNoticeCorrection(_ title: String, _ content: String, _ noticeID: Int)
     case deleteNotice(_ noticeID: Int)
     case getNewlyNotice
     

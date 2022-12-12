@@ -100,16 +100,17 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .patchNoticeCorrection(let body):
+        case .patchNoticeCorrection(let title, let content, _):
             return .requestParameters(
-                parameters: body.toDictionary(),
+                parameters:
+                    [
+                        "title" : title,
+                        "content" : content
+                    ],
                 encoding: JSONEncoding.default
             )
-        case .deleteNotice(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .deleteNotice(_):
+            return .requestPlain
         case .getNewlyNotice:
             return .requestPlain
         case .patchStopClub(let body):

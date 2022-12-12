@@ -22,17 +22,22 @@ class NoticeDeleteVM {
         
         self.mainProvider.rx.request(.deleteNotice(input.noticeID))
             .subscribe {  res in
+                print("!!!!")
                 switch res {
                 case .success(let result):
                     debugPrint(result)
+                    print("in success")
                     switch result.statusCode {
                     case 204:
+                        print("successfully deleted")
                         deleteResult.accept(true)
                     default:
+                        print("cannot be deleted")
                         deleteResult.accept(false)
                     }
                 case .failure(let error):
                     print(error)
+                    print("did not send")
                 }
             }.disposed(by: disposeBag)
         

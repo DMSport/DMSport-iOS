@@ -52,7 +52,7 @@ class VoteVC: BaseVC {
         $0.textColor = DMSportIOSAsset.Color.hintColor.color
         $0.font = .systemFont(ofSize: 22, weight: .bold)
     }
-    private let timeVoteTableView =  ContentWrappingTableView().then {
+    private let timeVoteTableView =  UITableView().then {
         $0.register(TimeVoteCell.self, forCellReuseIdentifier: "TimeVoteCell")
         $0.rowHeight = 142
         $0.showsVerticalScrollIndicator = false
@@ -121,7 +121,7 @@ class VoteVC: BaseVC {
                             cell.backView.backgroundColor = DMSportColor.whiteColor.color
                         }
                     }).disposed(by: self.disposeBag)
-                
+
                 cell.applied.accept(items.alreadyVoted)
                 cell.id  = items.voteID
                 cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
@@ -150,7 +150,7 @@ class VoteVC: BaseVC {
                                     if bool {
                                         print(bool)
                                     }
-                                }).disposed(by: self.disposeBag)
+                                }).disposed(by: cell.disposeBag)
                         } else {
                             print("shit")
                             let next = PositionVoteVC()
@@ -158,7 +158,7 @@ class VoteVC: BaseVC {
                             next.categoryName = cell.categoryLabel.text ?? ""
                             self.navigationController?.pushViewController(next, animated: true)
                         }
-                    }).disposed(by: self.disposeBag)
+                    }).disposed(by: cell.disposeBag)
                 
                 cell.votedUserButton.rx.tap
                     .subscribe(onNext: {

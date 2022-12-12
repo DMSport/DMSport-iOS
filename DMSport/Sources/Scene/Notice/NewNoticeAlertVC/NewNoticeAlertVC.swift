@@ -132,7 +132,7 @@ class NewNoticeAlertVC: BaseVC {
     override func setLayout() {
         popupView.snp.makeConstraints {
             $0.left.right.equalToSuperview().inset(16)
-            $0.height.equalTo(368)
+            $0.height.equalTo(370)
             $0.center.equalToSuperview()
         }
         alertTitle.snp.makeConstraints {
@@ -163,14 +163,14 @@ class NewNoticeAlertVC: BaseVC {
         completeButton.snp.makeConstraints {
             $0.width.equalTo(73.44)
             $0.height.equalTo(40)
-            $0.right.equalToSuperview().inset(7.34)
-            $0.bottom.equalToSuperview().inset(8)
+            $0.right.equalToSuperview().inset(10)
+            $0.bottom.equalToSuperview().inset(10)
         }
         cancelButton.snp.makeConstraints {
             $0.width.equalTo(73.44)
             $0.height.equalTo(40)
-            $0.right.equalTo(completeButton.snp.left).offset(9)
-            $0.bottom.equalToSuperview().inset(8)
+            $0.right.equalTo(completeButton.snp.left).offset(0)
+            $0.bottom.equalToSuperview().inset(10)
         }
     }
 }
