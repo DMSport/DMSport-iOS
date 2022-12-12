@@ -65,7 +65,8 @@ class CategoryNoticeVC: BaseVC {
                         self.present(editAlert, animated: true)
                         editAlert.noticeTitleTextField.text = items.title
                         editAlert.noticeContentTextView.text = items.contentPreview
-//                        editAlert.noticeIDLabel.text = items.id
+                        editAlert.noticeIDLabel.text = "\(items.id)"
+                        print("id is == \(editAlert.noticeIDLabel.text ?? "no")")
                     }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()

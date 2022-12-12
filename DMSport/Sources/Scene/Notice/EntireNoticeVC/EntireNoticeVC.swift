@@ -71,7 +71,7 @@ class EntireNoticeVC: BaseVC {
                         self.present(editAlert, animated: true)
                         editAlert.noticeTitleTextField.text = items.title
                         editAlert.noticeContentTextView.text = items.contentPreview
-//                        editAlert.noticeIDLabel.text = items.id
+                        editAlert.noticeIDLabel.text = "\(items.id)"
                     }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         entireNoticeTableView.rx.itemSelected

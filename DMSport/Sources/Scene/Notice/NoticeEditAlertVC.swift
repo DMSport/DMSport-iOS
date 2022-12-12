@@ -22,7 +22,7 @@ class NoticeEditAlertVC: BaseVC {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
     }
     let noticeIDLabel = UILabel().then {
-        $0.textColor = .clear
+        $0.textColor = .red
         $0.font = .systemFont(ofSize: 10, weight: .regular)
     }
     let noticeTitleTextField = UITextField().then {
@@ -75,6 +75,7 @@ class NoticeEditAlertVC: BaseVC {
         view.addSubview(popupView)
         [
             alertTitle,
+            noticeIDLabel,
             noticeTitleTextField,
             alertContent,
             noticeContentTextView,
@@ -86,7 +87,6 @@ class NoticeEditAlertVC: BaseVC {
     }
     override func configureVC() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        print("what + \(noticeIDLabel.text ?? "")")
         cancelButton.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
@@ -108,6 +108,7 @@ class NoticeEditAlertVC: BaseVC {
             $0.height.equalTo(24)
         }
         noticeIDLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
             $0.height.equalTo(18)
             $0.left.equalTo(alertTitle.snp.right).offset(20)
         }
