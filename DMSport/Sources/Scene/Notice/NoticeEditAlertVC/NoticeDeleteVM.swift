@@ -20,26 +20,41 @@ class NoticeDeleteVM {
     func transform(_ input: Input) -> Output {
         let deleteResult = PublishRelay<Bool>()
         
-        self.mainProvider.rx.request(.deleteNotice(input.noticeID))
-            .subscribe {  res in
-                print("!!!!")
-                switch res {
-                case .success(let result):
-                    debugPrint(result)
-                    print("in success")
-                    switch result.statusCode {
-                    case 204:
-                        print("successfully deleted")
-                        deleteResult.accept(true)
-                    default:
-                        print("cannot be deleted")
-                        deleteResult.accept(false)
-                    }
-                case .failure(let error):
-                    print(error)
-                    print("did not send")
+        mainProvider.request(.deleteNotice(input.noticeID)) { res in
+            switch res {
+            case .success(let result):
+                debugPrint(result)
+                switch result.statusCode {
+                case 204:
+                    deleteResult.accept(true)
+                default:
+                    deleteResult.accept(false)
                 }
-            }.disposed(by: disposeBag)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+//        self.mainProvider.rx.request(.deleteNotice(input.noticeID))
+//            .subscribe {  res in
+//                print("!!!!")
+//                switch res {
+//                case .success(let result):
+//                    debugPrint(result)
+//                    print("in success")
+//                    switch result.statusCode {
+//                    case 204:
+//                        print("successfully deleted")
+//                        deleteResult.accept(true)
+//                    default:
+//                        print("cannot be deleted")
+//                        deleteResult.accept(false)
+//                    }
+//                case .failure(let error):
+//                    print(error)
+//                    print("did not send")
+//                }
+//            }.disposed(by: disposeBag)
         
         return Output(result: deleteResult)
     }

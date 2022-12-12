@@ -9,8 +9,6 @@ import RxMoya
 class CategoryNoticeVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getNotices = BehaviorRelay<Void>(value: ())
-    private let editIndex = PublishRelay<Int>()
-    private var list = [Notice]()
     let viewModel = CategoryNoticeVM()
     var categoryNoticeCount: Int = 0
     var noticeID = Int()
@@ -42,11 +40,7 @@ class CategoryNoticeVC: BaseVC {
         $0.layer.cornerRadius = 26
     }
     private func bindViewModels() {
-        let input = CategoryNoticeVM.Input(
-            getNotices: getNotices.asDriver(),
-            loadDetail: categoryNoticeTableView.rx.itemSelected.asSignal(),
-            editIndex: editIndex.asSignal()
-        )
+        let input = CategoryNoticeVM.Input(getNotices: getNotices.asDriver(), loadDetail: categoryNoticeTableView.rx.itemSelected.asSignal())
         let output = viewModel.transfrom(input)
         
         output.allNotices.bind(to: categoryNoticeTableView.rx.items(
@@ -65,9 +59,14 @@ class CategoryNoticeVC: BaseVC {
                 
                 cell.ellipsisButton.rx.tap
                     .subscribe(onNext: {
-                        self.editIndex.accept(row)
+                        let editAlert = NoticeEditAlertVC()
+                        editAlert.modalPresentationStyle = .overFullScreen
+                        editAlert.modalTransitionStyle = .crossDissolve
+                        self.present(editAlert, animated: true)
+                        editAlert.noticeTitleTextField.text = items.title
+                        editAlert.noticeContentTextView.text = items.contentPreview
+                        editAlert.noticeIDLabel.text = "\(items.id)"
                     }).disposed(by: cell.disposeBag)
-
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()
             .subscribe(onNext: { id in
@@ -80,17 +79,6 @@ class CategoryNoticeVC: BaseVC {
                 next.id = self.noticeID
                 self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
-
-        output.editIndex.asObservable()
-            .subscribe(onNext: {
-                    let editAlert = NoticeEditAlertVC()
-                    editAlert.modalPresentationStyle = .overFullScreen
-                    editAlert.modalTransitionStyle = .crossDissolve
-                    editAlert.noticeTitleTextField.text = list[$0].title
-                editAlert.noticeContentTextView.text = list[$0].contentPreview
-                editAlert.noticeIDLabel.text = "\(list[$0].id)"
-                    self.present(editAlert, animated: true)
-            })
     }
     override func addView() {
         [

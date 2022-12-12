@@ -71,13 +71,13 @@ class NoticeEditAlertVC: BaseVC {
     private func deleteDidTap() {
         let deleteViewModel = NoticeDeleteVM()
         let input = NoticeDeleteVM.Input(
-            noticeID: Int("\(noticeIDLabel.text!)")!,
+            noticeID: Int("\(noticeIDLabel.text ?? "")") ?? 0,
             buttonDidTap: deleteButton.rx.tap.asSignal())
         let output = deleteViewModel.transform(input)
         output.result
             .subscribe(onNext: { bool in
             if bool {
-                print(bool)
+                self.dismiss(animated: true)
             }
         }).disposed(by: disposeBag)
     }
@@ -86,13 +86,13 @@ class NoticeEditAlertVC: BaseVC {
         let input = NoticePatchVM.Input(
             newTitle: noticeTitleTextField.text ?? "",
             newContent: noticeContentTextView.text,
-            noticeID: Int("\(noticeIDLabel.text!)")!,
+            noticeID: Int("\(noticeIDLabel.text ?? "")") ?? 0,
             buttonDidTap: completeButton.rx.tap.asSignal())
         let output = patchViewModel.transform(input)
         output.result
             .subscribe(onNext: { bool in
             if bool {
-                print(bool)
+                self.dismiss(animated: true)
             }
         }).disposed(by: disposeBag)
     }
@@ -107,14 +107,20 @@ class NoticeEditAlertVC: BaseVC {
             noticeContentTextView,
             completeButton,
             cancelButton
-        ].forEach {
+        ] .forEach {
             popupView.addSubview($0)
         }
     }
     override func configureVC() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        self.deleteDidTap()
-        self.editDidTap()
+        deleteButton.rx.tap
+            .subscribe(onNext: {
+                self.deleteDidTap()
+            }).disposed(by: disposeBag)
+        completeButton.rx.tap
+            .subscribe(onNext: {
+                self.editDidTap()
+            }).disposed(by: disposeBag)
         cancelButton.rx.tap
             .subscribe(onNext: {
                 self.dismiss(animated: true)
