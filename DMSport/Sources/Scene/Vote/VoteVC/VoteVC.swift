@@ -59,12 +59,16 @@ class VoteVC: BaseVC {
         $0.backgroundColor = DMSportColor.baseColor.color
     }
     private let updateTimeLabel = UILabel().then {
-        $0.text = "2022/09/28 10:34 업데이트"
+        var formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        var current_date_string = formatter.string(from: Date())
+        print(current_date_string)
+        
+        $0.text = "\(current_date_string) 업데이트"
         $0.textAlignment = .center
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 14, weight: .regular)
     }
-    
     func setUpCollectionView() {
         categoryCollectionView.delegate = self
         categoryCollectionView.dataSource = self
@@ -160,10 +164,12 @@ class VoteVC: BaseVC {
                 
                 cell.votedUserButton.rx.tap
                     .subscribe(onNext: {
-                        let userList = VotedUserAlertVC()
-                        userList.modalPresentationStyle = .overFullScreen
-                        userList.modalTransitionStyle = .crossDissolve
-                        self.present(userList, animated: true)
+//                        let userList = VotedUserAlertVC()
+//                        userList.modalPresentationStyle = .overFullScreen
+//                        userList.modalTransitionStyle = .crossDissolve
+//                        self.present(userList, animated: true)
+                        let nextVC = VotedUserVC()
+                        nextVC.userList.accept(items.users)
                     }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none

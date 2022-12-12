@@ -45,8 +45,8 @@ extension MyAPI {
         return "/notices/club"
     case .patchNoticeCorrection:
         return "/notices/" //{notice-id}
-    case .deleteNotice:
-        return "/notices/" //{notice-id}
+    case .deleteNotice(let id):
+        return "/notices/\(id)" //{notice-id}
     case .getNewlyNotice:
         return "notices/recent"
     case .patchStopClub:

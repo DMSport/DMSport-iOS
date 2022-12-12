@@ -45,6 +45,10 @@ class EntireNoticeVC: BaseVC {
             loadDetail: entireNoticeTableView.rx.itemSelected.asSignal())
         let output = viewModel.transfrom(input)
         
+        output.detailIndex.asObservable()
+            .subscribe(onNext: { id in
+                self.noticeID = id
+            }).disposed(by: disposeBag)
         output.allNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
@@ -58,11 +62,15 @@ class EntireNoticeVC: BaseVC {
                     print(items.type)
                     cell.selectionStyle = .none
                 }
+                
+                cell.ellipsisButton.rx.tap
+                    .subscribe(onNext: {
+                        let nextVC = NoticeBottomSheetVC()
+                        nextVC.noticeId = self.noticeID
+//                        self.navigationController?.pushViewController(nextVC, animated: true)
+                        self.present(nextVC, animated: true)
+                    }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
-        output.detailIndex.asObservable()
-            .subscribe(onNext: { id in
-                self.noticeID = id
-            }).disposed(by: disposeBag)
         entireNoticeTableView.rx.itemSelected
             .subscribe(onNext: { _ in
                 let next = NoticeDetailVC()

@@ -56,6 +56,11 @@ class CategoryNoticeVC: BaseVC {
                     print(items.type)
                     cell.selectionStyle = .none
                 }
+                
+                cell.ellipsisButton.rx.tap
+                    .subscribe(onNext: {
+                        self.present(NoticeBottomSheetVC(), animated: true)
+                    }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()
             .subscribe(onNext: { id in

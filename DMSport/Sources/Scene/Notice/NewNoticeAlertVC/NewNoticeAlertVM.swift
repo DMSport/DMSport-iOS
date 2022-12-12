@@ -4,17 +4,6 @@ import RxCocoa
 import Moya
 import RxMoya
 
-//final class Service {
-//    let provider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
-//
-//    func post(title: String, content: String, type: String) -> Single<NetworkingResult> {
-//        return provider.rx.request(.postNoticeRegistrationAdmin(_type: type))
-//            .map{ _ -> NetworkingResult in return .createOk }
-//            .catch{ [unowned self] in return .just(setNetworkError($0))}
-//
-//    }
-//}
-
 class NewNoticeAlertVM {
     private let disposeBag = DisposeBag()
     let mainProvider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
