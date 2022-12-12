@@ -164,12 +164,9 @@ class VoteVC: BaseVC {
                 
                 cell.votedUserButton.rx.tap
                     .subscribe(onNext: {
-//                        let userList = VotedUserAlertVC()
-//                        userList.modalPresentationStyle = .overFullScreen
-//                        userList.modalTransitionStyle = .crossDissolve
-//                        self.present(userList, animated: true)
                         let nextVC = VotedUserVC()
-                        nextVC.userList.accept(items.users)
+//                        nextVC.team1Users.accept(items.user.filter { items.users.team == 0 })
+//                        nextVC.team2Users.accept(items.users.filter { items.users.team == 1 })
                     }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none

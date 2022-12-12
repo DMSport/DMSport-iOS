@@ -6,7 +6,8 @@ import RxCocoa
 
 class VotedUserVC: BaseVC {
     var noticeId = Int()
-    var userList = PublishRelay<[User]>()
+    var team1Users = PublishRelay<[User]>()
+    var team2Users = PublishRelay<[User]>()
     private let guideLabel = UILabel().then {
         $0.text = "신청자 목록"
         $0.textColor = DMSportColor.hintColor.color
@@ -19,6 +20,7 @@ class VotedUserVC: BaseVC {
         $0.font = .systemFont(ofSize: 16, weight: .semibold)
     }
     let team1TableView = UITableView().then {
+        $0.register(VotedUserCell.self, forCellReuseIdentifier: "Users")
         $0.allowsSelection = false
     }
     private let team2Label = UILabel().then {
@@ -27,7 +29,11 @@ class VotedUserVC: BaseVC {
         $0.font = .systemFont(ofSize: 16, weight: .semibold)
     }
     let team2TableView = UITableView().then {
+        $0.register(VotedUserCell.self, forCellReuseIdentifier: "Users")
         $0.allowsSelection = false
+    }
+    private func bindData() {
+        
     }
     override func addView() {
         [
