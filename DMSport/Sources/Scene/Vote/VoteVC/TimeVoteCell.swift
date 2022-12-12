@@ -58,7 +58,6 @@ class TimeVoteCell: BaseTC {
         ] .forEach {
             contentView.addSubview($0)
         }
-//        contentView.addSubview(applyButton)
         graphBase.addSubview(graphView)
         [
             categoryLabel,
@@ -72,7 +71,7 @@ class TimeVoteCell: BaseTC {
         }
     }
     override func configureVC() {
-        self.applied.asObservable().subscribe(onNext:  { bool in
+        self.applied.asObservable().subscribe(onNext: { bool in
             if bool == false {
                 self.applyButton.backgroundColor = DMSportColor.mainColor.color
                 self.applyButton.setTitle("신청", for: .normal)

@@ -59,7 +59,13 @@ class CategoryNoticeVC: BaseVC {
                 
                 cell.ellipsisButton.rx.tap
                     .subscribe(onNext: {
-                        self.present(NoticeBottomSheetVC(), animated: true)
+                        let editAlert = NoticeEditAlertVC()
+                        editAlert.modalPresentationStyle = .overFullScreen
+                        editAlert.modalTransitionStyle = .crossDissolve
+                        self.present(editAlert, animated: true)
+                        editAlert.noticeTitleTextField.text = items.title
+                        editAlert.noticeContentTextView.text = items.contentPreview
+//                        editAlert.noticeIDLabel.text = items.id
                     }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         output.detailIndex.asObservable()

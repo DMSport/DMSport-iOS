@@ -91,8 +91,8 @@ class NoticeDetailVC: BaseVC {
         }
         noticeTitle.snp.makeConstraints {
             $0.top.equalToSuperview().inset(12)
-            $0.left.right.equalToSuperview().inset(16)
-            $0.height.equalTo(29)
+            $0.left.equalToSuperview().inset(16)
+            $0.right.equalToSuperview().inset(100)
         }
         noticeDetail.snp.makeConstraints {
             $0.top.equalTo(noticeTitle.snp.bottom).offset(4)

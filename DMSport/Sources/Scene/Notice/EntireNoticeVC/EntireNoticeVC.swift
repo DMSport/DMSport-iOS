@@ -65,10 +65,13 @@ class EntireNoticeVC: BaseVC {
                 
                 cell.ellipsisButton.rx.tap
                     .subscribe(onNext: {
-                        let nextVC = NoticeBottomSheetVC()
-                        nextVC.noticeId = self.noticeID
-//                        self.navigationController?.pushViewController(nextVC, animated: true)
-                        self.present(nextVC, animated: true)
+                        let editAlert = NoticeEditAlertVC()
+                        editAlert.modalPresentationStyle = .overFullScreen
+                        editAlert.modalTransitionStyle = .crossDissolve
+                        self.present(editAlert, animated: true)
+                        editAlert.noticeTitleTextField.text = items.title
+                        editAlert.noticeContentTextView.text = items.contentPreview
+//                        editAlert.noticeIDLabel.text = items.id
                     }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         entireNoticeTableView.rx.itemSelected

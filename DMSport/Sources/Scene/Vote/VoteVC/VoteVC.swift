@@ -14,6 +14,7 @@ class VoteVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getVotes = BehaviorRelay<Void>(value: ())
     let viewModel = TodayVoteVM()
+    let postVote = BehaviorRelay<Void>(value: ())
     let typeRelay = PublishRelay<String>()
     let isBan = PublishRelay<Bool>()
     let banPeriod = PublishRelay<String>()
@@ -134,13 +135,13 @@ class VoteVC: BaseVC {
                 }
                 cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
                 
-                if cell.categoryLabel.text == "배드민턴" {
-                    cell.applyButton.rx.tap
-                        .subscribe(onNext: {
+                cell.applyButton.rx.tap
+                    .subscribe(onNext: {
+                        if cell.categoryLabel.text == "배드민턴" {
                             print("its badminton")
                             let applyViewModel = PositionVoteVM()
                             let input = PositionVoteVM.Input(
-                                buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
                                 voteID: cell.id)
                             let output = applyViewModel.transfrom(input)
                             
@@ -150,23 +151,20 @@ class VoteVC: BaseVC {
                                         print(bool)
                                     }
                                 }).disposed(by: self.disposeBag)
-                        }).disposed(by: self.disposeBag)
-                } else {
-                    print("its not badminton")
-                    cell.applyButton.rx.tap
-                        .subscribe(onNext: {
+                        } else {
+                            print("shit")
                             let next = PositionVoteVC()
                             next.voteID = cell.id
                             next.categoryName = cell.categoryLabel.text ?? ""
                             self.navigationController?.pushViewController(next, animated: true)
-                        }).disposed(by: cell.disposeBag)
-                }
+                        }
+                    }).disposed(by: self.disposeBag)
                 
                 cell.votedUserButton.rx.tap
                     .subscribe(onNext: {
                         let nextVC = VotedUserVC()
-//                        nextVC.team1Users.accept(items.user.filter { items.users.team == 0 })
-//                        nextVC.team2Users.accept(items.users.filter { items.users.team == 1 })
+                        nextVC.userList.accept(items.users)
+                        self.navigationController?.pushViewController(nextVC, animated: true)
                     }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none

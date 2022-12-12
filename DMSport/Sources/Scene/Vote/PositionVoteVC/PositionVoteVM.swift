@@ -9,7 +9,7 @@ class PositionVoteVM {
     let mainProvider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
     
     struct Input {
-        let buttonDidTap: Driver<Void>
+        let buttonDidTap: Signal<Void>
         let voteID: Int
     }
     
@@ -28,11 +28,14 @@ class PositionVoteVM {
                     switch result.statusCode {
                     case 204:
                         voteResult.accept(true)
+                        print("result true")
                     default:
                         voteResult.accept(false)
+                        print("result false")
                     }
                 case .failure(let error):
                     print(error)
+                    print("request failed")
                 }
             }.disposed(by: disposeBag)
         

@@ -15,7 +15,7 @@ class PositionVoteCell: BaseTC {
         $0.textColor = DMSportColor.blackColor.color
         $0.font = .systemFont(ofSize: 20, weight: .bold)
     }
-    let applyButton = UIButton().then {
+    let positionApplyButton = UIButton().then {
         $0.setTitle("신청", for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         $0.setTitleColor(DMSportColor.whiteColor.color, for: .normal)
@@ -25,7 +25,7 @@ class PositionVoteCell: BaseTC {
     override func addView() {
         [
             backView,
-            applyButton
+            positionApplyButton
         ] .forEach {
             contentView.addSubview($0)
         }
@@ -44,7 +44,7 @@ class PositionVoteCell: BaseTC {
             $0.height.equalTo(22)
             $0.left.equalToSuperview().inset(20)
         }
-        applyButton.snp.makeConstraints {
+        positionApplyButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(8)
             $0.right.equalToSuperview().inset(10)
             $0.width.equalTo(80)

@@ -75,7 +75,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
                 let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
                     voteID: voteID)
                 let output = viewModel.transfrom(input)
                 
@@ -97,7 +97,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
                 let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
                     voteID: voteID)
                 let output = viewModel.transfrom(input)
                 
@@ -119,7 +119,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
                 let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.applyButton.rx.tap.asDriver(),
+                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
                     voteID: voteID)
                 let output = viewModel.transfrom(input)
                 
