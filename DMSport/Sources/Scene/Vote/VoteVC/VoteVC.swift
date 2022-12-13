@@ -94,25 +94,21 @@ class VoteVC: BaseVC {
         output.todayVotes.bind(to: timeVoteTableView.rx.items(
             cellIdentifier: "TimeVoteCell",
             cellType: TimeVoteCell.self)) { row, items, cell in
-                print(row)
-                output.categoryName.asObservable()
-                    .map {
-                        switch $0 {
-                        case "BADMINTON":
-                            return "배드민턴"
-                        case "SOCCER":
-                            return "축구"
-                        case "BASKETBALL":
-                            return "농구"
-                        case "VOLLEYBALL":
-                            return "배구"
-                        default:
-                            return ""
-                        }
-                    }.subscribe(onNext: {
-                        print($0)
-                        cell.categoryLabel.text = $0
-                    }).disposed(by: self.disposeBag)
+                var newCategoryLabel = ""
+                switch output.categoryName.value {
+                case "BADMINTON":
+                    newCategoryLabel = "배드민턴"
+                case "SOCCER":
+                    newCategoryLabel = "축구"
+                case "BASKETBALL":
+                    newCategoryLabel = "농구"
+                case "VOLLEYBALL":
+                    newCategoryLabel = "배구"
+                default:
+                    newCategoryLabel = ""
+                }
+                
+                cell.categoryLabel.text = newCategoryLabel
                 
                 self.isBan.asObservable()
                     .subscribe(onNext: { bool in
@@ -123,7 +119,7 @@ class VoteVC: BaseVC {
                             cell.backView.backgroundColor = DMSportColor.whiteColor.color
                         }
                     }).disposed(by: self.disposeBag)
-
+                
                 cell.applied.accept(items.alreadyVoted)
                 cell.id  = items.voteID
                 cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
@@ -140,54 +136,62 @@ class VoteVC: BaseVC {
                 print("what?")
                 
                 
+                //                cell.applyButton.rx.tap
+                //                    .bind {
+                //                        if cell.categoryLabel.text == "배드민턴" {
+                //                            print("this is badminton")
+                //                            let applyViewModel = PositionVoteVM()
+                //                            let input = PositionVoteVM.Input(
+                //                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
+                //                                voteID: cell.id)
+                //                            let output = applyViewModel.transfrom(input)
+                //
+                //                            output.voteResult.asObservable()
+                //                                .subscribe { bool in
+                //                                    if bool {
+                //                                        print(bool)
+                //                                    }
+                //                                }.disposed(by: self.disposeBag)
+                //                        } else {
+                //                            print("hello")
+                //                            let next = PositionVoteVC()
+                //                            next.voteID = cell.id
+                //                            next.categoryName = cell.categoryLabel.text ?? ""
+                //                            self.navigationController?.pushViewController(next, animated: true)
+                //                            print("world")
+                //                        }
+                //                    }.disposed(by: cell.disposeBag)
+                
+                cell.setUpView(onTapped: { id in
+                    if cell.categoryLabel.text != "배드민턴" {
+                        let next = PositionVoteVC()
+                        next.voteID = cell.id
+                        next.categoryName = cell.categoryLabel.text ?? ""
+                        self.navigationController?.pushViewController(next, animated: true)
+                    }
+                })
 //                cell.applyButton.rx.tap
-//                    .bind {
-//                        if cell.categoryLabel.text == "배드민턴" {
-//                            print("this is badminton")
-//                            let applyViewModel = PositionVoteVM()
-//                            let input = PositionVoteVM.Input(
-//                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
-//                                voteID: cell.id)
-//                            let output = applyViewModel.transfrom(input)
-//
-//                            output.voteResult.asObservable()
-//                                .subscribe { bool in
-//                                    if bool {
-//                                        print(bool)
-//                                    }
-//                                }.disposed(by: self.disposeBag)
-//                        } else {
-//                            print("hello")
+//                    .take(1)
+//                //                    .throttle(.seconds(10), scheduler: MainScheduler.instance)
+//                    .subscribe(onNext: {
+//                        print("아니 이게 맞아? 왜 여러 번 돼")
+//                        if cell.categoryLabel.text != "배드민턴" {
 //                            let next = PositionVoteVC()
 //                            next.voteID = cell.id
 //                            next.categoryName = cell.categoryLabel.text ?? ""
 //                            self.navigationController?.pushViewController(next, animated: true)
-//                            print("world")
 //                        }
-//                    }.disposed(by: cell.disposeBag)
-                
-                cell.applyButton.rx.tap
-                    .take(1)
-//                    .throttle(.seconds(10), scheduler: MainScheduler.instance)
-                    .subscribe(onNext: {
-                        print("아니 이게 맞아? 왜 여러 번 돼")
-                        if cell.categoryLabel.text != "배드민턴" {
-                            let next = PositionVoteVC()
-                            next.voteID = cell.id
-                            next.categoryName = cell.categoryLabel.text ?? ""
-                            self.navigationController?.pushViewController(next, animated: true)
-                        }
-                    }).disposed(by: cell.disposeBag)
-                
-//                cell.votedUserButton.rx.tap
-//                    .subscribe(onNext: {
-//                        print("what")
-//                        let nextVC = VotedUserAlertVC()
-//                        nextVC.modalPresentationStyle = .overFullScreen
-//                        nextVC.modalTransitionStyle = .crossDissolve
-//                        self.present(nextVC, animated: true)
-//                        nextVC.userList.accept(items.users)
 //                    }).disposed(by: cell.disposeBag)
+                
+                //                cell.votedUserButton.rx.tap
+                //                    .subscribe(onNext: {
+                //                        print("what")
+                //                        let nextVC = VotedUserAlertVC()
+                //                        nextVC.modalPresentationStyle = .overFullScreen
+                //                        nextVC.modalTransitionStyle = .crossDissolve
+                //                        self.present(nextVC, animated: true)
+                //                        nextVC.userList.accept(items.users)
+                //                    }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)

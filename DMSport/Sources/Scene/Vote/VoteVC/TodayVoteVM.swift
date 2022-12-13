@@ -18,14 +18,16 @@ class TodayVoteVM {
         let voteObject: PublishRelay<GetToDayVoteSearch>
         let todayVotes: BehaviorRelay<[Vote]>
         let detailIndex: Signal<Int>
-        let categoryName: PublishRelay<String>
+//        let categoryName: PublishRelay<String>
+        let categoryName: BehaviorRelay<String>
     }
     
     func transfrom(_ input: Input) -> Output {
         let voteObject = PublishRelay<GetToDayVoteSearch>()
         let todayVotes = BehaviorRelay<[Vote]>(value: [])
         let detailIndex = PublishRelay<Int>()
-        let categoryName = PublishRelay<String>()
+//        let categoryName = PublishRelay<String>()
+        let categoryName = BehaviorRelay<String>(value: "")
         
         input.type.asObservable()
             .flatMapLatest { type -> Single<GetToDayVoteSearch> in

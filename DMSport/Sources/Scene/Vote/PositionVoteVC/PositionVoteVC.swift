@@ -91,19 +91,6 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "C.F", "S.F", "L.W", "C.M", "R.W", "A.M", "D.M", "L.S.T", "R.S.T", "S.W", "G.K" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
-                
-//                let input = PositionVoteVM.Input(
-//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-//                    voteID: voteID)
-//                let output = viewModel.transfrom(input)
-//
-//                output.voteResult.asObservable()
-//                    .subscribe(onNext: { bool in
-//                        if bool {
-//                            print(bool)
-//                        }
-//                    }).disposed(by: disposeBag)
-                
                 cell.selectionStyle = .none
                 return cell
             } else {
@@ -113,19 +100,6 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "P.G", "S.G", "S.F", "P.F", "C" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
-                
-//                let input = PositionVoteVM.Input(
-//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-//                    voteID: voteID)
-//                let output = viewModel.transfrom(input)
-//
-//                output.voteResult.asObservable()
-//                    .subscribe(onNext: { bool in
-//                        if bool {
-//                            print(bool)
-//                        }
-//                    }).disposed(by: disposeBag)
-                
                 cell.selectionStyle = .none
                 return cell
             } else {
@@ -135,19 +109,6 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "Right", "Left", "Center", "Libero" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
-                
-//                let input = PositionVoteVM.Input(
-//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-//                    voteID: voteID)
-//                let output = viewModel.transfrom(input)
-//
-//                output.voteResult.asObservable()
-//                    .subscribe(onNext: { bool in
-//                        if bool {
-//                            print(bool)
-//                        }
-//                    }).disposed(by: disposeBag)
-                
                 cell.selectionStyle = .none
                 return cell
             } else {

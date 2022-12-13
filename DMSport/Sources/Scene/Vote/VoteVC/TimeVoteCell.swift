@@ -9,6 +9,7 @@ class TimeVoteCell: BaseTC {
     var applied = PublishRelay<Bool>()
     var id = Int()
     var graphWidth = CGFloat()
+    var onTapped: ((Int) -> Void)?
     
     let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
@@ -75,6 +76,11 @@ class TimeVoteCell: BaseTC {
 //        self.present(nextVC, animated: true)
 //        nextVC.userList.accept(items.users)
 //    }
+    public func setUpView(onTapped: @escaping (Int) -> Void) {
+        self.onTapped = onTapped
+    }
+    
+    
     override func addView() {
         addSubview(backView)
         [
@@ -109,6 +115,7 @@ class TimeVoteCell: BaseTC {
         
         self.applyButton.rx.tap
             .subscribe(onNext: {
+                self.onTapped!(self.id)
                 self.voteButtonAction()
             }).disposed(by: disposeBag)
         self.votedUserButton.rx.tap
