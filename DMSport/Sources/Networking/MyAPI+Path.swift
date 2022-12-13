@@ -41,7 +41,7 @@ extension MyAPI {
         return "/notices/\(id)" //{notice-id}
     case .postNoticeRegistrationAdmin(_, _, _):
         return "/notices/admin" //{NOTICE_TYPE}
-    case .postNoticeRegistrationClub:
+    case .postNoticeRegistrationClub(_, _, _):
         return "/notices/club"
     case .patchNoticeCorrection(_, _, let id):
         return "/notices/\(id)" //{notice-id}

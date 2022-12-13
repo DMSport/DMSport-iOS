@@ -23,6 +23,8 @@ class MyPageViewController: UIViewController {
         
         logoutButton.rx.tap
             .bind {
+                Token.accessToken = ""
+                Token.refreshToken = ""
                 let loginVC = LoginViewController()
                 loginVC.modalPresentationStyle = .fullScreen
                 self.present(loginVC, animated: true)

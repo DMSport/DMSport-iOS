@@ -4,9 +4,15 @@ import Then
 import RxSwift
 import RxCocoa
 
-class VotedUserVC: BaseVC {
+class VotedUserAlertVC: BaseVC {
     var noticeId = Int()
     var userList = PublishRelay<[User]>()
+    
+    private let popupView = UIView().then {
+        $0.backgroundColor = DMSportColor.baseColor.color
+        $0.layer.cornerRadius = 20
+        $0.clipsToBounds = true
+    }
     private let guideLabel = UILabel().then {
         $0.text = "신청자 목록"
         $0.textColor = DMSportColor.hintColor.color
@@ -17,6 +23,12 @@ class VotedUserVC: BaseVC {
         $0.register(VotedUserCell.self, forCellReuseIdentifier: "Users")
         $0.allowsSelection = false
     }
+    private let cancelButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setTitle("취소", for: .normal)
+        $0.setTitleColor(DMSportColor.hintColor.color, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
+    }
     private func bindData() {
         userList.bind(to: teamTableView.rx.items(
             cellIdentifier: "Users",
@@ -25,27 +37,44 @@ class VotedUserVC: BaseVC {
             }.disposed(by: disposeBag)
     }
     override func addView() {
+        view.addSubview(popupView)
         [
             guideLabel,
-            teamTableView
+            teamTableView,
+            cancelButton
         ] .forEach {
-            view.addSubview($0)
+            popupView.addSubview($0)
         }
     }
     override func configureVC() {
         view.backgroundColor = DMSportColor.baseColor.color
         bindData()
+        cancelButton.rx.tap
+            .bind {
+                self.dismiss(animated: true)
+            }.disposed(by: disposeBag)
     }
     override func setLayout() {
+        popupView.snp.makeConstraints {
+            $0.left.right.equalToSuperview().inset(16)
+            $0.height.equalTo(370)
+            $0.center.equalToSuperview()
+        }
         guideLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(25)
+            $0.top.equalToSuperview().inset(25)
             $0.left.equalToSuperview().inset(22.46)
             $0.height.equalTo(24)
         }
         teamTableView.snp.makeConstraints {
             $0.top.equalTo(guideLabel.snp.bottom).offset(40)
             $0.left.right.equalToSuperview().inset(15)
-            $0.bottom.equalToSuperview().inset(30)
+            $0.bottom.equalToSuperview().inset(60)
+        }
+        cancelButton.snp.makeConstraints {
+            $0.width.equalTo(73.44)
+            $0.height.equalTo(40)
+            $0.right.equalToSuperview().inset(10)
+            $0.bottom.equalToSuperview().inset(10)
         }
     }
 }

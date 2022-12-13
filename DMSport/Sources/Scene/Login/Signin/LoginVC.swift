@@ -76,6 +76,12 @@ class LoginViewController: UIViewController {
                         if let userDate = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
                             KeyChain.create(key: Token.accessToken, token: userDate.access_token)
                             KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
+                            authority =  userDate.authority
+                            if authority.contains("ADMIN") {
+                                adminBool = true
+                            } else if authority.contains("MANAGER") {
+                                managerBool = true
+                            }
                         }
                         let myPageVC = MyPageViewController()
                         myPageVC.modalPresentationStyle = .fullScreen

@@ -50,6 +50,31 @@ class TimeVoteCell: BaseTC {
         $0.setTitleColor(DMSportColor.whiteColor.color, for: .normal)
         $0.layer.cornerRadius = 12
     }
+    private func voteButtonAction() {
+        if self.categoryLabel.text == "배드민턴" {
+            print("you what?")
+            let applyViewModel = PositionVoteVM()
+            let input = PositionVoteVM.Input(
+                buttonDidTap: self.applyButton.rx.tap.asSignal(),
+                voteID: self.id)
+            let output = applyViewModel.transfrom(input)
+
+            output.voteResult.asObservable()
+                .subscribe { bool in
+                    if bool {
+                        print(bool)
+                    }
+                }.disposed(by: self.disposeBag)
+        }
+    }
+//    private func userButtonAction() {
+//        let nextVC = VotedUserAlertVC()
+//        nextVC.modalPresentationStyle = .overFullScreen
+//        nextVC.modalTransitionStyle = .crossDissolve
+//
+//        self.present(nextVC, animated: true)
+//        nextVC.userList.accept(items.users)
+//    }
     override func addView() {
         addSubview(backView)
         [
@@ -71,6 +96,7 @@ class TimeVoteCell: BaseTC {
         }
     }
     override func configureVC() {
+        self.backgroundColor = .clear
         self.applied.asObservable().subscribe(onNext: { bool in
             if bool == false {
                 self.applyButton.backgroundColor = DMSportColor.mainColor.color
@@ -80,7 +106,15 @@ class TimeVoteCell: BaseTC {
                 self.applyButton.setTitle("완료", for: .normal)
             }
         }).disposed(by: self.disposeBag)
-        self.backgroundColor = .clear
+        
+        self.applyButton.rx.tap
+            .subscribe(onNext: {
+                self.voteButtonAction()
+            }).disposed(by: disposeBag)
+        self.votedUserButton.rx.tap
+            .subscribe(onNext: {
+                print("what the hell")
+            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         backView.snp.makeConstraints {
@@ -114,11 +148,10 @@ class TimeVoteCell: BaseTC {
             $0.width.equalTo(graphWidth)
         }
         votedUserButton.snp.makeConstraints {
-//            $0.bottom.equalToSuperview().inset(14)
             $0.top.equalToSuperview().inset(95)
-            $0.left.equalToSuperview().inset(18)
-            $0.width.equalTo(115)
-            $0.height.equalTo(23)
+            $0.left.equalToSuperview().inset(10)
+            $0.width.equalTo(120)
+            $0.height.equalTo(25)
         }
         applyButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(83)

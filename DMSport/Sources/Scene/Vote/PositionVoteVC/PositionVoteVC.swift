@@ -9,6 +9,7 @@ import RxMoya
 class PositionVoteVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let viewModel = PositionVoteVM()
+    let voteApplyCell = PositionVoteCell()
     var categoryName = String()
     var voteID = Int()
     
@@ -25,6 +26,19 @@ class PositionVoteVC: BaseVC {
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
     }
+    private func positionVote() {
+        let input = PositionVoteVM.Input(
+            buttonDidTap: voteApplyCell.positionApplyButton.rx.tap.asSignal(),
+            voteID: voteID)
+        let output = viewModel.transfrom(input)
+        
+        output.voteResult.asObservable()
+            .subscribe(onNext: { bool in
+                if bool {
+                    print(bool)
+                }
+            }).disposed(by: disposeBag)
+    }
     override func addView() {
         [
             guideLabel,
@@ -37,6 +51,10 @@ class PositionVoteVC: BaseVC {
         view.backgroundColor = DMSportColor.baseColor.color
         voteTableView.delegate = self
         voteTableView.dataSource = self
+        voteApplyCell.positionApplyButton.rx.tap
+            .subscribe(onNext: {
+                self.positionVote()
+            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         guideLabel.snp.makeConstraints {
@@ -74,17 +92,17 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
-                let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-                    voteID: voteID)
-                let output = viewModel.transfrom(input)
-                
-                output.voteResult.asObservable()
-                    .subscribe(onNext: { bool in
-                        if bool {
-                            print(bool)
-                        }
-                    }).disposed(by: disposeBag)
+//                let input = PositionVoteVM.Input(
+//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
+//                    voteID: voteID)
+//                let output = viewModel.transfrom(input)
+//
+//                output.voteResult.asObservable()
+//                    .subscribe(onNext: { bool in
+//                        if bool {
+//                            print(bool)
+//                        }
+//                    }).disposed(by: disposeBag)
                 
                 cell.selectionStyle = .none
                 return cell
@@ -96,17 +114,17 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
-                let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-                    voteID: voteID)
-                let output = viewModel.transfrom(input)
-                
-                output.voteResult.asObservable()
-                    .subscribe(onNext: { bool in
-                        if bool {
-                            print(bool)
-                        }
-                    }).disposed(by: disposeBag)
+//                let input = PositionVoteVM.Input(
+//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
+//                    voteID: voteID)
+//                let output = viewModel.transfrom(input)
+//
+//                output.voteResult.asObservable()
+//                    .subscribe(onNext: { bool in
+//                        if bool {
+//                            print(bool)
+//                        }
+//                    }).disposed(by: disposeBag)
                 
                 cell.selectionStyle = .none
                 return cell
@@ -118,17 +136,17 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
                 
-                let input = PositionVoteVM.Input(
-                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
-                    voteID: voteID)
-                let output = viewModel.transfrom(input)
-                
-                output.voteResult.asObservable()
-                    .subscribe(onNext: { bool in
-                        if bool {
-                            print(bool)
-                        }
-                    }).disposed(by: disposeBag)
+//                let input = PositionVoteVM.Input(
+//                    buttonDidTap: cell.positionApplyButton.rx.tap.asSignal(),
+//                    voteID: voteID)
+//                let output = viewModel.transfrom(input)
+//
+//                output.voteResult.asObservable()
+//                    .subscribe(onNext: { bool in
+//                        if bool {
+//                            print(bool)
+//                        }
+//                    }).disposed(by: disposeBag)
                 
                 cell.selectionStyle = .none
                 return cell

@@ -101,13 +101,18 @@ class EntireNoticeVC: BaseVC {
         view.backgroundColor = DMSportColor.baseColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
         bindViewModels()
-        newNoticeButton.rx.tap
-            .subscribe(onNext: {
-                let newNotice = NewNoticeAlertVC()
-                newNotice.modalPresentationStyle = .overFullScreen
-                newNotice.modalTransitionStyle = .crossDissolve
-                self.present(newNotice, animated: true)
-            }).disposed(by: disposeBag)
+        if adminBool || managerBool {
+            newNoticeButton.rx.tap
+                .subscribe(onNext: {
+                    let newNotice = NewNoticeAlertVC()
+                    newNotice.modalPresentationStyle = .overFullScreen
+                    newNotice.modalTransitionStyle = .crossDissolve
+                    self.present(newNotice, animated: true)
+                }).disposed(by: disposeBag)
+        } else {
+            newNoticeButton.tintColor = .clear
+            newNoticeButton.setImage(nil, for: .normal)
+        }
     }
     override func setLayout() {
         scrollView.snp.makeConstraints {

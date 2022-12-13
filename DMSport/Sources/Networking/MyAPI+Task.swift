@@ -95,10 +95,18 @@ extension MyAPI {
                         "type" : type
                     ]
             )
-        case .postNoticeRegistrationClub(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
+        case .postNoticeRegistrationClub(let title, let content, let type):
+            return .requestCompositeParameters(
+                bodyParameters:
+                    [
+                        "title" : title,
+                        "content" : content
+                    ],
+                bodyEncoding: JSONEncoding.default,
+                urlParameters:
+                    [
+                        "type" : type
+                    ]
             )
         case .patchNoticeCorrection(let title, let content, _):
             return .requestParameters(

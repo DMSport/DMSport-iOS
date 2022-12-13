@@ -20,7 +20,6 @@ class NewNoticeAlertVM {
     }
     
     func transform(_ input: Input) -> Output {
-//        let data = Driver.combineLatest(input.newTitle, input.newContent, input.category)
         var type = String()
         let postResult = PublishRelay<Bool>()
         
@@ -40,48 +39,40 @@ class NewNoticeAlertVM {
         }
         
         
-//        input.buttonDidTap.asObservable()
-////            .flatMap { buttonDidTap -> Single<NetworkingResult> in
-////                self.mainProvider.rx.request(.postNoticeRegistrationAdmin(input.newTitle, input.newContent, type))
-////            }
-//            .subscribe {
-//                self.mainProvider.rx.request(.postNoticeRegistrationAdmin(_title: input.newTitle, _content: input.newContent, _type: type))
-//                    .subscriv
-//            }
-        
-        
-        self.mainProvider.rx.request(.postNoticeRegistrationAdmin(_title: input.newTitle, _content: input.newContent, _type: type))
-            .subscribe { res in
-                    switch res {
-                    case .success(let result):
-                        debugPrint(result)
-                        switch result.statusCode {
-                        case 201:
-                            postResult.accept(true)
-                        default:
-                            postResult.accept(false)
+        if adminBool {
+            self.mainProvider.rx.request(.postNoticeRegistrationAdmin(_title: input.newTitle, _content: input.newContent, _type: type))
+                .subscribe { res in
+                        switch res {
+                        case .success(let result):
+                            debugPrint(result)
+                            switch result.statusCode {
+                            case 201:
+                                postResult.accept(true)
+                            default:
+                                postResult.accept(false)
+                            }
+                        case .failure(let error):
+                            print(error)
                         }
-                    case .failure(let error):
-                        print(error)
-                    }
-            }.disposed(by: disposeBag)
+                }.disposed(by: disposeBag)
+        } else if managerBool {
+            self.mainProvider.rx.request(.postNoticeRegistrationClub(_title: input.newTitle, _content: input.newContent, _type: type))
+                .subscribe { res in
+                        switch res {
+                        case .success(let result):
+                            debugPrint(result)
+                            switch result.statusCode {
+                            case 201:
+                                postResult.accept(true)
+                            default:
+                                postResult.accept(false)
+                            }
+                        case .failure(let error):
+                            print(error)
+                        }
+                }.disposed(by: disposeBag)
+        }
         
-        
-//        self.mainProvider.rx.request(.postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin(title: input.newTitle, content: data.content)))
-//            .subscribe( { res in
-//                switch res {
-//                case .success(let result):
-//                    debugPrint(result)
-//                    switch result.statusCode {
-//                    case 200:
-//                        postResult.accept(true)
-//                    default:
-//                        break
-//                    }
-//                case .failure(_):
-//                    postResult.accept(false)
-//                }
-//            }).disposed(by: disposeBag)
 
         return Output(result: postResult)
     }

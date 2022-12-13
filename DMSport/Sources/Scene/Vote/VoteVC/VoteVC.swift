@@ -94,6 +94,7 @@ class VoteVC: BaseVC {
         output.todayVotes.bind(to: timeVoteTableView.rx.items(
             cellIdentifier: "TimeVoteCell",
             cellType: TimeVoteCell.self)) { row, items, cell in
+                print(row)
                 output.categoryName.asObservable()
                     .map {
                         switch $0 {
@@ -109,6 +110,7 @@ class VoteVC: BaseVC {
                             return ""
                         }
                     }.subscribe(onNext: {
+                        print($0)
                         cell.categoryLabel.text = $0
                     }).disposed(by: self.disposeBag)
                 
@@ -135,24 +137,41 @@ class VoteVC: BaseVC {
                 }
                 cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
                 
+                print("what?")
+                
+                
+//                cell.applyButton.rx.tap
+//                    .bind {
+//                        if cell.categoryLabel.text == "배드민턴" {
+//                            print("this is badminton")
+//                            let applyViewModel = PositionVoteVM()
+//                            let input = PositionVoteVM.Input(
+//                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
+//                                voteID: cell.id)
+//                            let output = applyViewModel.transfrom(input)
+//
+//                            output.voteResult.asObservable()
+//                                .subscribe { bool in
+//                                    if bool {
+//                                        print(bool)
+//                                    }
+//                                }.disposed(by: self.disposeBag)
+//                        } else {
+//                            print("hello")
+//                            let next = PositionVoteVC()
+//                            next.voteID = cell.id
+//                            next.categoryName = cell.categoryLabel.text ?? ""
+//                            self.navigationController?.pushViewController(next, animated: true)
+//                            print("world")
+//                        }
+//                    }.disposed(by: cell.disposeBag)
+                
                 cell.applyButton.rx.tap
+                    .take(1)
+//                    .throttle(.seconds(10), scheduler: MainScheduler.instance)
                     .subscribe(onNext: {
-                        if cell.categoryLabel.text == "배드민턴" {
-                            print("its badminton")
-                            let applyViewModel = PositionVoteVM()
-                            let input = PositionVoteVM.Input(
-                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
-                                voteID: cell.id)
-                            let output = applyViewModel.transfrom(input)
-                            
-                            output.voteResult.asObservable()
-                                .subscribe(onNext: { bool in
-                                    if bool {
-                                        print(bool)
-                                    }
-                                }).disposed(by: cell.disposeBag)
-                        } else {
-                            print("shit")
+                        print("아니 이게 맞아? 왜 여러 번 돼")
+                        if cell.categoryLabel.text != "배드민턴" {
                             let next = PositionVoteVC()
                             next.voteID = cell.id
                             next.categoryName = cell.categoryLabel.text ?? ""
@@ -160,12 +179,15 @@ class VoteVC: BaseVC {
                         }
                     }).disposed(by: cell.disposeBag)
                 
-                cell.votedUserButton.rx.tap
-                    .subscribe(onNext: {
-                        let nextVC = VotedUserVC()
-                        nextVC.userList.accept(items.users)
-                        self.navigationController?.pushViewController(nextVC, animated: true)
-                    }).disposed(by: cell.disposeBag)
+//                cell.votedUserButton.rx.tap
+//                    .subscribe(onNext: {
+//                        print("what")
+//                        let nextVC = VotedUserAlertVC()
+//                        nextVC.modalPresentationStyle = .overFullScreen
+//                        nextVC.modalTransitionStyle = .crossDissolve
+//                        self.present(nextVC, animated: true)
+//                        nextVC.userList.accept(items.users)
+//                    }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)
@@ -190,7 +212,7 @@ class VoteVC: BaseVC {
             }
     }
     func getAccessToken() {
-        self.mainProvider.rx.request(.postSignIn(PostLoginRequest(email: "admin@dsm.hs.kr", password: "admin123")))
+        self.mainProvider.rx.request(.postSignIn(PostLoginRequest(email: "basketball@dsm.hs.kr", password: "basketball123")))
             .subscribe({ response in
                 switch response {
                 case .success(let response):
@@ -198,6 +220,15 @@ class VoteVC: BaseVC {
                     if let userData = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
                         KeyChain.create(key: Token.accessToken, token: userData.access_token)
                         KeyChain.create(key: Token.refreshToken, token: userData.refresh_token)
+                        authority = userData.authority
+                        print(authority)
+                        if authority.contains("ADMIN") {
+                            adminBool = true
+                            print(adminBool)
+                        } else if authority.contains("MANAGER") {
+                            managerBool = true
+                            print(managerBool)
+                        }
                     }
                 case .failure(let error):
                     print(error)
