@@ -114,8 +114,7 @@ final class WithdrawalViewController: UIViewController {
         forgetPasswordButton.rx.tap
             .bind {
                 let certificationVC = GmailCertificationViewController()
-                certificationVC.modalPresentationStyle = .fullScreen
-                self.present(certificationVC, animated: true)
+                self.navigationController?.pushViewController(certificationVC, animated: true)
             }
             .disposed(by: disposeBag)
         

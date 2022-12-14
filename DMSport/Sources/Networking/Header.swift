@@ -9,7 +9,9 @@ public var managerBool = false
 class Token {
     static var accessToken = "access_token"
     static var refreshToken = "refresh_token"
-//    public var authority = ""
+    
+    var accessString: String?
+    var refreshString: String?
 }
 
 class KeyChain {

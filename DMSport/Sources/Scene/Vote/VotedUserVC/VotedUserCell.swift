@@ -11,7 +11,7 @@ class VotedUserCell: BaseTC {
     }
     let userLabel =  UILabel().then {
         $0.textColor = DMSportColor.hintColor.color
-        $0.font = .systemFont(ofSize: 20, weight: .bold)
+        $0.font = .systemFont(ofSize: 18, weight: .regular)
     }
     override func addView() {
         addSubview(backView)

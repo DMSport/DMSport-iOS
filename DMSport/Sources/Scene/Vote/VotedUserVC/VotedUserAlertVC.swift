@@ -21,11 +21,13 @@ class VotedUserAlertVC: BaseVC {
     }
     let teamTableView = UITableView().then {
         $0.register(VotedUserCell.self, forCellReuseIdentifier: "Users")
+        $0.backgroundColor = .clear
         $0.allowsSelection = false
+        $0.separatorStyle = .none
     }
     private let cancelButton = UIButton().then {
         $0.backgroundColor = .clear
-        $0.setTitle("취소", for: .normal)
+        $0.setTitle("닫기", for: .normal)
         $0.setTitleColor(DMSportColor.hintColor.color, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
     }
@@ -47,7 +49,7 @@ class VotedUserAlertVC: BaseVC {
         }
     }
     override func configureVC() {
-        view.backgroundColor = DMSportColor.baseColor.color
+        view.backgroundColor = .black.withAlphaComponent(0.3)
         bindData()
         cancelButton.rx.tap
             .bind {
@@ -66,8 +68,8 @@ class VotedUserAlertVC: BaseVC {
             $0.height.equalTo(24)
         }
         teamTableView.snp.makeConstraints {
-            $0.top.equalTo(guideLabel.snp.bottom).offset(40)
-            $0.left.right.equalToSuperview().inset(15)
+            $0.top.equalTo(guideLabel.snp.bottom).offset(20)
+            $0.left.right.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(60)
         }
         cancelButton.snp.makeConstraints {

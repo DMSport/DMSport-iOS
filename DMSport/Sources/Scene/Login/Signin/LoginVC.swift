@@ -31,8 +31,7 @@ class LoginViewController: UIViewController {
         view.forgetPassword.rx.tap
             .bind {
                 let CertificationVC = GmailCertificationViewController()
-                CertificationVC.modalPresentationStyle = .fullScreen
-                self.present(CertificationVC, animated: true)
+                self.navigationController?.pushViewController(CertificationVC, animated: true)
             }.disposed(by: view.disposeBag)
         
         view.mainButton.rx.tap
@@ -83,9 +82,7 @@ class LoginViewController: UIViewController {
                                 managerBool = true
                             }
                         }
-                        let myPageVC = MyPageViewController()
-                        myPageVC.modalPresentationStyle = .fullScreen
-                        self.present(myPageVC, animated: true)
+                        self.dismiss(animated: true)
                         break
                     case .failure(let error):
                         print("에러: \(error)")

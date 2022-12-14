@@ -81,16 +81,19 @@ class CategoryNoticeVC: BaseVC {
                     cell.selectionStyle = .none
                 }
                 
-                cell.ellipsisButton.rx.tap
-                    .subscribe(onNext: {
-                        let editAlert = NoticeEditAlertVC()
-                        editAlert.modalPresentationStyle = .overFullScreen
-                        editAlert.modalTransitionStyle = .crossDissolve
-                        self.present(editAlert, animated: true)
-                        editAlert.noticeTitleTextField.text = items.title
-                        editAlert.noticeContentTextView.text = items.contentPreview
-                        editAlert.noticeIDLabel.text = "\(items.id)"
-                    }).disposed(by: cell.disposeBag)
+                if adminBool || managerBool {
+                    cell.ellipsisButton.rx.tap
+                        .subscribe(onNext: {
+                            let editAlert = NoticeEditAlertVC()
+                            editAlert.modalPresentationStyle = .overFullScreen
+                            editAlert.modalTransitionStyle = .crossDissolve
+                            self.present(editAlert, animated: true)
+                            editAlert.noticeTitleTextField.text = items.title
+                            editAlert.noticeContentTextView.text = items.contentPreview
+                            editAlert.noticeIDLabel.text = "\(items.id)"
+                        }).disposed(by: cell.disposeBag)
+                }
+                
             }.disposed(by: disposeBag)
         
         output.detailIndex.asObservable()
@@ -146,6 +149,7 @@ class CategoryNoticeVC: BaseVC {
                 }).disposed(by: disposeBag)
         } else {
             newNoticeButton.tintColor = .clear
+            newNoticeButton.backgroundColor = .clear
             newNoticeButton.setImage(nil, for: .normal)
         }
     }

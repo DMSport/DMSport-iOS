@@ -7,7 +7,7 @@ import RxRelay
 import RxMoya
 
 class GmailCertificationViewController: UIViewController {
-    let provider = MoyaProvider<MyAPI>()
+    let provider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
     let disposeBag = DisposeBag()
     var password = ""
     var id = ""
@@ -75,8 +75,7 @@ class GmailCertificationViewController: UIViewController {
                             EmailSaver.saver.updateEmail(self.emailTextField.text)
                             PasswordSaver.saver.updatePassword(self.password)
                             let loginVC = LoginViewController()
-                            loginVC.modalPresentationStyle = .fullScreen
-                            self.present(loginVC, animated: true)
+                            self.navigationController?.pushViewController(loginVC, animated: true)
                             break
                         case .failure(let error):
                             print("error: \(error)")

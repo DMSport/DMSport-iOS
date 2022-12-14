@@ -178,7 +178,6 @@ extension ChangePasswordGmailViewController {
     
     func okButtonTap(){
         let changePasswordVC = ChangePasswordViewController()
-        changePasswordVC.modalPresentationStyle = .fullScreen
-        present(changePasswordVC, animated: true)
+        navigationController?.pushViewController(changePasswordVC, animated: true)
     }
 }

@@ -1,14 +1,41 @@
 import UIKit
+import RxSwift
+import RxCocoa
+import RxRelay
 import Then
 import SnapKit
-import RxSwift
+import RxMoya
 
 class MyPageViewController: UIViewController {
-    
+    private let getInfo = BehaviorRelay<Void>(value: ())
+    private let viewModel = MyPageVM()
     let disposBag = DisposeBag()
+    
+    private func getMyInfo() {
+        let input = MyPageVM.Input(buttonDidTap: getInfo.asDriver())
+        let output = viewModel.transform(input)
+        
+//        nameLabel.text = output.name.value
+//        userLabel.text = output.authString.value
+//        emailLabel.text = output.email.value
+        
+        output.name
+            .bind {_ in
+                self.nameLabel.text = output.name.value
+            }.disposed(by: disposBag)
+        output.email
+            .bind {_ in
+                self.emailLabel.text = output.email.value
+            }.disposed(by: disposBag)
+        output.authString
+            .bind {_ in
+                self.userLabel.text = output.authString.value
+            }.disposed(by: disposBag)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getMyInfo()
         view.backgroundColor = UIColor(named: "BackgroundColor")
         
         setupView()
@@ -16,8 +43,7 @@ class MyPageViewController: UIViewController {
         passwordChageButton.rx.tap
             .bind {
                 let chagePasswordVC = ChangePasswordViewController()
-                chagePasswordVC.modalPresentationStyle = .fullScreen
-                self.present(chagePasswordVC, animated: true)
+                self.navigationController?.pushViewController(chagePasswordVC, animated: true)
             }
             .disposed(by: disposBag)
         
@@ -25,17 +51,19 @@ class MyPageViewController: UIViewController {
             .bind {
                 Token.accessToken = ""
                 Token.refreshToken = ""
+                Token().accessString = nil
+                Token().refreshString = nil
+                authority = ""
+
                 let loginVC = LoginViewController()
-                loginVC.modalPresentationStyle = .fullScreen
-                self.present(loginVC, animated: true)
+                self.navigationController?.pushViewController(loginVC, animated: true)
             }
             .disposed(by: disposBag)
         
         withdrawalButton.rx.tap
             .bind {
                 let withdrawalVC = WithdrawalViewController()
-                withdrawalVC.modalPresentationStyle = .fullScreen
-                self.present(withdrawalVC, animated: true)
+                self.navigationController?.pushViewController(withdrawalVC, animated: true)
             }
             .disposed(by: disposBag)
         

@@ -70,9 +70,9 @@ extension SignupView {
     func SignupButtonTap(_ checkPasswordTextField: UITextField,_ idTextField: UITextField,_ errorText: UILabel, _ errorImage: UIImageView,_ controller: UIViewController) {
         checkPasswordTextField.rx.text.orEmpty
             .map(checkPassword(_:))
+            .take(1)
             .subscribe(onNext: { errorMassge in
                 switch errorMassge{
-                    
                 case .over:
                     errorText.isHidden = false
                     errorText.textColor = .red
@@ -100,13 +100,12 @@ extension SignupView {
                     errorText.text = "사용가능 합니다"
                     checkPasswordTextField.layer.borderColor = UIColor(named: "Primary2")?.cgColor
                     let GmailCertificationVC = GmailCertificationViewController()
-                    GmailCertificationVC.modalPresentationStyle = .fullScreen
                     GmailCertificationVC.password = checkPasswordTextField.text!
                     GmailCertificationVC.id = idTextField.text!
                     print("이름: \(GmailCertificationVC.id)")
                     print("비번: \(GmailCertificationVC.password)")
                     
-                    controller.present(GmailCertificationVC, animated: true)
+                    controller.navigationController?.pushViewController(GmailCertificationVC, animated: true)
                     
                 case .error:
                     errorText.isHidden = false

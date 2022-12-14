@@ -14,7 +14,7 @@ enum MyAPI {
     case putChangePassword(PutChangePassword)
     case deleteLogout(DeletLogout)
     case deleteMemberGoOut(DeletMemberGoOut)
-    case getSearchMyInformation(GetSearchMyInFormation)
+    case getSearchMyInformation
     
     //clubs
     case postVoteAndrevoke(_voteID: Int)

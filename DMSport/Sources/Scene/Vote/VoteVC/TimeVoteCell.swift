@@ -89,16 +89,14 @@ class TimeVoteCell: BaseTC {
             votedUserButton,
             applyButton
         ] .forEach {
-            contentView.addSubview($0)
+            self.contentView.addSubview($0)
         }
         graphBase.addSubview(graphView)
         [
             categoryLabel,
             lunchDinnerLabel,
             leftMemebersLabel,
-            graphBase,
-            graphView,
-            votedUserButton
+            graphBase
         ] .forEach {
             backView.addSubview($0)
         }

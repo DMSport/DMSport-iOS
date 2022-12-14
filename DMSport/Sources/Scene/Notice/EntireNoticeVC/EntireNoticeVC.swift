@@ -73,17 +73,19 @@ class EntireNoticeVC: BaseVC {
                     print(items.type)
                     cell.selectionStyle = .none
                 }
+                if adminBool || managerBool {
+                    cell.ellipsisButton.rx.tap
+                        .subscribe(onNext: {
+                            let editAlert = NoticeEditAlertVC()
+                            editAlert.modalPresentationStyle = .overFullScreen
+                            editAlert.modalTransitionStyle = .crossDissolve
+                            self.present(editAlert, animated: true)
+                            editAlert.noticeTitleTextField.text = items.title
+                            editAlert.noticeContentTextView.text = items.contentPreview
+                            editAlert.noticeIDLabel.text = "\(items.id)"
+                        }).disposed(by: cell.disposeBag)
+                }
                 
-                cell.ellipsisButton.rx.tap
-                    .subscribe(onNext: {
-                        let editAlert = NoticeEditAlertVC()
-                        editAlert.modalPresentationStyle = .overFullScreen
-                        editAlert.modalTransitionStyle = .crossDissolve
-                        self.present(editAlert, animated: true)
-                        editAlert.noticeTitleTextField.text = items.title
-                        editAlert.noticeContentTextView.text = items.contentPreview
-                        editAlert.noticeIDLabel.text = "\(items.id)"
-                    }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
         entireNoticeTableView.rx.itemSelected
             .subscribe(onNext: { _ in
@@ -133,6 +135,7 @@ class EntireNoticeVC: BaseVC {
                 }).disposed(by: disposeBag)
         } else {
             newNoticeButton.tintColor = .clear
+            newNoticeButton.backgroundColor = .clear
             newNoticeButton.setImage(nil, for: .normal)
         }
     }
