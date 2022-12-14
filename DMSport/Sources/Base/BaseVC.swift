@@ -3,6 +3,7 @@ import ReactorKit
 
 class BaseVC: UIViewController {
     typealias DMSportColor = DMSportIOSAsset.Color
+    typealias DMSportImage = DMSportIOSAsset.Assets
     
     let bound = UIScreen.main.bounds
     var disposeBag: DisposeBag = .init()

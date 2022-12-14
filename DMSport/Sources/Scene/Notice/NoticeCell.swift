@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 class NoticeCell: BaseTC {
+    let disposeBag = DisposeBag()
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20

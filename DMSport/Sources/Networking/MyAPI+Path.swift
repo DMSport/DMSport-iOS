@@ -27,8 +27,8 @@ extension MyAPI {
         return "/users"
     case .getSearchMyInformation:
         return "/users/my"
-    case .postVoteAndrevoke:
-        return "/clubs/vote/" //{vote-id}
+    case .postVoteAndrevoke(let id):
+        return "/clubs/vote/\(id)" //{vote-id}
     case .getToDayVoteSearch(_):
         return "/clubs/vote"
     case .getVoteList:
@@ -39,14 +39,14 @@ extension MyAPI {
         return "/notices"
     case .getNoticeDetilSearch(let id):
         return "/notices/\(id)" //{notice-id}
-    case .postNoticeRegistrationAdmin:
-        return "/notices/admin?type=" //{NOTICE_TYPE}
-    case .postNoticeRegistrationClub:
+    case .postNoticeRegistrationAdmin(_, _, _):
+        return "/notices/admin" //{NOTICE_TYPE}
+    case .postNoticeRegistrationClub(_, _, _):
         return "/notices/club"
-    case .patchNoticeCorrection:
-        return "/notices/" //{notice-id}
-    case .deleteNotice:
-        return "/notices/" //{notice-id}
+    case .patchNoticeCorrection(_, _, let id):
+        return "/notices/\(id)" //{notice-id}
+    case .deleteNotice(let id):
+        return "/notices/\(id)" //{notice-id}
     case .getNewlyNotice:
         return "notices/recent"
     case .patchStopClub:

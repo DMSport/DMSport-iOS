@@ -1,5 +1,6 @@
 import Foundation
 import Moya
+import RxMoya
 
 enum MyAPI {
     //users
@@ -13,21 +14,21 @@ enum MyAPI {
     case putChangePassword(PutChangePassword)
     case deleteLogout(DeletLogout)
     case deleteMemberGoOut(DeletMemberGoOut)
-    case getSearchMyInformation(GetSearchMyInFormation)
+    case getSearchMyInformation
     
     //clubs
-    case postVoteAndrevoke(PostVoteAndRevoke)
+    case postVoteAndrevoke(_voteID: Int)
     case getToDayVoteSearch(_type: String)
     case getVoteList(GetVoteList)
     case postClubHopeWhether(PostClubHopeWhether)
     
     //notices
     case getAllSearchNoticeList
-    case getNoticeDetilSearch(_noticeID: Int)
-    case postNoticeRegistrationAdmin(PostNoticeRegistrationAdmin)
-    case postNoticeRegistrationClub(PostNoticeRegistrationClub)
-    case patchNoticeCorrection(PatchNoticeCorrection)
-    case deleteNotice(DeletNotice)
+    case getNoticeDetilSearch(_ noticeID: Int)
+    case postNoticeRegistrationAdmin(_title: String, _content: String, _type: String)
+    case postNoticeRegistrationClub(_title: String, _content: String, _type: String)
+    case patchNoticeCorrection(_ title: String, _ content: String, _ noticeID: Int)
+    case deleteNotice(_ noticeID: Int)
     case getNewlyNotice
     
     //admin

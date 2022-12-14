@@ -7,7 +7,7 @@ import RxRelay
 import RxMoya
 
 class GmailCertificationViewController: UIViewController {
-    let provider = MoyaProvider<MyAPI>()
+    let provider = MoyaProvider<MyAPI>(plugins: [MoyaLoggingPlugin()])
     let disposeBag = DisposeBag()
     var password = ""
     var id = ""
@@ -37,15 +37,16 @@ class GmailCertificationViewController: UIViewController {
         
         okButton.rx.tap
             .bind {
-                if(self.emailTextField.text! == nil || self.emailTextField.text!.isEmpty) {
+                if(self.emailTextField.text! == "" || self.emailTextField.text!.isEmpty) {
                     print("이메일이 없서")
                     return
                 }
-                if(self.checkEmailTextField.text! == nil || self.checkEmailTextField.text!.isEmpty) {
+                if(self.checkEmailTextField.text! == "" || self.checkEmailTextField.text!.isEmpty) {
                     print("인증번호가 없서")
                     return
                 }
-                self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!))).subscribe { response in
+                self.provider.rx.request(.postMailAuthentication(PostmailAuthenticationRequest(email: self.emailTextField.text!, auth_code: self.checkEmailTextField.text!)))
+                    .subscribe { response in
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
@@ -74,15 +75,14 @@ class GmailCertificationViewController: UIViewController {
                             EmailSaver.saver.updateEmail(self.emailTextField.text)
                             PasswordSaver.saver.updatePassword(self.password)
                             let loginVC = LoginViewController()
-                            loginVC.modalPresentationStyle = .fullScreen
-                            self.present(loginVC, animated: true)
+                            self.navigationController?.pushViewController(loginVC, animated: true)
                             break
                         case .failure(let error):
                             print("error: \(error)")
                         }
                     }.disposed(by: view.disposeBag)
                 }
-            }
+            }.disposed(by: disposeBag)
         
         certificationButton.rx.tap
             .bind {
@@ -98,18 +98,17 @@ class GmailCertificationViewController: UIViewController {
                         print("error: \(error)")
                     }
                 }.disposed(by: self.disposeBag)
-                
-            }
+            }.disposed(by: disposeBag)
     }
     
     private lazy var fristText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary")
+        $0.textColor = DMSportIOSAsset.Color.mainColor.color
         $0.font = .systemFont(ofSize: 58.0, weight: .bold)
         $0.text = "인증하기"
     }
     
     private lazy var logoText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary2")
+        $0.textColor = DMSportIOSAsset.Color.subtitleColor.color
         $0.font = .systemFont(ofSize: 35.0, weight: .bold)
         $0.text = "DMSport."
     }
@@ -132,7 +131,7 @@ class GmailCertificationViewController: UIViewController {
     
     private lazy var certificationButton = UIButton().then {
         $0.setTitle("인증", for: .normal)
-        $0.backgroundColor = UIColor(named: "Primary")
+        $0.backgroundColor = DMSportIOSAsset.Color.mainColor.color
     }
     
     private lazy var okButton = UIButton().then {
@@ -169,8 +168,8 @@ extension GmailCertificationViewController {
         emailTextField.snp.makeConstraints {
             $0.top.equalTo(logoText.snp.bottom).offset(42)
             $0.leading.equalTo(checkEmailTextField.snp.leading)
+            $0.trailing.equalToSuperview().inset(112)
             $0.height.equalTo(50)
-            $0.width.equalTo(260)
         }
 
         checkEmailTextField.snp.makeConstraints {

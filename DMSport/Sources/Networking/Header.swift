@@ -2,9 +2,16 @@ import Foundation
 import Alamofire
 import Security
 
+public var authority = ""
+public var adminBool = false
+public var managerBool = false
+
 class Token {
-    static let accessToken = "access_token"
-    static let refreshToken = "refresh_token"
+    static var accessToken = "access_token"
+    static var refreshToken = "refresh_token"
+    
+    var accessString: String?
+    var refreshString: String?
 }
 
 class KeyChain {

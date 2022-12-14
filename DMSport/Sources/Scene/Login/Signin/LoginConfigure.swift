@@ -23,8 +23,8 @@ extension LoginView {
             .orEmpty
             .map{ _ in self.loginVM.validationPassword() }
             .subscribe(onNext: { error in
-                self.errorMassgeText.textColor = error ? .blue : .red
-                self.secondTextField.layer.borderColor = error ? UIColor.blue.cgColor : UIColor.red.cgColor
+                self.errorMassgeText.textColor = error ? DMSportIOSAsset.Color.subtitleColor.color : .red
+                self.secondTextField.layer.borderColor = error ? DMSportIOSAsset.Color.subtitleColor.color.cgColor : DMSportIOSAsset.Color.errorColor.color.cgColor
             })
             .disposed(by: disposeBag)
     }
@@ -32,8 +32,7 @@ extension LoginView {
     
     @objc func signupButtonTap(_ sender: UIButton!,_ controller: UIViewController){
         let signupVC = SignUpViewController()
-        signupVC.modalPresentationStyle = .fullScreen
-        controller.present(signupVC, animated: true)
+        controller.navigationController?.pushViewController(signupVC, animated: true)
     }
     
     @objc func nextButtonTap(){

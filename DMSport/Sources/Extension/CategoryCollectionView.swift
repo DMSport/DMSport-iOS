@@ -4,6 +4,7 @@ import RxCocoa
 extension VoteVC: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = self.categoryCollectionView.cellForItem(at: indexPath)
+        typeRelay.accept(type[indexPath.row])
         if cell!.isSelected == true {
             cell?.layer.borderWidth = 2.0
             cell?.layer.borderColor = DMSportColor.mainColor.color.cgColor
@@ -11,6 +12,7 @@ extension VoteVC: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = self.categoryCollectionView.cellForItem(at: indexPath)
+        typeRelay.accept(type[indexPath.row])
         if cell!.isSelected == false {
             cell?.layer.borderWidth = 0.0
             cell?.layer.borderColor = UIColor.clear.cgColor
@@ -25,6 +27,7 @@ extension VoteVC: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
         cell.categoryLabel.text = "\(labelData[indexPath.row])"
         cell.categoryImage.image = UIImage(named: "\(imageData[indexPath.row])")
+        cell.type = type[indexPath.row]
         
         return cell
     }

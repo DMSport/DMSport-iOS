@@ -54,16 +54,10 @@ extension MyAPI {
                 parameters: body.toDictionary(),
                 encoding: JSONEncoding.default
             )
-        case .getSearchMyInformation(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
-        case .postVoteAndrevoke(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .getSearchMyInformation:
+            return .requestPlain
+        case .postVoteAndrevoke:
+            return .requestPlain
         case .getToDayVoteSearch(let type):
             return .requestParameters(
                 parameters:
@@ -85,26 +79,43 @@ extension MyAPI {
             return .requestPlain
         case .getNoticeDetilSearch:
             return .requestPlain
-        case .postNoticeRegistrationAdmin(let body):
+        case .postNoticeRegistrationAdmin(let title, let content, let type):
+            return .requestCompositeParameters(
+                bodyParameters:
+                    [
+                        "title" : title,
+                        "content" : content
+                    ],
+                bodyEncoding: JSONEncoding.default,
+                urlParameters:
+                    [
+                        "type" : type
+                    ]
+            )
+        case .postNoticeRegistrationClub(let title, let content, let type):
+            return .requestCompositeParameters(
+                bodyParameters:
+                    [
+                        "title" : title,
+                        "content" : content
+                    ],
+                bodyEncoding: JSONEncoding.default,
+                urlParameters:
+                    [
+                        "type" : type
+                    ]
+            )
+        case .patchNoticeCorrection(let title, let content, _):
             return .requestParameters(
-                parameters: body.toDictionary(),
+                parameters:
+                    [
+                        "title" : title,
+                        "content" : content
+                    ],
                 encoding: JSONEncoding.default
             )
-        case .postNoticeRegistrationClub(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
-        case .patchNoticeCorrection(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
-        case .deleteNotice(let body):
-            return .requestParameters(
-                parameters: body.toDictionary(),
-                encoding: JSONEncoding.default
-            )
+        case .deleteNotice(_):
+            return .requestPlain
         case .getNewlyNotice:
             return .requestPlain
         case .patchStopClub(let body):

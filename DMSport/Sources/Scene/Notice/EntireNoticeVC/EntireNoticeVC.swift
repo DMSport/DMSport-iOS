@@ -45,26 +45,65 @@ class EntireNoticeVC: BaseVC {
             loadDetail: entireNoticeTableView.rx.itemSelected.asSignal())
         let output = viewModel.transfrom(input)
         
+        output.detailIndex.asObservable()
+            .subscribe(onNext: { id in
+                self.noticeID = id
+            }).disposed(by: disposeBag)
         output.allNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
                 if items.type == "ALL" {
+                    let formatter = ISO8601DateFormatter()
+                    formatter.formatOptions = [.withFullDate]
+                    let createdTime = formatter.date(from: items.createdAt)
+                    let createdWhen: String = "\(createdTime!)"
+                    let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+                    let range = ...endIndex
+                    
                     cell.noticeTitle.text = items.title
-                    cell.noticeDetails.text = items.createdAt
+                    cell.noticeDetails.text = "\(createdWhen[range])"
                     cell.noticeContent.text = items.contentPreview
+                    
                     self.entireNoticeCount += 1
+                    print(self.entireNoticeCount)
+                    self.updateConstraints()
+                    
                     cell.selectionStyle = .none
                 } else {
                     print(items.type)
                     cell.selectionStyle = .none
                 }
+                if adminBool || managerBool {
+                    cell.ellipsisButton.rx.tap
+                        .subscribe(onNext: {
+                            let editAlert = NoticeEditAlertVC()
+                            editAlert.modalPresentationStyle = .overFullScreen
+                            editAlert.modalTransitionStyle = .crossDissolve
+                            self.present(editAlert, animated: true)
+                            editAlert.noticeTitleTextField.text = items.title
+                            editAlert.noticeContentTextView.text = items.contentPreview
+                            editAlert.noticeIDLabel.text = "\(items.id)"
+                        }).disposed(by: cell.disposeBag)
+                }
+                
             }.disposed(by: disposeBag)
-        output.detailIndex.asObservable()
-            .subscribe(onNext: { id in
-                let nextVC = NoticeDetailVC()
-                nextVC.id = id
-                self.navigationController?.pushViewController(nextVC, animated: true)
+        entireNoticeTableView.rx.itemSelected
+            .subscribe(onNext: { _ in
+                let next = NoticeDetailVC()
+                next.id = self.noticeID
+                self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
+    }
+    private func updateConstraints() {
+        contentView.snp.remakeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalToSuperview()
+            if entireNoticeCount * 133 > 800 {
+                $0.height.equalTo(50 + entireNoticeCount * 133)
+            } else {
+                $0.height.equalTo(900)
+            }
+        }
     }
     override func addView() {
         [
@@ -86,13 +125,19 @@ class EntireNoticeVC: BaseVC {
         view.backgroundColor = DMSportColor.baseColor.color
         scrollView.contentInsetAdjustmentBehavior = .never
         bindViewModels()
-        newNoticeButton.rx.tap
-            .subscribe(onNext: {
-                let newNotice = NewNoticeAlertVC()
-                newNotice.modalPresentationStyle = .overFullScreen
-                newNotice.modalTransitionStyle = .crossDissolve
-                self.present(newNotice, animated: true)
-            }).disposed(by: disposeBag)
+        if adminBool || managerBool {
+            newNoticeButton.rx.tap
+                .subscribe(onNext: {
+                    let newNotice = NewNoticeAlertVC()
+                    newNotice.modalPresentationStyle = .overFullScreen
+                    newNotice.modalTransitionStyle = .crossDissolve
+                    self.present(newNotice, animated: true)
+                }).disposed(by: disposeBag)
+        } else {
+            newNoticeButton.tintColor = .clear
+            newNoticeButton.backgroundColor = .clear
+            newNoticeButton.setImage(nil, for: .normal)
+        }
     }
     override func setLayout() {
         scrollView.snp.makeConstraints {

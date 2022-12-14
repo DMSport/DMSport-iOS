@@ -7,22 +7,35 @@ import Moya
 import RxMoya
 
 class VoteVC: BaseVC {
+    let type = ["BADMINTON", "SOCCER", "BASKETBALL", "VOLLEYBALL"]
     let labelData = ["배드민턴", "축구", "농구", "배구"]
     let imageData = ["Badminton", "SoccerBall", "BasketBall", "VolleyBall"]
     
-    let mainProvider = MoyaProvider<MyAPI>()
+    private let mainProvider = MoyaProvider<MyAPI>()
+    private let getVotes = BehaviorRelay<Void>(value: ())
+    let viewModel = TodayVoteVM()
+    let postVote = BehaviorRelay<Void>(value: ())
+    let typeRelay = PublishRelay<String>()
+    let isBan = BehaviorRelay<Bool>(value: false)
+    let banPeriod = PublishRelay<String>()
     
+    private let scrollView = UIScrollView().then {
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+    }
+    private let contentView = UIView().then {
+        $0.backgroundColor = .clear
+    }
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.baseColor.color
         $0.layer.cornerRadius = 20
     }
-    private let noticeButton = UIButton().then {
+    private let logoView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
-        $0.setTitle("플라잉 디스크 사용 안내", for: .normal)
-        $0.titleLabel?.textColor = DMSportColor.blackColor.color
-        $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        $0.titleLabel?.textAlignment = .left
+    }
+    private let logoImage = UIImageView().then {
+        $0.image = UIImage(named: "DMSport_Vector")
     }
     private let sportsGuideLabel = UILabel().then {
         $0.text = "종목"
@@ -45,7 +58,7 @@ class VoteVC: BaseVC {
         $0.textColor = DMSportIOSAsset.Color.hintColor.color
         $0.font = .systemFont(ofSize: 22, weight: .bold)
     }
-    private let timeVoteTableView =  ContentWrappingTableView().then {
+    private let timeVoteTableView =  UITableView().then {
         $0.register(TimeVoteCell.self, forCellReuseIdentifier: "TimeVoteCell")
         $0.rowHeight = 142
         $0.showsVerticalScrollIndicator = false
@@ -53,12 +66,16 @@ class VoteVC: BaseVC {
         $0.backgroundColor = DMSportColor.baseColor.color
     }
     private let updateTimeLabel = UILabel().then {
-        $0.text = "2022/09/28 10:34 업데이트"
+        var formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        var current_date_string = formatter.string(from: Date())
+        print(current_date_string)
+        
+        $0.text = "\(current_date_string) 업데이트"
         $0.textAlignment = .center
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 14, weight: .regular)
     }
-    
     func setUpCollectionView() {
         categoryCollectionView.delegate = self
         categoryCollectionView.dataSource = self
@@ -66,19 +83,101 @@ class VoteVC: BaseVC {
     }
     func setUpTableView() {
         timeVoteTableView.isScrollEnabled = false
-        timeVoteTableView.delegate = self
-        timeVoteTableView.dataSource = self
-        timeVoteTableView.reloadData()
     }
-    
+    private func bindViewModels() {
+        let input = TodayVoteVM.Input(
+            getVotes: getVotes.asDriver(),
+            type: typeRelay.asDriver(onErrorJustReturn: ""),
+            loadDetail: categoryCollectionView.rx.itemSelected.asSignal()
+        )
+        let output = viewModel.transfrom(input)
+        
+        output.voteObject.asObservable()
+            .subscribe(onNext: {
+                self.isBan.accept($0.ban)
+            }).disposed(by: disposeBag)
+        
+        output.todayVotes.bind(to: timeVoteTableView.rx.items(
+            cellIdentifier: "TimeVoteCell",
+            cellType: TimeVoteCell.self)) { row, items, cell in
+                var newCategoryLabel = ""
+                switch output.categoryName.value {
+                case "BADMINTON":
+                    newCategoryLabel = "배드민턴"
+                case "SOCCER":
+                    newCategoryLabel = "축구"
+                case "BASKETBALL":
+                    newCategoryLabel = "농구"
+                case "VOLLEYBALL":
+                    newCategoryLabel = "배구"
+                default:
+                    newCategoryLabel = ""
+                }
+                cell.categoryLabel.text = newCategoryLabel
+                
+                self.isBan.subscribe(onNext: { bool in
+                    if bool {
+                        cell.backView.backgroundColor = DMSportColor.disabledColor.color
+                        self.timeVoteTableView.allowsSelection = false
+                    } else {
+                        cell.backView.backgroundColor = DMSportColor.whiteColor.color
+                    }
+                }).disposed(by: self.disposeBag)
+                
+                cell.applied.accept(items.alreadyVoted)
+                cell.id  = items.voteID
+                cell.leftMemebersLabel.text = "\(items.voteCount)" + "/" + "\(items.maxPeople)" + "명"
+                switch items.time {
+                case "LUNCH":
+                    cell.lunchDinnerLabel.text = "점심시간"
+                case "DINNER":
+                    cell.lunchDinnerLabel.text = "저녁시간"
+                default:
+                    break
+                }
+                cell.graphWidth = (self.view.frame.width / Double(items.maxPeople)) * Double(items.voteCount)
+                
+                cell.setUpView(onTapped: { id in
+                    if cell.categoryLabel.text != "배드민턴" {
+                        let next = PositionVoteVC()
+                        next.voteID = cell.id
+                        next.categoryName = cell.categoryLabel.text ?? ""
+                        self.navigationController?.pushViewController(next, animated: true)
+                    }
+                })
+                
+                cell.showUsers {
+                    print("what")
+                    let nextVC = VotedUserAlertVC()
+                    nextVC.modalPresentationStyle = .overFullScreen
+                    nextVC.modalTransitionStyle = .crossDissolve
+                    self.present(nextVC, animated: true)
+                    nextVC.userList.accept(items.users)
+                }
+//                cell.votedUserButton.rx.tap
+////                    .subscribe(onNext: {
+//                        print("what")
+//                        let nextVC = VotedUserAlertVC()
+//                        nextVC.modalPresentationStyle = .overFullScreen
+//                        nextVC.modalTransitionStyle = .crossDissolve
+//                        self.present(nextVC, animated: true)
+//                        nextVC.userList.accept(items.users)
+//                    }).disposed(by: cell.disposeBag)
+                
+                cell.selectionStyle = .none
+            }.disposed(by: disposeBag)
+    }
     override func addView() {
+        logoView.addSubview(logoImage)
         [
             backView,
-            noticeButton
+            logoView,
+            scrollView
         ]
             .forEach {
                 view.addSubview($0)
             }
+        scrollView.addSubview(contentView)
         [
             sportsGuideLabel,
             categoryCollectionView,
@@ -87,11 +186,11 @@ class VoteVC: BaseVC {
             updateTimeLabel
         ]
             .forEach() {
-                backView.addSubview($0)
+                contentView.addSubview($0)
             }
     }
     func getAccessToken() {
-        self.mainProvider.rx.request(.postSignIn(PostLoginRequest(email: "admin@dsm.hs.kr", password: "admin123")))
+        self.mainProvider.rx.request(.postSignIn(PostLoginRequest(email: "basketball@dsm.hs.kr", password: "basketball123")))
             .subscribe({ response in
                 switch response {
                 case .success(let response):
@@ -99,6 +198,15 @@ class VoteVC: BaseVC {
                     if let userData = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
                         KeyChain.create(key: Token.accessToken, token: userData.access_token)
                         KeyChain.create(key: Token.refreshToken, token: userData.refresh_token)
+                        authority = userData.authority
+                        print(authority)
+                        if authority.contains("ADMIN") {
+                            adminBool = true
+                            print(adminBool)
+                        } else if authority.contains("MANAGER") {
+                            managerBool = true
+                            print(managerBool)
+                        }
                     }
                 case .failure(let error):
                     print(error)
@@ -106,20 +214,43 @@ class VoteVC: BaseVC {
             }).disposed(by: disposeBag)
     }
     override func configureVC() {
-        getAccessToken()
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.layer.cornerRadius = 20
+//        getAccessToken()
+//        KeyChain.delete(key: Token.accessToken)
+//        KeyChain.delete(key: Token.refreshToken)
         view.backgroundColor = DMSportColor.backgroundColor.color
+        bindViewModels()
         setUpCollectionView()
         setUpTableView()
     }
     override func setLayout() {
+        scrollView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(170)
+            $0.left.right.bottom.equalToSuperview()
+        }
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalToSuperview()
+            if view.frame.height > 900 {
+                $0.height.equalTo(200 + 4 * 138)
+            } else {
+                $0.height.equalTo(700)
+            }
+        }
         backView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(170)
-            $0.trailing.leading.bottom.equalToSuperview()
+            $0.left.right.bottom.equalToSuperview()
         }
-        noticeButton.snp.makeConstraints {
-            $0.height.equalTo(46)
-            $0.top.equalToSuperview().inset(108)
+        logoView.snp.makeConstraints {
+            $0.height.equalTo(55)
+            $0.top.equalToSuperview().inset(100)
             $0.left.right.equalToSuperview().inset(16)
+        }
+        logoImage.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview()
+//            $0.left.right.equalToSuperview().inset(30)
         }
         sportsGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
@@ -139,11 +270,16 @@ class VoteVC: BaseVC {
         timeVoteTableView.snp.makeConstraints {
             $0.top.equalTo(timeGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
+            $0.height.equalTo(284)
         }
         updateTimeLabel.snp.makeConstraints {
             $0.top.equalTo(timeVoteTableView.snp.bottom)
             $0.left.right.equalToSuperview().inset(99)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(31)
+            if view.frame.height > 900 {
+                $0.bottom.equalToSuperview().inset(31)
+            } else {
+                $0.height.equalTo(50)
+            }
         }
     }
 }

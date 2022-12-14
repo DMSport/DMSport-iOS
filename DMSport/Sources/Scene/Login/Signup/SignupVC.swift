@@ -22,11 +22,10 @@ class SignUpViewController: UIViewController {
         
         view.repasswordCheak(view.rewriteTextField)
         view.mainButton.rx.tap
-            .bind { [weak self] in
+            .subscribe(onNext: { [weak self] in
                 view.SignupButtonTap(view.secondTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
                 view.SignupButtonTap(view.rewriteTextField, view.firstTextField, view.errorMassgeText, view.errorImage, self!)
-            }
-            .disposed(by: view.disposeBag)
+            }).disposed(by: view.disposeBag)
         view.updateWith(self)
         
         view.eyeImageButton.rx.tap

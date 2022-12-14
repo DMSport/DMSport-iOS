@@ -10,14 +10,14 @@ class BaseSignView {
     let disposeBag = DisposeBag()
     
     internal lazy var firstText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary")
-        $0.font = .systemFont(ofSize: 58.0, weight: .bold)
+        $0.textColor = DMSportIOSAsset.Color.mainColor.color
+        $0.font = .systemFont(ofSize: 48.0, weight: .bold)
         $0.text = "로그인"
     }
     
     internal lazy var logoText = UILabel().then {
-        $0.textColor = UIColor(named: "Primary2")
-        $0.font = .systemFont(ofSize: 35.0, weight: .bold)
+        $0.textColor = DMSportIOSAsset.Color.subtitleColor.color
+        $0.font = .systemFont(ofSize: 32.0, weight: .bold)
         $0.text = "DMSport."
     }
     
@@ -55,7 +55,7 @@ class BaseSignView {
     
     internal lazy var errorMassgeText = UILabel().then {
         $0.text = "에러다에러야!"
-        $0.font = .systemFont(ofSize: 10.0, weight: .semibold)
+        $0.font = .systemFont(ofSize: 12.0, weight: .semibold)
         $0.isHidden = true
     }
     
@@ -64,7 +64,7 @@ class BaseSignView {
         let image = UIImage(systemName: "x.circle")
         let imageView = UIImageView(image: image!)
         $0.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        $0.backgroundColor = .red
+        $0.backgroundColor = .clear
         $0.isHidden = true
     }
     

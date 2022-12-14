@@ -31,8 +31,7 @@ class LoginViewController: UIViewController {
         view.forgetPassword.rx.tap
             .bind {
                 let CertificationVC = GmailCertificationViewController()
-                CertificationVC.modalPresentationStyle = .fullScreen
-                self.present(CertificationVC, animated: true)
+                self.navigationController?.pushViewController(CertificationVC, animated: true)
             }.disposed(by: view.disposeBag)
         
         view.mainButton.rx.tap
@@ -59,11 +58,11 @@ class LoginViewController: UIViewController {
         view.loginButton.rx.tap
             .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(onNext: {
-                if(view.firstTextField.text! == nil || view.firstTextField.text!.isEmpty) {
+                if(view.firstTextField.text! == "" || view.firstTextField.text!.isEmpty) {
                     print("이메일이 없서")
                     return
                 }
-                if(view.secondTextField.text! == nil || view.secondTextField.text!.isEmpty) {
+                if(view.secondTextField.text! == "" || view.secondTextField.text!.isEmpty) {
                     print("인증번호가 없서")
                     return
                 }
@@ -72,20 +71,24 @@ class LoginViewController: UIViewController {
                     switch response {
                     case .success(let response):
                         print(response.statusCode)
-                        print(String(data: response.data, encoding: .utf8))
+                        print(String(data: response.data, encoding: .utf8) ?? "")
                         if let userDate = try? JSONDecoder().decode(TokenModel.self, from: response.data) {
                             KeyChain.create(key: Token.accessToken, token: userDate.access_token)
                             KeyChain.create(key: Token.refreshToken, token: userDate.refresh_token)
+                            authority =  userDate.authority
+                            if authority.contains("ADMIN") {
+                                adminBool = true
+                            } else if authority.contains("MANAGER") {
+                                managerBool = true
+                            }
                         }
-                        let myPageVC = MyPageViewController()
-                        myPageVC.modalPresentationStyle = .fullScreen
-                        self.present(myPageVC, animated: true)
+                        self.dismiss(animated: true)
                         break
                     case .failure(let error):
                         print("에러: \(error)")
                     }
                 }.disposed(by: view.disposeBag)
-            })
+            }).disposed(by: view.disposeBag)
         
         view.firstTextField
             .rx.text

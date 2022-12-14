@@ -44,9 +44,9 @@ class CategoryNoticeVM {
         
         input.loadDetail.asObservable()
             .subscribe(onNext: { index in
-            let value = allNotices.value
-            detailIndex.accept(value[index.row].id)
-        }).disposed(by: disposeBag)
+                let value = allNotices.value
+                detailIndex.accept(value[index.row].id)
+            }).disposed(by: disposeBag)
         
         return Output(allNotices: allNotices, detailIndex: detailIndex.asSignal())
     }

@@ -6,7 +6,7 @@ import RxCocoa
 import Moya
 import RxMoya
 
-class NewNoticeAlertVC: BaseVC {
+class NoticeEditAlertVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let postNotices = BehaviorRelay<Void>(value: ())
     let viewModel = NewNoticeAlertVM()
@@ -20,6 +20,21 @@ class NewNoticeAlertVC: BaseVC {
         $0.text = "공지 제목"
         $0.textColor = DMSportColor.hintColor.color
         $0.font = .systemFont(ofSize: 20, weight: .bold)
+    }
+    let noticeIDLabel = UILabel().then {
+        $0.textColor = .clear
+        $0.font = .systemFont(ofSize: 10, weight: .regular)
+    }
+    private let deleteButton = UIButton().then {
+        $0.setTitle("삭제", for: .normal)
+        $0.setTitleColor(DMSportColor.highlightColor.color, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+        let state = UIImage.SymbolConfiguration(pointSize: 14, weight: .regular, scale: .default)
+        let trashImage = UIImage(systemName: "trash", withConfiguration: state)
+        $0.setImage(trashImage, for: .normal)
+        $0.tintColor = DMSportColor.highlightColor.color
+        $0.semanticContentAttribute = .forceRightToLeft
+        $0.imageEdgeInsets = .init(top: -0.5, left: 5, bottom: 0, right: 0)
     }
     let noticeTitleTextField = UITextField().then {
         $0.backgroundColor = .white
@@ -52,62 +67,41 @@ class NewNoticeAlertVC: BaseVC {
         $0.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         $0.layer.cornerRadius = 20
     }
-    let menuButton = UIButton(type: .system).then {
-        $0.setTitle("종목", for: .normal)
-        $0.setTitleColor(DMSportColor.hintColor.color, for: .normal)
-        $0.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
-        $0.setImage(UIImage(named: "Menu"), for: .normal)
-        $0.semanticContentAttribute = .forceRightToLeft
-        $0.imageEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
-    }
     
-    
-    private func postNewNotice() {
-        let input = NewNoticeAlertVM.Input(
-            newTitle: noticeTitleTextField.text ?? "",
-            newContent: noticeContentTextView.text,
-            category: menuButton.currentTitle.self!,
-            buttonDidTap: completeButton.rx.tap.asDriver())
-        let output = viewModel.transform(input)
-        output.result.subscribe(onNext: { bool in
-            if bool == true {
+    private func deleteDidTap() {
+        let deleteViewModel = NoticeDeleteVM()
+        let input = NoticeDeleteVM.Input(
+            noticeID: Int("\(noticeIDLabel.text ?? "")") ?? 0,
+            buttonDidTap: deleteButton.rx.tap.asSignal())
+        let output = deleteViewModel.transform(input)
+        output.result
+            .subscribe(onNext: { bool in
+            if bool {
                 self.dismiss(animated: true)
             }
         }).disposed(by: disposeBag)
     }
-    
-    private func setButtonMenu() {
-        print("menu")
-        
-        let all = UIAction(title: "전체", state: .on, handler: { _ in print("전체") })
-        let badminton = UIAction(title: "배드민턴", state: .on, handler: { _ in print("배드민턴") })
-        let soccer = UIAction(title: "축구", state: .on, handler: { _ in print("축구") })
-        let basketball = UIAction(title: "농구", state: .on, handler: { _ in print("농구") })
-        let volleyball = UIAction(title: "배구", state: .on, handler: { _ in print("배구") })
-        
-        menuButton.menu = UIMenu(
-            identifier: nil,
-            options: .displayInline,
-            children:
-                [
-                    all,
-                    badminton,
-                    soccer,
-                    basketball,
-                    volleyball
-                ])
-        menuButton.showsMenuAsPrimaryAction = true
-        if #available(iOS 15.0, *) {
-            menuButton.changesSelectionAsPrimaryAction = true
-        } else {
-            // Fallback on earlier versions
-        }
+    private func editDidTap() {
+        let patchViewModel = NoticePatchVM()
+        let input = NoticePatchVM.Input(
+            newTitle: noticeTitleTextField.text ?? "",
+            newContent: noticeContentTextView.text,
+            noticeID: Int("\(noticeIDLabel.text ?? "")") ?? 0,
+            buttonDidTap: completeButton.rx.tap.asSignal())
+        let output = patchViewModel.transform(input)
+        output.result
+            .subscribe(onNext: { bool in
+            if bool {
+                self.dismiss(animated: true)
+            }
+        }).disposed(by: disposeBag)
     }
     override func addView() {
         view.addSubview(popupView)
         [
             alertTitle,
-            menuButton,
+            noticeIDLabel,
+            deleteButton,
             noticeTitleTextField,
             alertContent,
             noticeContentTextView,
@@ -119,14 +113,17 @@ class NewNoticeAlertVC: BaseVC {
     }
     override func configureVC() {
         view.backgroundColor = .black.withAlphaComponent(0.3)
-        setButtonMenu()
-        cancelButton.rx.tap
+        deleteButton.rx.tap
             .subscribe(onNext: {
-                self.dismiss(animated: true)
+                self.deleteDidTap()
             }).disposed(by: disposeBag)
         completeButton.rx.tap
             .subscribe(onNext: {
-                self.postNewNotice()
+                self.editDidTap()
+            }).disposed(by: disposeBag)
+        cancelButton.rx.tap
+            .subscribe(onNext: {
+                self.dismiss(animated: true)
             }).disposed(by: disposeBag)
     }
     override func setLayout() {
@@ -140,10 +137,15 @@ class NewNoticeAlertVC: BaseVC {
             $0.left.equalToSuperview().inset(22.46)
             $0.height.equalTo(24)
         }
-        menuButton.snp.makeConstraints {
+        noticeIDLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.height.equalTo(18)
+            $0.left.equalTo(alertTitle.snp.right).offset(20)
+        }
+        deleteButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
-            $0.right.equalToSuperview().inset(30)
-            $0.height.equalTo(17)
+            $0.right.equalToSuperview().inset(25)
+            $0.height.equalTo(18)
         }
         noticeTitleTextField.snp.makeConstraints {
             $0.top.equalTo(alertTitle.snp.bottom).offset(12)

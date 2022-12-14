@@ -56,7 +56,7 @@ class SignupView: BaseSignView {
         
         firstText.text = "시작하기"
         firstTextField.placeholder = "이름(실명)"
-        secondTextField.placeholder = "비밀번호를 입력해 주세요"
+        secondTextField.placeholder = "비밀번호는 대소문자, 특수문자 포함 8~30자"
         secondTextField.textContentType = .password
         secondTextField.isSecureTextEntry = true
         
