@@ -16,9 +16,16 @@ class VoteVC: BaseVC {
     let viewModel = TodayVoteVM()
     let postVote = BehaviorRelay<Void>(value: ())
     let typeRelay = PublishRelay<String>()
-    let isBan = PublishRelay<Bool>()
+    let isBan = BehaviorRelay<Bool>(value: false)
     let banPeriod = PublishRelay<String>()
     
+    private let scrollView = UIScrollView().then {
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+    }
+    private let contentView = UIView().then {
+        $0.backgroundColor = .clear
+    }
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.baseColor.color
         $0.layer.cornerRadius = 20
@@ -107,18 +114,16 @@ class VoteVC: BaseVC {
                 default:
                     newCategoryLabel = ""
                 }
-                
                 cell.categoryLabel.text = newCategoryLabel
                 
-                self.isBan.asObservable()
-                    .subscribe(onNext: { bool in
-                        if bool {
-                            cell.backView.backgroundColor = DMSportColor.disabledColor.color
-                            self.timeVoteTableView.allowsSelection = false
-                        } else {
-                            cell.backView.backgroundColor = DMSportColor.whiteColor.color
-                        }
-                    }).disposed(by: self.disposeBag)
+                self.isBan.subscribe(onNext: { bool in
+                    if bool {
+                        cell.backView.backgroundColor = DMSportColor.disabledColor.color
+                        self.timeVoteTableView.allowsSelection = false
+                    } else {
+                        cell.backView.backgroundColor = DMSportColor.whiteColor.color
+                    }
+                }).disposed(by: self.disposeBag)
                 
                 cell.applied.accept(items.alreadyVoted)
                 cell.id  = items.voteID
@@ -131,36 +136,9 @@ class VoteVC: BaseVC {
                 default:
                     break
                 }
-                cell.graphWidth = cell.graphBase.frame.width * CGFloat(items.voteCount / items.maxPeople)
-                
-                print("what?")
-                
-                
-                //                cell.applyButton.rx.tap
-                //                    .bind {
-                //                        if cell.categoryLabel.text == "배드민턴" {
-                //                            print("this is badminton")
-                //                            let applyViewModel = PositionVoteVM()
-                //                            let input = PositionVoteVM.Input(
-                //                                buttonDidTap: cell.applyButton.rx.tap.asSignal(),
-                //                                voteID: cell.id)
-                //                            let output = applyViewModel.transfrom(input)
-                //
-                //                            output.voteResult.asObservable()
-                //                                .subscribe { bool in
-                //                                    if bool {
-                //                                        print(bool)
-                //                                    }
-                //                                }.disposed(by: self.disposeBag)
-                //                        } else {
-                //                            print("hello")
-                //                            let next = PositionVoteVC()
-                //                            next.voteID = cell.id
-                //                            next.categoryName = cell.categoryLabel.text ?? ""
-                //                            self.navigationController?.pushViewController(next, animated: true)
-                //                            print("world")
-                //                        }
-                //                    }.disposed(by: cell.disposeBag)
+                cell.graphWidth = (self.view.frame.width / Double(items.maxPeople)) * Double(items.voteCount)
+                print(self.view.frame.width / Double(items.maxPeople))
+                print(cell.graphWidth)
                 
                 cell.setUpView(onTapped: { id in
                     if cell.categoryLabel.text != "배드민턴" {
@@ -170,18 +148,6 @@ class VoteVC: BaseVC {
                         self.navigationController?.pushViewController(next, animated: true)
                     }
                 })
-//                cell.applyButton.rx.tap
-//                    .take(1)
-//                //                    .throttle(.seconds(10), scheduler: MainScheduler.instance)
-//                    .subscribe(onNext: {
-//                        print("아니 이게 맞아? 왜 여러 번 돼")
-//                        if cell.categoryLabel.text != "배드민턴" {
-//                            let next = PositionVoteVC()
-//                            next.voteID = cell.id
-//                            next.categoryName = cell.categoryLabel.text ?? ""
-//                            self.navigationController?.pushViewController(next, animated: true)
-//                        }
-//                    }).disposed(by: cell.disposeBag)
                 
                 //                cell.votedUserButton.rx.tap
                 //                    .subscribe(onNext: {
@@ -199,11 +165,12 @@ class VoteVC: BaseVC {
     override func addView() {
         [
             backView,
-            noticeButton
+            scrollView
         ]
             .forEach {
                 view.addSubview($0)
             }
+        scrollView.addSubview(contentView)
         [
             sportsGuideLabel,
             categoryCollectionView,
@@ -212,7 +179,7 @@ class VoteVC: BaseVC {
             updateTimeLabel
         ]
             .forEach() {
-                backView.addSubview($0)
+                contentView.addSubview($0)
             }
     }
     func getAccessToken() {
@@ -240,6 +207,8 @@ class VoteVC: BaseVC {
             }).disposed(by: disposeBag)
     }
     override func configureVC() {
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.layer.cornerRadius = 20
         getAccessToken()
         view.backgroundColor = DMSportColor.backgroundColor.color
         bindViewModels()
@@ -247,14 +216,22 @@ class VoteVC: BaseVC {
         setUpTableView()
     }
     override func setLayout() {
+        scrollView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(170)
+            $0.left.right.bottom.equalToSuperview()
+        }
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalToSuperview()
+            if view.frame.height > 900 {
+                $0.height.equalTo(200 + 4 * 138)
+            } else {
+                $0.height.equalTo(700)
+            }
+        }
         backView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(170)
-            $0.trailing.leading.bottom.equalToSuperview()
-        }
-        noticeButton.snp.makeConstraints {
-            $0.height.equalTo(46)
-            $0.top.equalToSuperview().inset(108)
-            $0.left.right.equalToSuperview().inset(16)
+            $0.left.right.bottom.equalToSuperview()
         }
         sportsGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
@@ -274,11 +251,16 @@ class VoteVC: BaseVC {
         timeVoteTableView.snp.makeConstraints {
             $0.top.equalTo(timeGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
+            $0.height.equalTo(284)
         }
         updateTimeLabel.snp.makeConstraints {
             $0.top.equalTo(timeVoteTableView.snp.bottom)
             $0.left.right.equalToSuperview().inset(99)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(31)
+            if view.frame.height > 900 {
+                $0.bottom.equalToSuperview().inset(31)
+            } else {
+                $0.height.equalTo(50)
+            }
         }
     }
 }

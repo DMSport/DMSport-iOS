@@ -8,7 +8,7 @@ class TimeVoteCell: BaseTC {
     let disposeBag = DisposeBag()
     var applied = PublishRelay<Bool>()
     var id = Int()
-    var graphWidth = CGFloat()
+    var graphWidth = Double()
     var onTapped: ((Int) -> Void)?
     
     let backView = UIView().then {
@@ -53,7 +53,6 @@ class TimeVoteCell: BaseTC {
     }
     private func voteButtonAction() {
         if self.categoryLabel.text == "배드민턴" {
-            print("you what?")
             let applyViewModel = PositionVoteVM()
             let input = PositionVoteVM.Input(
                 buttonDidTap: self.applyButton.rx.tap.asSignal(),

@@ -26,7 +26,6 @@ class TodayVoteVM {
         let voteObject = PublishRelay<GetToDayVoteSearch>()
         let todayVotes = BehaviorRelay<[Vote]>(value: [])
         let detailIndex = PublishRelay<Int>()
-//        let categoryName = PublishRelay<String>()
         let categoryName = BehaviorRelay<String>(value: "")
         
         input.type.asObservable()
