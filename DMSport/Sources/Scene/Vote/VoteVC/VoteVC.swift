@@ -30,13 +30,17 @@ class VoteVC: BaseVC {
         $0.backgroundColor = DMSportColor.baseColor.color
         $0.layer.cornerRadius = 20
     }
-    private let noticeButton = UIButton().then {
+    private let logoView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
-        $0.setTitle("플라잉 디스크 사용 안내", for: .normal)
-        $0.titleLabel?.textColor = DMSportColor.blackColor.color
-        $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        $0.titleLabel?.textAlignment = .left
+//        $0.setTitle("플라잉 디스크 사용 안내", for: .normal)
+//        $0.setTitleColor(DMSportColor.blackColor.color, for: .normal)
+////        $0.setTitleColor = DMSportColor.blackColor.color
+//        $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+//        $0.titleLabel?.textAlignment = .left
+    }
+    private let logoImage = UIImageView().then {
+        $0.image = UIImage(named: "DMSport_Vector")
     }
     private let sportsGuideLabel = UILabel().then {
         $0.text = "종목"
@@ -163,8 +167,10 @@ class VoteVC: BaseVC {
             }.disposed(by: disposeBag)
     }
     override func addView() {
+        logoView.addSubview(logoImage)
         [
             backView,
+            logoView,
             scrollView
         ]
             .forEach {
@@ -232,6 +238,16 @@ class VoteVC: BaseVC {
         backView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(170)
             $0.left.right.bottom.equalToSuperview()
+        }
+        logoView.snp.makeConstraints {
+            $0.height.equalTo(55)
+            $0.top.equalToSuperview().inset(100)
+            $0.left.right.equalToSuperview().inset(16)
+        }
+        logoImage.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview()
+//            $0.left.right.equalToSuperview().inset(30)
         }
         sportsGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)

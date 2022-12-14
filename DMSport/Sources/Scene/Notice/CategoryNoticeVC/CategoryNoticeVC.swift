@@ -10,7 +10,7 @@ class CategoryNoticeVC: BaseVC {
     private let mainProvider = MoyaProvider<MyAPI>()
     private let getNotices = BehaviorRelay<Void>(value: ())
     let viewModel = CategoryNoticeVM()
-    var categoryNoticeCount: Int = 0
+    var categoryNoticeCount: Int = 1
     var noticeID = Int()
     
     private let scrollView = UIScrollView().then {
@@ -20,7 +20,7 @@ class CategoryNoticeVC: BaseVC {
     private let contentView = UIView().then {
         $0.backgroundColor = .clear
     }
-    private let entireGuideLabel = UILabel().then {
+    private let categoryGuideLabel = UILabel().then {
         $0.text = "종목별 공지사항"
         $0.textColor = DMSportColor.hintColor.color
         $0.textAlignment = .left
@@ -47,10 +47,34 @@ class CategoryNoticeVC: BaseVC {
             cellIdentifier: "CategoryNotice",
             cellType: NoticeCell.self)) { row, items, cell in
                 if items.type != "ALL" {
+                    let formatter = ISO8601DateFormatter()
+                    formatter.formatOptions = [.withFullDate]
+                    let createdTime = formatter.date(from: items.createdAt)
+                    let createdWhen: String = "\(createdTime!)"
+                    let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+                    let range = ...endIndex
+                    
+                    var newCategoryLabel = ""
+                    switch items.type {
+                    case "BADMINTON":
+                        newCategoryLabel = "배드민턴"
+                    case "SOCCER":
+                        newCategoryLabel = "축구"
+                    case "BASKETBALL":
+                        newCategoryLabel = "농구"
+                    case "VOLLEYBALL":
+                        newCategoryLabel = "배구"
+                    default:
+                        newCategoryLabel = ""
+                    }
+                    
                     cell.noticeTitle.text = items.title
-                    cell.noticeDetails.text = items.createdAt + " / " + items.type
+                    cell.noticeDetails.text = createdWhen[range] + " /  " + newCategoryLabel
                     cell.noticeContent.text = items.contentPreview
                     self.categoryNoticeCount += 1
+                    print(self.categoryNoticeCount)
+                    self.updateConstraints()
+                    
                     cell.selectionStyle = .none
                 } else {
                     print(items.type)
@@ -68,6 +92,7 @@ class CategoryNoticeVC: BaseVC {
                         editAlert.noticeIDLabel.text = "\(items.id)"
                     }).disposed(by: cell.disposeBag)
             }.disposed(by: disposeBag)
+        
         output.detailIndex.asObservable()
             .subscribe(onNext: { id in
                 self.noticeID = id
@@ -80,6 +105,17 @@ class CategoryNoticeVC: BaseVC {
                 self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
     }
+    private func updateConstraints() {
+        contentView.snp.remakeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalToSuperview()
+            if categoryNoticeCount * 133 > 800 {
+                $0.height.equalTo(100 + categoryNoticeCount * 133)
+            } else {
+                $0.height.equalTo(900)
+            }
+        }
+    }
     override func addView() {
         [
             scrollView,
@@ -89,7 +125,7 @@ class CategoryNoticeVC: BaseVC {
         }
         scrollView.addSubview(contentView)
         [
-            entireGuideLabel,
+            categoryGuideLabel,
             categoryNoticeTableView
             
         ] .forEach {
@@ -127,13 +163,13 @@ class CategoryNoticeVC: BaseVC {
                 $0.height.equalTo(900)
             }
         }
-        entireGuideLabel.snp.makeConstraints {
+        categoryGuideLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(10)
             $0.left.equalToSuperview().inset(28)
             $0.height.equalTo(24)
         }
         categoryNoticeTableView.snp.makeConstraints {
-            $0.top.equalTo(entireGuideLabel.snp.bottom).offset(12)
+            $0.top.equalTo(categoryGuideLabel.snp.bottom).offset(12)
             $0.left.right.equalToSuperview().inset(16)
         }
         newNoticeButton.snp.makeConstraints {

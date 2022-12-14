@@ -68,14 +68,17 @@ class NoticeVC: BaseVC {
         output.entireRecentNotices.bind(to: entireNoticeTableView.rx.items(
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
-//                let formatter = DateFormatter()
-//                formatter.dateFormat = "yyyy-MM-dd HH:mm  yyyy-MM-ddTHH:mm:32.5167"
-//                let convertDate = formatter.date(from: items.createdAt)
-//                let dateResult = formatter.string(from: convertDate ?? "2022-12-09 10:12")
+                let formatter = ISO8601DateFormatter()
+                formatter.formatOptions = [.withFullDate]
+
+                let createdTime = formatter.date(from: items.createdAt)
+                let createdWhen: String = "\(createdTime!)"
+                let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+                let range = ...endIndex
                 
                 cell.noticeTitle.text =  items.title
                 cell.noticeContent.text = items.contentPreview
-                cell.noticeDetails.text = items.createdAt
+                cell.noticeDetails.text = "\(createdWhen[range])"
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)
         output.categoryRecentNotices.bind(to: categoryTableView.rx.items(
@@ -83,7 +86,29 @@ class NoticeVC: BaseVC {
             cellType: NoticeCell.self)) { row, items, cell in
                 cell.noticeTitle.text = items.title
                 cell.noticeContent.text = items.contentPreview
-                cell.noticeDetails.text = items.createdAt + " / " + items.type
+                var newCategoryLabel = ""
+                switch items.type {
+                case "BADMINTON":
+                    newCategoryLabel = "배드민턴"
+                case "SOCCER":
+                    newCategoryLabel = "축구"
+                case "BASKETBALL":
+                    newCategoryLabel = "농구"
+                case "VOLLEYBALL":
+                    newCategoryLabel = "배구"
+                default:
+                    newCategoryLabel = ""
+                }
+                
+                let formatter = ISO8601DateFormatter()
+                formatter.formatOptions = [.withFullDate]
+
+                let createdTime = formatter.date(from: items.createdAt)
+                let createdWhen: String = "\(createdTime!)"
+                let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+                let range = ...endIndex
+                
+                cell.noticeDetails.text = createdWhen[range] + " /  " + newCategoryLabel
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)
     }

@@ -53,10 +53,21 @@ class EntireNoticeVC: BaseVC {
             cellIdentifier: "EntireNotice",
             cellType: NoticeCell.self)) { row, items, cell in
                 if items.type == "ALL" {
+                    let formatter = ISO8601DateFormatter()
+                    formatter.formatOptions = [.withFullDate]
+                    let createdTime = formatter.date(from: items.createdAt)
+                    let createdWhen: String = "\(createdTime!)"
+                    let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+                    let range = ...endIndex
+                    
                     cell.noticeTitle.text = items.title
-                    cell.noticeDetails.text = items.createdAt
+                    cell.noticeDetails.text = "\(createdWhen[range])"
                     cell.noticeContent.text = items.contentPreview
+                    
                     self.entireNoticeCount += 1
+                    print(self.entireNoticeCount)
+                    self.updateConstraints()
+                    
                     cell.selectionStyle = .none
                 } else {
                     print(items.type)
@@ -80,6 +91,17 @@ class EntireNoticeVC: BaseVC {
                 next.id = self.noticeID
                 self.navigationController?.pushViewController(next, animated: true)
             }).disposed(by: disposeBag)
+    }
+    private func updateConstraints() {
+        contentView.snp.remakeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalToSuperview()
+            if entireNoticeCount * 133 > 800 {
+                $0.height.equalTo(50 + entireNoticeCount * 133)
+            } else {
+                $0.height.equalTo(900)
+            }
+        }
     }
     override func addView() {
         [
