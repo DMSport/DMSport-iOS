@@ -7,6 +7,8 @@ import Moya
 import RxMoya
 
 class PositionVoteCell: BaseTC {
+    private let disposeBag = DisposeBag()
+    var id = Int()
     private let backView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
@@ -22,6 +24,20 @@ class PositionVoteCell: BaseTC {
         $0.backgroundColor = DMSportColor.mainColor.color
         $0.layer.cornerRadius = 20
     }
+    private func voteButtonTap() {
+        let applyViewModel = PositionVoteVM()
+        let input = PositionVoteVM.Input(
+            buttonDidTap: self.positionApplyButton.rx.tap.asSignal(),
+            voteID: self.id)
+        let output = applyViewModel.transfrom(input)
+
+        output.voteResult.asObservable()
+            .subscribe { bool in
+                if bool {
+                    print(bool)
+                }
+            }.disposed(by: self.disposeBag)
+    }
     override func addView() {
         [
             backView,
@@ -33,6 +49,10 @@ class PositionVoteCell: BaseTC {
     }
     override func configureVC() {
         backgroundColor = DMSportColor.baseColor.color
+        positionApplyButton.rx.tap
+            .subscribe(onNext: {
+                self.voteButtonTap()
+            }).disposed(by: disposeBag)
     }
     override func setLayout() {
         backView.snp.makeConstraints {

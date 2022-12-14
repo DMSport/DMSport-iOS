@@ -91,6 +91,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "C.F", "S.F", "L.W", "C.M", "R.W", "A.M", "D.M", "L.S.T", "R.S.T", "S.W", "G.K" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                cell.id = self.voteID
                 cell.selectionStyle = .none
                 return cell
             } else {
@@ -100,6 +101,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "P.G", "S.G", "S.F", "P.F", "C" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                cell.id = self.voteID
                 cell.selectionStyle = .none
                 return cell
             } else {
@@ -109,6 +111,7 @@ extension PositionVoteVC: UITableViewDataSource, UITableViewDelegate {
             let positionList: [String] = [ "Right", "Left", "Center", "Libero" ]
             if let cell = voteTableView.dequeueReusableCell(withIdentifier: "Position", for: indexPath) as? PositionVoteCell {
                 cell.positionLabel.text = "\(positionList[indexPath.row])"
+                cell.id = self.voteID
                 cell.selectionStyle = .none
                 return cell
             } else {

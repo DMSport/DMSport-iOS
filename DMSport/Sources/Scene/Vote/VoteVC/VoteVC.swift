@@ -33,11 +33,6 @@ class VoteVC: BaseVC {
     private let logoView = UIView().then {
         $0.backgroundColor = DMSportColor.whiteColor.color
         $0.layer.cornerRadius = 20
-//        $0.setTitle("플라잉 디스크 사용 안내", for: .normal)
-//        $0.setTitleColor(DMSportColor.blackColor.color, for: .normal)
-////        $0.setTitleColor = DMSportColor.blackColor.color
-//        $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-//        $0.titleLabel?.textAlignment = .left
     }
     private let logoImage = UIImageView().then {
         $0.image = UIImage(named: "DMSport_Vector")
@@ -141,8 +136,6 @@ class VoteVC: BaseVC {
                     break
                 }
                 cell.graphWidth = (self.view.frame.width / Double(items.maxPeople)) * Double(items.voteCount)
-                print(self.view.frame.width / Double(items.maxPeople))
-                print(cell.graphWidth)
                 
                 cell.setUpView(onTapped: { id in
                     if cell.categoryLabel.text != "배드민턴" {
@@ -153,15 +146,23 @@ class VoteVC: BaseVC {
                     }
                 })
                 
-                //                cell.votedUserButton.rx.tap
-                //                    .subscribe(onNext: {
-                //                        print("what")
-                //                        let nextVC = VotedUserAlertVC()
-                //                        nextVC.modalPresentationStyle = .overFullScreen
-                //                        nextVC.modalTransitionStyle = .crossDissolve
-                //                        self.present(nextVC, animated: true)
-                //                        nextVC.userList.accept(items.users)
-                //                    }).disposed(by: cell.disposeBag)
+                cell.showUsers {
+                    print("what")
+                    let nextVC = VotedUserAlertVC()
+                    nextVC.modalPresentationStyle = .overFullScreen
+                    nextVC.modalTransitionStyle = .crossDissolve
+                    self.present(nextVC, animated: true)
+                    nextVC.userList.accept(items.users)
+                }
+//                cell.votedUserButton.rx.tap
+////                    .subscribe(onNext: {
+//                        print("what")
+//                        let nextVC = VotedUserAlertVC()
+//                        nextVC.modalPresentationStyle = .overFullScreen
+//                        nextVC.modalTransitionStyle = .crossDissolve
+//                        self.present(nextVC, animated: true)
+//                        nextVC.userList.accept(items.users)
+//                    }).disposed(by: cell.disposeBag)
                 
                 cell.selectionStyle = .none
             }.disposed(by: disposeBag)

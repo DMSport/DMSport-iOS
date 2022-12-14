@@ -22,7 +22,7 @@ class NoticeEditAlertVC: BaseVC {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
     }
     let noticeIDLabel = UILabel().then {
-        $0.textColor = .red
+        $0.textColor = .clear
         $0.font = .systemFont(ofSize: 10, weight: .regular)
     }
     private let deleteButton = UIButton().then {
