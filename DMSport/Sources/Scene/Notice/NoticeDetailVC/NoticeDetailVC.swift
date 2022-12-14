@@ -45,8 +45,29 @@ class NoticeDetailVC: BaseVC {
         let output = viewModel.transfrom(input)
         
         output.seeNotice.subscribe(onNext: { [unowned self] info in
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withFullDate]
+            let createdTime = formatter.date(from: info?.createdAt ?? "")
+            let createdWhen: String = "\(createdTime!)"
+            let endIndex = createdWhen.index(createdWhen.startIndex, offsetBy: 10)
+            let range = ...endIndex
+            
+            var newCategoryLabel = ""
+            switch info?.type {
+            case "BADMINTON":
+                newCategoryLabel = "배드민턴"
+            case "SOCCER":
+                newCategoryLabel = "축구"
+            case "BASKETBALL":
+                newCategoryLabel = "농구"
+            case "VOLLEYBALL":
+                newCategoryLabel = "배구"
+            default:
+                newCategoryLabel = ""
+            }
+
             noticeTitle.text = info?.title
-            noticeDetail.text = info?.createdAt
+            noticeDetail.text = createdWhen[range] + " /  " + newCategoryLabel
             noticeContent.text = info?.content
         }).disposed(by: disposeBag)
     }

@@ -216,7 +216,7 @@ class VoteVC: BaseVC {
     override func configureVC() {
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.layer.cornerRadius = 20
-//        getAccessToken()
+        getAccessToken()
 //        KeyChain.delete(key: Token.accessToken)
 //        KeyChain.delete(key: Token.refreshToken)
         view.backgroundColor = DMSportColor.backgroundColor.color

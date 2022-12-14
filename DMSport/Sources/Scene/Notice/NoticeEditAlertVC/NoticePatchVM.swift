@@ -36,22 +36,6 @@ class NoticePatchVM {
                 print(error)
             }
         }
-            
-//        self.mainProvider.rx.request(.patchNoticeCorrection(input.newTitle, input.newContent, input.noticeID))
-//            .subscribe { res in
-//                    switch res {
-//                    case .success(let result):
-//                        debugPrint(result)
-//                        switch result.statusCode {
-//                        case 204:
-//                            patchResult.accept(true)
-//                        default:
-//                            patchResult.accept(false)
-//                        }
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//            }.disposed(by: disposeBag)
         
         return Output(result: patchResult)
     }
